@@ -1,10 +1,20 @@
 # 66文明社、便利ツール
 
-## PrimitierTransistorCircuitSimulator_v1.0.0
+[ Language: [日本語](#日本語) | [English](#english) | [Русский](#русский) ]
+
+---
+
+## 日本語
+
+### PrimitierTransistorCircuitSimulator_v1.1.0
 - プリミティアのトランジスタ回路の図面を作成して、ブラウザ上で動作確認できるツールです。
 - HTMLファイル単体で動作します。ネットワーク環境不要です。
 - 実際にプリミティアで使うときは、作成した図面を見ながら手動で組み立てる必要があります。
 - 動作確認環境: Windows 11 / Google Chrome
+
+### 多言語対応 (i18n)
+- 画面右上の言語切替セレクトボックス **`[ JA | EN | RU ]`** から、表示言語を「日本語」「英語」「ロシア語」に即座に切り替えることができます。
+- ブラウザのデフォルト言語設定に応じて初期表示言語が自動選択されます。
 
 ### 基本操作
 - **部品配置・移動:** 画面上部ボタンから追加、ドラッグで移動（10pxグリッド吸着）、範囲選択も可能
@@ -18,3 +28,58 @@
 - `Ctrl + C` (Cmd + C): 選択した回路のコピー
 - `Ctrl + V` (Cmd + V): カーソル位置へのペースト、タブ間でのコピーも可能
 - `Delete` / `Backspace`: 選択した部品の削除
+
+---
+
+## English
+
+### PrimitierTransistorCircuitSimulator_v1.1.0
+- A browser-based simulator for designing and verifying transistor circuits in Primitier.
+- Runs as a standalone HTML file without an internet connection.
+- When building in Primitier, you need to manually assemble the circuit while referencing the diagram.
+- Tested Environment: Windows 11 / Google Chrome
+
+### Multilingual Support (i18n)
+- Switch UI languages between **Japanese, English, and Russian** instantly via the **`[ JA | EN | RU ]`** language dropdown in the top-right toolbar.
+- Automatically selects the initial language based on your browser settings.
+
+### Basic Controls
+- **Place & Move Components:** Click toolbar buttons to add, drag to move (snaps to 10px grid). Area selection is supported.
+- **Wire Connection:** Drag between pins to connect.
+- **Waypoints:** Double-click a wire to add a waypoint / drag to move / right-click to delete.
+- **Text & Crystal Thickness:** Double-click a component to edit settings.
+- **Delete:** Right-click a component, wire, or waypoint (or press Delete / Backspace when selected).
+- **Canvas Control:** Mouse wheel to zoom, middle-click drag (or Space + Left-drag) to pan.
+
+### Shortcuts
+- `Ctrl + C` (Cmd + C): Copy selected circuit
+- `Ctrl + V` (Cmd + V): Paste at cursor position (supports copy-pasting across browser tabs)
+- `Delete` / `Backspace`: Delete selected items
+
+---
+
+## Русский
+
+### PrimitierTransistorCircuitSimulator_v1.1.0
+- Инструмент для проектирования и проверки транзисторных схем Primitier прямо в браузере.
+- Работает как автономный HTML-файл без подключения к Интернету.
+- При сборке в Primitier вам потребуется вручную собрать схему, ориентируясь на созданный чертеж.
+- Протестировано в: Windows 11 / Google Chrome
+
+### Многоязычная поддержка (i18n)
+- Вы можете мгновенно переключать язык интерфейса между **японским, английским и русским** с помощью выпадающего списка **`[ JA | EN | RU ]`** в верхней панели инструментов.
+- Язык по умолчанию выбирается автоматически в зависимости от настроек вашего браузера.
+
+### Основное управление
+- **Размещение и перемещение:** Добавление через верхние кнопки, перетаскивание с привязкой к сетке 10px. Поддерживается выделение области.
+- **Соединение проводов:** Перетащите линию от одного пина к другому.
+- **Точки изгиба (Waypoints):** Двойной клик по проводу для добавления / перетаскивание / правый клик для удаления.
+- **Текст и толщина кристалла:** Двойной клик по компоненту для редактирования.
+- **Удаление:** Правый клик по компоненту, проводу или точке (либо клавиши Delete / Backspace для выделенного).
+- **Навигация:** Колесо мыши для масштабирования, зажатие колесика (или Space + ЛКМ) для перемещения по холсту.
+
+### Горячие клавиши
+- `Ctrl + C` (Cmd + C): Копировать выделенные элементы
+- `Ctrl + V` (Cmd + V): Вставить в позиции курсора (работает между вкладками)
+- `Delete` / `Backspace`: Удалить выделенные элементы
+

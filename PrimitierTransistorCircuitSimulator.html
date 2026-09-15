@@ -1,6 +1,6 @@
 <!--
   ==================================================
-  Primitier Transistor Circuit Simulator v1.0.0
+  Primitier Transistor Circuit Simulator v1.1.0 (i18n)
   Created by fusou66
   Development Assist: Google Gemini
   ==================================================
@@ -9,29 +9,47 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Primitierトランジスタ回路シミュレータ</title>
   <style>
     body {
       margin: 0; font-family: sans-serif; user-select: none;
       background-color: #1e1e1e; color: #fff; overflow: hidden;
     }
+
+    /* ツールバーの基本スタイル（横スクロール対応） */
     #toolbar {
       height: 40px; background-color: #333; display: flex;
       align-items: center; padding: 0 10px; gap: 8px; box-sizing: border-box;
+      overflow-x: auto;
+      white-space: nowrap;
     }
+    #toolbar::-webkit-scrollbar {
+      height: 4px;
+    }
+    #toolbar::-webkit-scrollbar-thumb {
+      background: #555;
+      border-radius: 2px;
+    }
+
+    /* ボタン・選択ボックスの共通設定 */
+    #toolbar button, #toolbar select {
+      background-color: #444; color: #fff; border: 1px solid #666;
+      padding: 4px 10px; cursor: pointer; border-radius: 4px;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    button:hover { background-color: #555; }
+
     #file-bar {
       height: 24px; background-color: #252526; border-bottom: 1px solid #333;
       display: flex; align-items: center; padding: 0 12px; box-sizing: border-box;
     }
-    button, input[type="file"] {
-      background-color: #444; color: #fff; border: 1px solid #666;
-      padding: 4px 10px; cursor: pointer; border-radius: 4px;
-    }
-    button:hover { background-color: #555; }
     #canvas-container { width: 100vw; height: calc(100vh - 64px); position: relative; }
     canvas { display: block; background-color: #252526; }
     .info-text { color: #aaa; font-size: 12px; margin-left: 6px; }
     .file-info { color: #00ffcc; font-family: monospace; }
+
     /* テキスト入力モーダル */
     #text-modal {
       display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -54,40 +72,58 @@
     #context-menu {
       display: none; position: fixed; background: #2d2d2d; border: 1px solid #555;
       border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 2000;
-      flex-direction: column; padding: 4px 0; min-width: 130px;
+      flex-direction: column; padding: 4px 0; min-width: 140px;
     }
     #context-menu div {
       padding: 6px 14px; font-size: 12px; color: #fff; cursor: pointer;
     }
     #context-menu div:hover { background-color: #007acc; }
     #context-menu div.danger:hover { background-color: #a22; }
+
+    /* 画面幅に応じた段階的レスポンシブ設定 */
+    @media (max-width: 1500px) {
+      #toolbar { gap: 5px; padding: 0 6px; }
+      #toolbar button, #toolbar select { padding: 3px 6px; font-size: 11px; }
+    }
+    @media (max-width: 1000px) {
+      #toolbar button, #toolbar select { padding: 2px 4px; font-size: 10px; }
+      .info-text { font-size: 10px; margin-left: 2px; }
+    }
   </style>
 </head>
 <body>
 
 <div id="toolbar">
-  <button onclick="addComponent('vcc')">+ 電源(VCC)</button>
-  <button onclick="addComponent('push_switch')">+ 押ボタンSW</button>
-  <button onclick="addComponent('transistor')">+ トランジスタ</button>
-  <button onclick="addComponent('inv_transistor')">+ 反転トランジスタ</button>
-  <button onclick="addComponent('crystal')">+ 水晶(可変)</button>
-  <button onclick="addComponent('pyrite')">+ 黄鉄鉱(ダイオード)</button>
-  <button onclick="addComponent('led')">+ LED</button>
-  <button onclick="addComponent('text')" style="background-color: #2b5b84;">+ テキスト</button>
+  <button onclick="addComponent('vcc')" data-i18n="addVcc">+ 電源(VCC)</button>
+  <button onclick="addComponent('push_switch')" data-i18n="addBtn">+ 押ボタンSW</button>
+  <button onclick="addComponent('transistor')" data-i18n="addTr">+ トランジスタ</button>
+  <button onclick="addComponent('inv_transistor')" data-i18n="addInvTr">+ 反転トランジスタ</button>
+  <button onclick="addComponent('crystal')" data-i18n="addCrystal">+ 水晶(可変)</button>
+  <button onclick="addComponent('pyrite')" data-i18n="addPyrite">+ 黄鉄鉱(ダイオード)</button>
+  <button onclick="addComponent('led')" data-i18n="addLed">+ LED</button>
+  <button onclick="addComponent('text')" style="background-color: #2b5b84;" data-i18n="addText">+ テキスト</button>
   <span style="margin-left: 10px;">|</span>
   <button onclick="resetZoom()">100%</button>
   <span id="zoom-text" class="info-text">100%</span>
   <span style="margin-left: 10px;">|</span>
-  <span class="info-text" style="color: #888; font-weight: bold;">v1.0.0</span>
+  <span class="info-text" style="color: #888; font-weight: bold;">v1.1.0</span>
   <span style="margin-left: 10px;">|</span>
-  <button onclick="exportCircuit()">保存 (JSON)</button>
-  <button onclick="document.getElementById('file-input').click()">読み込み</button>
+  <button onclick="exportCircuit()" data-i18n="save">保存 (JSON)</button>
+  <button onclick="document.getElementById('file-input').click()" data-i18n="load">読み込み</button>
   <input type="file" id="file-input" style="display:none;" onchange="importCircuit(event)">
-  <button onclick="clearCircuit()" style="margin-left:auto; background-color:#822;">クリア</button>
+
+  <!-- 言語切替セレクトボックス -->
+  <select id="lang-select" onchange="changeLanguage(this.value)" style="margin-left: 10px; background-color: #2b5b84;">
+    <option value="ja">日本語</option>
+    <option value="en">English</option>
+    <option value="ru">Русский</option>
+  </select>
+
+  <button onclick="clearCircuit()" style="margin-left:auto; background-color:#822;" data-i18n="clear">クリア</button>
 </div>
 
 <div id="file-bar">
-  <span style="font-size: 11px; color: #888; margin-right: 6px;">編集中のファイル:</span>
+  <span style="font-size: 11px; color: #888; margin-right: 6px;" data-i18n="editingFile">編集中のファイル:</span>
   <span id="current-file-text" class="info-text file-info">[ circuit.json ]</span>
 </div>
 
@@ -97,41 +133,112 @@
 
 <div id="text-modal">
   <div id="text-modal-content">
-    <label style="font-size: 14px; font-weight: bold;">テキスト編集 (Enterで改行):</label>
+    <label style="font-size: 14px; font-weight: bold;" data-i18n="editText">テキスト編集 (Enterで改行):</label>
     <textarea id="text-modal-input"></textarea>
     <div class="style-setting-row">
-      <label>文字サイズ (px):</label>
+      <label data-i18n="fontSize">文字サイズ (px):</label>
       <input type="number" id="text-modal-size" min="8" max="72" value="13">
     </div>
     <div class="style-setting-row">
-      <label>背景色:</label>
+      <label data-i18n="bgColor">背景色:</label>
       <input type="color" id="text-modal-color" value="#2b3a4a">
     </div>
     <div class="buttons">
-      <button onclick="closeTextModal(false)">キャンセル</button>
-      <button onclick="closeTextModal(true)" style="background-color: #007acc;">保存</button>
+      <button onclick="closeTextModal(false)" data-i18n="cancel">キャンセル</button>
+      <button onclick="closeTextModal(true)" style="background-color: #007acc;" data-i18n="saveBtn">保存</button>
     </div>
   </div>
 </div>
 
 <!-- 右クリックメニュー -->
 <div id="context-menu">
-  <div onclick="moveSelectedZOrder('front')">⬆ 最前面へ移動</div>
-  <div onclick="moveSelectedZOrder('back')">⬇ 最背面へ移動</div>
-  <div onclick="deleteSelectedTarget()" class="danger" style="border-top: 1px solid #444; margin-top: 2px; padding-top: 6px;">🗑️ 削除</div>
+  <div onclick="moveSelectedZOrder('front')" data-i18n="bringToFront">最前面へ移動</div>
+  <div onclick="moveSelectedZOrder('back')" data-i18n="sendToBack">最背面へ移動</div>
+  <div onclick="deleteSelectedTarget()" class="danger" style="border-top: 1px solid #444; margin-top: 2px; padding-top: 6px;" data-i18n="delete">削除</div>
 </div>
 
 <script>
+// ===================================================================
+// 多言語辞書 (i18n)
+// ===================================================================
+const I18N = {
+  ja: {
+    appTitle: "Primitierトランジスタ回路シミュレータ",
+    addVcc: "+ 電源(VCC)", addBtn: "+ 押ボタンSW", addTr: "+ トランジスタ", addInvTr: "+ 反転トランジスタ",
+    addCrystal: "+ 水晶(可変)", addPyrite: "+ 黄鉄鉱(ダイオード)", addLed: "+ LED", addText: "+ テキスト",
+    save: "保存 (JSON)", load: "読み込み", clear: "クリア", editingFile: "編集中のファイル:",
+    editText: "テキスト編集 (Enterで改行):", fontSize: "文字サイズ (px):", bgColor: "背景色:",
+    cancel: "キャンセル", saveBtn: "保存", bringToFront: "最前面へ移動", sendToBack: "最背面へ移動", delete: "削除",
+    // 部品名
+    compVcc: "電源 (VCC)", compBtn: "押ボタンSW", compTr: "トランジスタ", compInvTr: "反転トランジスタ",
+    compCrystal: "水晶", compPyrite: "黄鉄鉱 (▶)", compLed: "LED",
+    // ダイアログ・テキスト
+    promptFileName: "保存するファイル名を入力してください:",
+    promptCrystal: "水晶の厚さを入力してください（cm / 下限1cm）:",
+    alertCrystalErr: "1cm以上の数字を入力してくださいのじゃ！",
+    loadErr: "読み込み失敗なのじゃ: ",
+    defaultText: "説明テキスト\n(右下ドラッグでサイズ変更)"
+  },
+  en: {
+    appTitle: "Primitier Transistor Circuit Simulator",
+    addVcc: "+ VCC Power", addBtn: "+ Push SW", addTr: "+ Transistor", addInvTr: "+ NOT Transistor",
+    addCrystal: "+ Crystal (Var)", addPyrite: "+ Pyrite (Diode)", addLed: "+ LED", addText: "+ Text",
+    save: "Save (JSON)", load: "Load", clear: "Clear", editingFile: "Editing File:",
+    editText: "Edit Text (Enter for newline):", fontSize: "Font Size (px):", bgColor: "Background Color:",
+    cancel: "Cancel", saveBtn: "Save", bringToFront: "Bring to Front", sendToBack: "Send to Back", delete: "Delete",
+    // Component Names
+    compVcc: "VCC Power", compBtn: "Push SW", compTr: "Transistor", compInvTr: "NOT Transistor",
+    compCrystal: "Crystal", compPyrite: "Pyrite (▶)", compLed: "LED",
+    // Dialogs
+    promptFileName: "Enter file name to save:",
+    promptCrystal: "Enter crystal thickness (cm / min 1cm):",
+    alertCrystalErr: "Please enter a number >= 1cm!",
+    loadErr: "Failed to load: ",
+    defaultText: "Description Text\n(Drag bottom-right to resize)"
+  },
+  ru: {
+    appTitle: "Симулятор транзисторных схем Primitier",
+    addVcc: "+ Питание (VCC)", addBtn: "+ Кнопка SW", addTr: "+ Транзистор", addInvTr: "+ Инв. транзистор",
+    addCrystal: "+ Кристалл", addPyrite: "+ Пирит (Диод)", addLed: "+ Светодиод", addText: "+ Текст",
+    save: "Сохранить (JSON)", load: "Загрузить", clear: "Очистить", editingFile: "Редактируемый файл:",
+    editText: "Редактировать текст (Enter для переноса):", fontSize: "Размер шрифта (px):", bgColor: "Цвет фона:",
+    cancel: "Отмена", saveBtn: "Сохранить", bringToFront: "На передний план", sendToBack: "На задний план", delete: "Удалить",
+    // Component Names
+    compVcc: "Питание (VCC)", compBtn: "Кнопка SW", compTr: "Транзистор", compInvTr: "Инв. транзистор",
+    compCrystal: "Кристалл", compPyrite: "Пирит (▶)", compLed: "Светодиод",
+    // Dialogs
+    promptFileName: "Введите имя файла для сохранения:",
+    promptCrystal: "Введите толщину кристалла (см / мин. 1 см):",
+    alertCrystalErr: "Пожалуйста, введите число >= 1 см!",
+    loadErr: "Ошибка загрузки: ",
+    defaultText: "Текст описания\n(Потяните за правый нижний угол)"
+  }
+};
+
+let currentLang = 'ja';
+
+function t(key) {
+  return (I18N[currentLang] && I18N[currentLang][key]) || I18N['ja'][key] || key;
+}
+
+function changeLanguage(lang) {
+  currentLang = lang;
+  document.title = t('appTitle'); // タブのタイトルを言語に合わせて連動
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (key) el.textContent = t(key);
+  });
+}
+
 // ===================================================================
 // 定数定義
 // ===================================================================
 const UI = {
   GRID_SIZE: 10,
-  COMP_W: 110, COMP_H: 60, // 部品の箱の大きさ
-  TEXT_W: 200, TEXT_H: 60, // テキストの箱の大きさ
-  PIN_R: 6, WAYPOINT_R: 5, // 接点の大きさ
-  WIRE_W: 5,       // 通常配線の太さ
-  WIRE_DASH_W: 2,  // 配線接続中の破線の太さ
+  COMP_W: 110, COMP_H: 60,
+  TEXT_W: 200, TEXT_H: 60,
+  PIN_R: 6, WAYPOINT_R: 5,
+  WIRE_W: 5, WIRE_DASH_W: 2,
   COLOR: {
     COMP_BG: '#4a4a58', BORDER_NORM: '#777788', BORDER_SEL: '#00aaff',
     PIN_ON: '#fbff87', PIN_OFF: '#888', WIRE_ON: '#fbff87', WIRE_OFF: '#888',
@@ -168,33 +275,15 @@ let rightClickTarget = null;
 let editingTextComp = null;
 
 function screenToWorld(sx, sy) { return { x: (sx - panX) / scale, y: (sy - panY) / scale }; }
-
-function getWaypointKey(wire, pointIndex) {
-  const wIdx = wires.indexOf(wire);
-  return `${wIdx}_${pointIndex}`;
-}
-
-function clearSelections() {
-  selectedComponentIds.clear();
-  selectedWaypointKeys.clear();
-}
-
-function hideContextMenu() {
-  document.getElementById('context-menu').style.display = 'none';
-  rightClickTarget = null;
-}
+function getWaypointKey(wire, pointIndex) { return `${wires.indexOf(wire)}_${pointIndex}`; }
+function clearSelections() { selectedComponentIds.clear(); selectedWaypointKeys.clear(); }
+function hideContextMenu() { document.getElementById('context-menu').style.display = 'none'; rightClickTarget = null; }
 
 function moveSelectedZOrder(direction) {
   if (selectedComponentIds.size === 0) { hideContextMenu(); return; }
-
   const selectedList = components.filter(c => selectedComponentIds.has(c.id));
   const unselectedList = components.filter(c => !selectedComponentIds.has(c.id));
-
-  if (direction === 'front') {
-    components = [...unselectedList, ...selectedList];
-  } else if (direction === 'back') {
-    components = [...selectedList, ...unselectedList];
-  }
+  components = (direction === 'front') ? [...unselectedList, ...selectedList] : [...selectedList, ...unselectedList];
   hideContextMenu();
 }
 
@@ -221,7 +310,7 @@ function deleteSelectedTarget() {
 }
 
 // ===================================================================
-// コンポーネントクラス群 (ポリモーフィズム)
+// コンポーネントクラス群 (物理ゲートモデル ＆ 多言語対応)
 // ===================================================================
 class Component {
   constructor(id, type, x, y) {
@@ -266,7 +355,7 @@ class Component {
 class Vcc extends Component {
   constructor(id, x, y) { super(id, 'vcc', x, y); this.addPin('out', 'out', UI.COMP_W, UI.COMP_H/2); }
   resetPins() { this.getPin('out').state = true; }
-  getName() { return '電源 (VCC)'; }
+  getName() { return t('compVcc'); }
 }
 
 class PushSwitch extends Component {
@@ -276,7 +365,7 @@ class PushSwitch extends Component {
     if (pIn.state && this.switchState && !pOut.state) { pOut.state = true; return true; }
     return false;
   }
-  getName() { return `押ボタンSW [${this.switchState ? 'ON' : 'OFF'}]`; }
+  getName() { return `${t('compBtn')} [${this.switchState ? 'ON' : 'OFF'}]`; }
 }
 
 class Pyrite extends Component {
@@ -286,7 +375,7 @@ class Pyrite extends Component {
     if (pIn.state && !pOut.state) { pOut.state = true; return true; }
     return false;
   }
-  getName() { return '黄鉄鉱 (▶)'; }
+  getName() { return t('compPyrite'); }
 }
 
 class Led extends Component {
@@ -294,7 +383,7 @@ class Led extends Component {
   processImmediateLogic() {
     const pIn = this.getPin('in'); this.state = pIn.state; return false;
   }
-  getName() { return 'LED'; }
+  getName() { return t('compLed'); }
   drawCustom(ctx, scale) {
     ctx.beginPath(); ctx.arc(this.x + this.width / 2, this.y + 15, 8, 0, Math.PI * 2);
     ctx.fillStyle = this.state ? UI.COLOR.LED_ON : UI.COLOR.LED_OFF; ctx.fill();
@@ -305,11 +394,7 @@ class Led extends Component {
 class BaseTransistor extends Component {
   constructor(id, type, x, y) {
     super(id, type, x, y);
-    this.addPin('in', 'in', 0, 30);
-    this.addPin('ctrl', 'in', 60, 0);
-    this.addPin('out', 'out', 110, 30);
-
-    // 反転トランジスタは初期状態でゲートが開いている（true）
+    this.addPin('in', 'in', 0, 30); this.addPin('ctrl', 'in', 60, 0); this.addPin('out', 'out', 110, 30);
     this.gateOpen = (type === 'inv_transistor');
     this.gateTimer = 0;
   }
@@ -317,72 +402,40 @@ class BaseTransistor extends Component {
 
 class Transistor extends BaseTransistor {
   constructor(id, x, y) { super(id, 'transistor', x, y); }
-
   updateTimer(dt) {
     const pCtrl = this.getPin('ctrl');
-    const targetGate = pCtrl.state; // トランジスタは ctrl が ON ならゲートを開けたい
-
-    // ゲートの目標状態と現在の状態が違う場合のみ、100msかけて物理的に動かすのじゃ
+    const targetGate = pCtrl.state;
     if (this.gateOpen !== targetGate) {
-      if (this.gateTimer <= 0) {
-        this.gateTimer = 100;
-      } else {
-        this.gateTimer -= dt;
-        if (this.gateTimer <= 0) {
-          this.gateOpen = targetGate;
-          this.gateTimer = 0;
-        }
-      }
-    } else {
-      // 目標状態と同じならタイマーは不要（途中で信号が戻った場合のキャンセル処理も兼ねる）
-      this.gateTimer = 0;
-    }
+      if (this.gateTimer <= 0) this.gateTimer = 100;
+      else { this.gateTimer -= dt; if (this.gateTimer <= 0) { this.gateOpen = targetGate; this.gateTimer = 0; } }
+    } else this.gateTimer = 0;
   }
-
   processImmediateLogic() {
     const pIn = this.getPin('in'), pOut = this.getPin('out');
-    if (pIn.state && this.gateOpen && !pOut.state) {
-      pOut.state = true;
-      return true;
-    }
+    if (pIn.state && this.gateOpen && !pOut.state) { pOut.state = true; return true; }
     return false;
   }
-  getName() { return 'トランジスタ'; }
+  getName() { return t('compTr'); }
 }
 
 class InvTransistor extends BaseTransistor {
   constructor(id, x, y) { super(id, 'inv_transistor', x, y); }
-
   updateTimer(dt) {
     const pCtrl = this.getPin('ctrl');
-    const targetGate = !pCtrl.state; // 反転トランジスタは ctrl が OFF ならゲートを開けたい
-
-    // ゲートの目標状態と現在の状態が違う場合のみ、100msかけて物理的に動かすのじゃ
+    const targetGate = !pCtrl.state;
     if (this.gateOpen !== targetGate) {
-      if (this.gateTimer <= 0) {
-        this.gateTimer = 100;
-      } else {
-        this.gateTimer -= dt;
-        if (this.gateTimer <= 0) {
-          this.gateOpen = targetGate;
-          this.gateTimer = 0;
-        }
-      }
-    } else {
-      this.gateTimer = 0;
-    }
+      if (this.gateTimer <= 0) this.gateTimer = 100;
+      else { this.gateTimer -= dt; if (this.gateTimer <= 0) { this.gateOpen = targetGate; this.gateTimer = 0; } }
+    } else this.gateTimer = 0;
   }
-
   processImmediateLogic() {
     const pIn = this.getPin('in'), pOut = this.getPin('out');
-    if (pIn.state && this.gateOpen && !pOut.state) {
-      pOut.state = true;
-      return true;
-    }
+    if (pIn.state && this.gateOpen && !pOut.state) { pOut.state = true; return true; }
     return false;
   }
-  getName() { return '反転トランジスタ'; }
+  getName() { return t('compInvTr'); }
 }
+
 class Crystal extends Component {
   constructor(id, x, y) {
     super(id, 'crystal', x, y);
@@ -392,7 +445,6 @@ class Crystal extends Component {
   updateTimer(dt) {
     const pIn = this.getPin('in');
     if (!pIn.state) { this.crystalPhase = 'IDLE'; this.crystalTimer = 0; return; }
-
     if (this.thickness === 1) {
       if (this.crystalPhase === 'IDLE') { this.crystalPhase = 'DELAY_START'; this.crystalTimer = 100; }
       else if (this.crystalPhase === 'DELAY_START') { this.crystalTimer -= dt; if (this.crystalTimer <= 0) this.crystalPhase = 'SUSTAIN'; }
@@ -409,7 +461,7 @@ class Crystal extends Component {
     if (isActive && !pOut.state) { pOut.state = true; return true; }
     return false;
   }
-  getName() { return `水晶 (${this.thickness}cm)`; }
+  getName() { return `${t('compCrystal')} (${this.thickness}cm)`; }
   serialize() { const data = super.serialize(); data.thickness = this.thickness; return data; }
   deserialize(data) { super.deserialize(data); this.thickness = data.thickness || 1; }
 }
@@ -418,7 +470,7 @@ class TextComp extends Component {
   constructor(id, x, y) {
     super(id, 'text', x, y);
     this.width = UI.TEXT_W; this.height = UI.TEXT_H;
-    this.text = '説明テキスト\n(右下ドラッグでサイズ変更)'; this.fontSize = 13; this.bgColor = UI.COLOR.TEXT_DEF_BG;
+    this.text = t('defaultText'); this.fontSize = 13; this.bgColor = UI.COLOR.TEXT_DEF_BG;
   }
   draw(ctx, isSelected, scale) {
     ctx.fillStyle = this.bgColor;
@@ -426,7 +478,6 @@ class TextComp extends Component {
     ctx.lineWidth = (isSelected ? 2 : 1) / scale; ctx.setLineDash([4 / scale, 2 / scale]);
     ctx.fillRect(this.x, this.y, this.width, this.height); ctx.strokeRect(this.x, this.y, this.width, this.height);
     ctx.setLineDash([]);
-
     ctx.fillStyle = '#ffffff'; ctx.font = `${this.fontSize}px sans-serif`; ctx.textAlign = 'left';
     const lines = this.text.split('\n'), lh = this.fontSize * 1.3;
     lines.forEach((line, idx) => ctx.fillText(line, this.x + 8, this.y + this.fontSize + 6 + idx * lh));
@@ -483,32 +534,21 @@ function closeTextModal(save) {
 // ===================================================================
 function updateSimulation(dt) {
   components.forEach(c => c.resetPins());
-
-  let changed = true;
-  let loopCount = 0;
-
+  let changed = true, loopCount = 0;
   while (changed && loopCount < 100) {
-    changed = false;
-    loopCount++;
-
-    components.forEach(c => {
-      if (c.processImmediateLogic()) changed = true;
-    });
-
+    changed = false; loopCount++;
+    components.forEach(c => { if (c.processImmediateLogic()) changed = true; });
     wires.forEach(w => {
       const fromComp = components.find(c => c.id === w.fromCompId);
       const toComp = components.find(c => c.id === w.toCompId);
       if (!fromComp || !toComp) return;
-      const p1 = fromComp.getPin(w.fromPinId);
-      const p2 = toComp.getPin(w.toPinId);
-
+      const p1 = fromComp.getPin(w.fromPinId), p2 = toComp.getPin(w.toPinId);
       if (p1 && p2) {
         if (p1.state && !p2.state) { p2.state = true; changed = true; }
         else if (p2.state && !p1.state) { p1.state = true; changed = true; }
       }
     });
   }
-
   components.forEach(c => c.updateTimer(dt));
 }
 
@@ -528,28 +568,22 @@ function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.save(); ctx.translate(panX, panY); ctx.scale(scale, scale);
 
-  // 1. コンポーネント（部品・テキスト）の描画（最背面）
   components.forEach(c => c.draw(ctx, selectedComponentIds.has(c.id), scale));
 
-  // 2. 配線本体の描画（中間層）
   wires.forEach(w => {
     const path = getWirePath(w);
     if (path.length < 2) return;
-
     const fromComp = components.find(c => c.id === w.fromCompId);
     const toComp = components.find(c => c.id === w.toCompId);
     const isWireActive = (fromComp && fromComp.getPin(w.fromPinId).state) || (toComp && toComp.getPin(w.toPinId).state);
 
     ctx.beginPath();
     ctx.moveTo(path[0].x, path[0].y);
-    for (let i = 1; i < path.length; i++) {
-      ctx.lineTo(path[i].x, path[i].y);
-    }
+    for (let i = 1; i < path.length; i++) ctx.lineTo(path[i].x, path[i].y);
     ctx.strokeStyle = isWireActive ? UI.COLOR.WIRE_ON : UI.COLOR.WIRE_OFF;
     ctx.lineWidth = UI.WIRE_W / scale; ctx.stroke();
   });
 
-  // 3. 配線中継ポイント（Waypoints）の描画（最前面）
   wires.forEach((w, wIdx) => {
     if (w.points) {
       w.points.forEach((pt, pIdx) => {
@@ -557,10 +591,8 @@ function draw() {
         ctx.beginPath();
         ctx.arc(pt.x, pt.y, isSelected ? UI.WAYPOINT_R + 2 : UI.WAYPOINT_R, 0, Math.PI * 2);
         ctx.fillStyle = isSelected ? UI.COLOR.BORDER_SEL : UI.COLOR.WAYPOINT;
-        ctx.fill();
-        ctx.strokeStyle = isSelected ? '#ffffff' : '#000000';
-        ctx.lineWidth = (isSelected ? 2 : 1) / scale;
-        ctx.stroke();
+        ctx.fill(); ctx.strokeStyle = isSelected ? '#ffffff' : '#000000';
+        ctx.lineWidth = (isSelected ? 2 : 1) / scale; ctx.stroke();
       });
     }
   });
@@ -568,8 +600,7 @@ function draw() {
   if (connectingPin) {
     const p1 = connectingPin.comp.getPinPos(connectingPin.pin);
     ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(mousePos.x, mousePos.y);
-    ctx.strokeStyle = '#ffaa00';
-    ctx.lineWidth = UI.WIRE_DASH_W / scale;
+    ctx.strokeStyle = '#ffaa00'; ctx.lineWidth = UI.WIRE_DASH_W / scale;
     ctx.setLineDash([4/scale, 4/scale]); ctx.stroke(); ctx.setLineDash([]);
   }
 
@@ -601,10 +632,7 @@ function getWaypointAt(x, y) {
     if (!w.points) continue;
     for (let i = 0; i < w.points.length; i++) {
       const pt = w.points[i];
-      const hitRadius = (UI.WAYPOINT_R + 4) / scale;
-      if (Math.hypot(pt.x - x, pt.y - y) < hitRadius) {
-        return { wire: w, index: i };
-      }
+      if (Math.hypot(pt.x - x, pt.y - y) < (UI.WAYPOINT_R + 4) / scale) return { wire: w, index: i };
     }
   }
   return null;
@@ -612,19 +640,14 @@ function getWaypointAt(x, y) {
 
 function getWireSegmentAt(x, y) {
   for (let i = 0; i < wires.length; i++) {
-    const w = wires[i];
-    const path = getWirePath(w);
+    const w = wires[i], path = getWirePath(w);
     for (let j = 0; j < path.length - 1; j++) {
       const p1 = path[j], p2 = path[j+1];
       const l2 = Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2);
       if (l2 === 0) continue;
       let t = Math.max(0, Math.min(1, ((x - p1.x)*(p2.x - p1.x) + (y - p1.y)*(p2.y - p1.y)) / l2));
-      const projX = p1.x + t * (p2.x - p1.x);
-      const projY = p1.y + t * (p2.y - p1.y);
-      const hitRadius = Math.max(8, UI.WIRE_W + 4) / scale;
-      if (Math.hypot(x - projX, y - projY) < hitRadius) {
-        return { wireIndex: i, wire: w, segmentIndex: j };
-      }
+      const projX = p1.x + t * (p2.x - p1.x), projY = p1.y + t * (p2.y - p1.y);
+      if (Math.hypot(x - projX, y - projY) < Math.max(8, UI.WIRE_W + 4) / scale) return { wireIndex: i, wire: w, segmentIndex: j };
     }
   }
   return null;
@@ -649,21 +672,11 @@ canvas.addEventListener('mousedown', e => {
     const hitWp = getWaypointAt(mousePos.x, mousePos.y);
     if (hitWp) {
       const wpKey = getWaypointKey(hitWp.wire, hitWp.index);
-      if (!selectedWaypointKeys.has(wpKey)) {
-        if (!e.shiftKey) clearSelections();
-        selectedWaypointKeys.add(wpKey);
-      }
-
-      draggedWaypoint = hitWp;
-      selectedWaypointOffsets = [];
+      if (!selectedWaypointKeys.has(wpKey)) { if (!e.shiftKey) clearSelections(); selectedWaypointKeys.add(wpKey); }
+      draggedWaypoint = hitWp; selectedWaypointOffsets = [];
       selectedWaypointKeys.forEach(key => {
-        const [wIdxStr, pIdxStr] = key.split('_');
-        const w = wires[parseInt(wIdxStr, 10)];
-        const pIdx = parseInt(pIdxStr, 10);
-        if (w && w.points && w.points[pIdx]) {
-          const pt = w.points[pIdx];
-          selectedWaypointOffsets.push({ point: pt, ox: mousePos.x - pt.x, oy: mousePos.y - pt.y });
-        }
+        const [wStr, pStr] = key.split('_'), w = wires[parseInt(wStr, 10)], pIdx = parseInt(pStr, 10);
+        if (w && w.points && w.points[pIdx]) { const pt = w.points[pIdx]; selectedWaypointOffsets.push({ point: pt, ox: mousePos.x - pt.x, oy: mousePos.y - pt.y }); }
       });
       return;
     }
@@ -678,54 +691,34 @@ canvas.addEventListener('mousedown', e => {
       if (!selectedComponentIds.has(hitComp.id)) { if (!e.shiftKey) clearSelections(); selectedComponentIds.add(hitComp.id); }
       if (hitComp.type === 'push_switch') hitComp.switchState = true;
       draggedComponent = hitComp;
-
-      selectedGroupOffsets = Array.from(selectedComponentIds).map(id => {
-        const c = components.find(c=>c.id===id); return { comp: c, ox: mousePos.x - c.x, oy: mousePos.y - c.y };
-      });
-
+      selectedGroupOffsets = Array.from(selectedComponentIds).map(id => { const c = components.find(c=>c.id===id); return { comp: c, ox: mousePos.x - c.x, oy: mousePos.y - c.y }; });
       selectedWaypointOffsets = [];
       selectedWaypointKeys.forEach(key => {
-        const [wIdxStr, pIdxStr] = key.split('_');
-        const w = wires[parseInt(wIdxStr, 10)];
-        const pIdx = parseInt(pIdxStr, 10);
-        if (w && w.points && w.points[pIdx]) {
-          const pt = w.points[pIdx];
-          selectedWaypointOffsets.push({ point: pt, ox: mousePos.x - pt.x, oy: mousePos.y - pt.y });
-        }
+        const [wStr, pStr] = key.split('_'), w = wires[parseInt(wStr, 10)], pIdx = parseInt(pStr, 10);
+        if (w && w.points && w.points[pIdx]) { const pt = w.points[pIdx]; selectedWaypointOffsets.push({ point: pt, ox: mousePos.x - pt.x, oy: mousePos.y - pt.y }); }
       });
     } else {
       if (!e.shiftKey) clearSelections();
-      isSelecting = true;
-      selectionStart = { ...mousePos };
-      selectionEnd = { ...mousePos };
+      isSelecting = true; selectionStart = { ...mousePos }; selectionEnd = { ...mousePos };
     }
   }
 
   else if (e.button === 2) {
     const hitWp = getWaypointAt(mousePos.x, mousePos.y);
-    if (hitWp) {
-      rightClickTarget = { type: 'waypoint', wire: hitWp.wire, index: hitWp.index };
-    } else {
+    if (hitWp) rightClickTarget = { type: 'waypoint', wire: hitWp.wire, index: hitWp.index };
+    else {
       const hitComp = getComponentAt(mousePos.x, mousePos.y);
       if (hitComp) {
-        if (!selectedComponentIds.has(hitComp.id)) {
-          clearSelections();
-          selectedComponentIds.add(hitComp.id);
-        }
+        if (!selectedComponentIds.has(hitComp.id)) { clearSelections(); selectedComponentIds.add(hitComp.id); }
         rightClickTarget = { type: 'component', comp: hitComp };
       } else {
         const hitSeg = getWireSegmentAt(mousePos.x, mousePos.y);
-        if (hitSeg) {
-          rightClickTarget = { type: 'wire', wireIndex: hitSeg.wireIndex };
-        }
+        if (hitSeg) rightClickTarget = { type: 'wire', wireIndex: hitSeg.wireIndex };
       }
     }
-
     if (rightClickTarget) {
       const menu = document.getElementById('context-menu');
-      menu.style.left = `${e.clientX}px`;
-      menu.style.top = `${e.clientY}px`;
-      menu.style.display = 'flex';
+      menu.style.left = `${e.clientX}px`; menu.style.top = `${e.clientY}px`; menu.style.display = 'flex';
     }
   }
 });
@@ -736,22 +729,13 @@ canvas.addEventListener('mousemove', e => {
   mousePos = screenToWorld(rawMousePos.x, rawMousePos.y);
 
   if (draggedWaypoint) {
-    selectedWaypointOffsets.forEach(i => {
-      i.point.x = snapToGrid(mousePos.x - i.ox);
-      i.point.y = snapToGrid(mousePos.y - i.oy);
-    });
+    selectedWaypointOffsets.forEach(i => { i.point.x = snapToGrid(mousePos.x - i.ox); i.point.y = snapToGrid(mousePos.y - i.oy); });
   } else if (resizingComponent) {
     resizingComponent.width = snapToGrid(Math.max(50, mousePos.x - resizingComponent.x));
     resizingComponent.height = snapToGrid(Math.max(30, mousePos.y - resizingComponent.y));
   } else if (draggedComponent) {
-    selectedGroupOffsets.forEach(i => {
-      i.comp.x = snapToGrid(mousePos.x - i.ox);
-      i.comp.y = snapToGrid(mousePos.y - i.oy);
-    });
-    selectedWaypointOffsets.forEach(i => {
-      i.point.x = snapToGrid(mousePos.x - i.ox);
-      i.point.y = snapToGrid(mousePos.y - i.oy);
-    });
+    selectedGroupOffsets.forEach(i => { i.comp.x = snapToGrid(mousePos.x - i.ox); i.comp.y = snapToGrid(mousePos.y - i.oy); });
+    selectedWaypointOffsets.forEach(i => { i.point.x = snapToGrid(mousePos.x - i.ox); i.point.y = snapToGrid(mousePos.y - i.oy); });
   } else if (isSelecting) selectionEnd = { ...mousePos };
 });
 
@@ -762,7 +746,6 @@ canvas.addEventListener('mouseup', e => {
   if (e.button === 0) {
     if (connectingPin) {
       const hitPin = getPinAt(mousePos.x, mousePos.y);
-
       if (hitPin && (hitPin.comp !== connectingPin.comp || hitPin.pin !== connectingPin.pin)) {
         const exists = wires.some(w =>
           (w.fromCompId === connectingPin.comp.id && w.fromPinId === connectingPin.pin.id && w.toCompId === hitPin.comp.id && w.toPinId === hitPin.pin.id) ||
@@ -777,16 +760,10 @@ canvas.addEventListener('mouseup', e => {
       isSelecting = false;
       const rx = Math.min(selectionStart.x, selectionEnd.x), ry = Math.min(selectionStart.y, selectionEnd.y);
       const rw = Math.abs(selectionEnd.x - selectionStart.x), rh = Math.abs(selectionEnd.y - selectionStart.y);
-
       components.forEach(c => { if (c.x + c.width >= rx && c.x <= rx + rw && c.y + c.height >= ry && c.y <= ry + rh) selectedComponentIds.add(c.id); });
-
       wires.forEach((w, wIdx) => {
         if (!w.points) return;
-        w.points.forEach((pt, pIdx) => {
-          if (pt.x >= rx && pt.x <= rx + rw && pt.y >= ry && pt.y <= ry + rh) {
-            selectedWaypointKeys.add(`${wIdx}_${pIdx}`);
-          }
-        });
+        w.points.forEach((pt, pIdx) => { if (pt.x >= rx && pt.x <= rx + rw && pt.y >= ry && pt.y <= ry + rh) selectedWaypointKeys.add(`${wIdx}_${pIdx}`); });
       });
     }
     if (draggedComponent && draggedComponent.type === 'push_switch') draggedComponent.switchState = false;
@@ -798,15 +775,13 @@ canvas.addEventListener('dblclick', e => {
   const hitSeg = getWireSegmentAt(mousePos.x, mousePos.y);
   if (hitSeg) {
     if (!hitSeg.wire.points) hitSeg.wire.points = [];
-    const newPt = { x: snapToGrid(mousePos.x), y: snapToGrid(mousePos.y) };
-    hitSeg.wire.points.splice(hitSeg.segmentIndex, 0, newPt);
+    hitSeg.wire.points.splice(hitSeg.segmentIndex, 0, { x: snapToGrid(mousePos.x), y: snapToGrid(mousePos.y) });
     return;
   }
-
   const hitComp = getComponentAt(mousePos.x, mousePos.y); if (!hitComp) return;
   if (hitComp.type === 'crystal') {
-    const val = prompt('水晶の厚さを入力してください（cm / 下限1cm）:', hitComp.thickness);
-    if (val !== null) { const p = parseFloat(val); if (!isNaN(p) && p >= 1) hitComp.thickness = p; else alert('1cm以上の数字を入力してくださいのじゃ！'); }
+    const val = prompt(t('promptCrystal'), hitComp.thickness);
+    if (val !== null) { const p = parseFloat(val); if (!isNaN(p) && p >= 1) hitComp.thickness = p; else alert(t('alertCrystalErr')); }
   } else if (hitComp.type === 'text') openTextModal(hitComp);
 });
 
@@ -819,73 +794,35 @@ function copySelectedComponents() {
   if (selectedComponentIds.size === 0 && selectedWaypointKeys.size === 0) return;
   const copyComps = components.filter(c => selectedComponentIds.has(c.id));
   const copyWires = wires.filter(w => selectedComponentIds.has(w.fromCompId) && selectedComponentIds.has(w.toCompId));
-
-  const dataToCopy = {
-    components: copyComps.map(c => c.serialize()),
-    wires: copyWires
-  };
-
-  try { localStorage.setItem(CLIPBOARD_KEY, JSON.stringify(dataToCopy)); }
-  catch (err) { console.warn('localStorage への保存に失敗したのじゃ:', err); }
+  try { localStorage.setItem(CLIPBOARD_KEY, JSON.stringify({ components: copyComps.map(c => c.serialize()), wires: copyWires })); }
+  catch (err) { console.warn('localStorage copy failed:', err); }
 }
 
 function pasteComponents() {
   let rawData = null;
-  try {
-    const stored = localStorage.getItem(CLIPBOARD_KEY);
-    if (stored) rawData = JSON.parse(stored);
-  } catch (err) { console.warn('localStorage からの読み込みに失敗したのじゃ:', err); return; }
+  try { const stored = localStorage.getItem(CLIPBOARD_KEY); if (stored) rawData = JSON.parse(stored); }
+  catch (err) { return; }
 
   if (!rawData || !rawData.components || rawData.components.length === 0) return;
-
-  const idMap = new Map();
-  clearSelections();
-
+  const idMap = new Map(); clearSelections();
   let minX = Infinity, minY = Infinity;
-  rawData.components.forEach(c => {
-    if (c.x < minX) minX = c.x;
-    if (c.y < minY) minY = c.y;
-  });
+  rawData.components.forEach(c => { if (c.x < minX) minX = c.x; if (c.y < minY) minY = c.y; });
 
-  const targetX = snapToGrid(mousePos.x || minX + 30);
-  const targetY = snapToGrid(mousePos.y || minY + 30);
-
+  const targetX = snapToGrid(mousePos.x || minX + 30), targetY = snapToGrid(mousePos.y || minY + 30);
   rawData.components.forEach(cData => {
-    const snapX = snapToGrid(targetX + (cData.x - minX));
-    const snapY = snapToGrid(targetY + (cData.y - minY));
-
+    const snapX = snapToGrid(targetX + (cData.x - minX)), snapY = snapToGrid(targetY + (cData.y - minY));
     const newComp = createComponentObj(cData.type, nextId++, snapX, snapY);
-    newComp.deserialize(cData);
-
-    components.push(newComp);
-    idMap.set(cData.id, newComp.id);
-    selectedComponentIds.add(newComp.id);
+    newComp.deserialize(cData); components.push(newComp); idMap.set(cData.id, newComp.id); selectedComponentIds.add(newComp.id);
   });
 
   if (rawData.wires) {
     rawData.wires.forEach(wData => {
-      const newFromId = idMap.get(wData.fromCompId);
-      const newToId = idMap.get(wData.toCompId);
+      const newFromId = idMap.get(wData.fromCompId), newToId = idMap.get(wData.toCompId);
       if (newFromId && newToId) {
-        const copiedPoints = wData.points ? wData.points.map(pt => ({
-          x: snapToGrid(targetX + (pt.x - minX)),
-          y: snapToGrid(targetY + (pt.y - minY))
-        })) : [];
-
-        const newWire = {
-          fromCompId: newFromId,
-          fromPinId: wData.fromPinId,
-          toCompId: newToId,
-          toPinId: wData.toPinId,
-          points: copiedPoints
-        };
-
-        wires.push(newWire);
-
+        const copiedPoints = wData.points ? wData.points.map(pt => ({ x: snapToGrid(targetX + (pt.x - minX)), y: snapToGrid(targetY + (pt.y - minY)) })) : [];
+        wires.push({ fromCompId: newFromId, fromPinId: wData.fromPinId, toCompId: newToId, toPinId: wData.toPinId, points: copiedPoints });
         const newWIdx = wires.length - 1;
-        copiedPoints.forEach((_, pIdx) => {
-          selectedWaypointKeys.add(`${newWIdx}_${pIdx}`);
-        });
+        copiedPoints.forEach((_, pIdx) => selectedWaypointKeys.add(`${newWIdx}_${pIdx}`));
       }
     });
   }
@@ -899,12 +836,8 @@ window.addEventListener('keydown', e => {
     wires = wires.filter(w => !selectedComponentIds.has(w.fromCompId) && !selectedComponentIds.has(w.toCompId));
     clearSelections();
   }
-  if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C' || e.code === 'KeyC')) {
-    e.preventDefault(); copySelectedComponents();
-  }
-  if ((e.ctrlKey || e.metaKey) && (e.key === 'v' || e.key === 'V' || e.code === 'KeyV')) {
-    e.preventDefault(); pasteComponents();
-  }
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C' || e.code === 'KeyC')) { e.preventDefault(); copySelectedComponents(); }
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'v' || e.key === 'V' || e.code === 'KeyV')) { e.preventDefault(); pasteComponents(); }
 });
 window.addEventListener('keyup', e => { if (e.code === 'Space') isSpacePressed = false; });
 
@@ -912,7 +845,7 @@ window.addEventListener('keyup', e => { if (e.code === 'Space') isSpacePressed =
 // 保存 / 読み込み
 // ===================================================================
 function exportCircuit() {
-  let name = prompt('保存するファイル名を入力してください:', currentFileName); if (name === null) return;
+  let name = prompt(t('promptFileName'), currentFileName); if (name === null) return;
   currentFileName = name.trim().replace(/\.json$/i, '') || 'circuit'; updateFileNameDisplay();
   const data = { nextId, components: components.map(c => c.serialize()), wires };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -933,10 +866,18 @@ function importCircuit(event) {
         c.deserialize(cd); return c;
       });
       clearSelections();
-    } catch (err) { alert('読み込み失敗なのじゃ: ' + err.message); }
+    } catch (err) { alert(t('loadErr') + err.message); }
   };
   reader.readAsText(file);
 }
+
+// ブラウザ言語の自動選択（初期化）
+const userLang = (navigator.language || navigator.userLanguage || '').slice(0, 2);
+if (['en', 'ru'].includes(userLang)) {
+  currentLang = userLang;
+  document.getElementById('lang-select').value = userLang;
+}
+changeLanguage(currentLang);
 
 let lastTime = performance.now();
 function loop(currentTime) {
