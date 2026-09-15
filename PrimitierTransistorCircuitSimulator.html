@@ -277,7 +277,7 @@ const UI = {
   COLOR: {
     COMP_BG: '#4a4a58', BORDER_NORM: '#777788', BORDER_SEL: '#00aaff',
     PIN_ON: '#fbff87', PIN_OFF: '#888', WIRE_ON: '#fbff87', WIRE_OFF: '#888',
-    LED_ON: '#ffff00', LED_OFF: '#444400', TEXT_DEF_BG: '#2b3a4a', WAYPOINT: '#949494'
+    LED_ON: '#ffffff', LED_OFF: '#909090', TEXT_DEF_BG: '#2b3a4a', WAYPOINT: '#949494'
   }
 };
 
@@ -349,7 +349,7 @@ function deleteSelectedTarget() {
 // ===================================================================
 class Component {
   constructor(id, type, x, y) {
-    this.id = id; this.type = type; this.x = x; this.y = y;
+		this.id = id; this.type = type; this.x = x; this.y = y;
     this.width = UI.COMP_W; this.height = UI.COMP_H;
     this.pins = [];
   }
@@ -414,15 +414,33 @@ class Pyrite extends Component {
 }
 
 class Led extends Component {
-  constructor(id, x, y) { super(id, 'led', x, y); this.addPin('in', 'in', 0, snapToGrid(UI.COMP_H/2)); this.state = false; }
-  processImmediateLogic() {
-    const pIn = this.getPin('in'); this.state = pIn.state; return false;
+  constructor(id, x, y) {
+    super(id, 'led', x, y);
+    this.addPin('in', 'in', 0, snapToGrid(UI.COMP_H/2));
+    this.state = false;
   }
-  getName() { return t('compLed'); }
+
+  processImmediateLogic() {
+    const pIn = this.getPin('in');
+    this.state = pIn.state;
+    return false;
+  }
+
+  getName() {
+    return t('compLed');
+  }
+
   drawCustom(ctx, scale) {
-    ctx.beginPath(); ctx.arc(this.x + this.width / 2, this.y + 15, 8, 0, Math.PI * 2);
-    ctx.fillStyle = this.state ? UI.COLOR.LED_ON : UI.COLOR.LED_OFF; ctx.fill();
-    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1 / scale; ctx.stroke();
+    // 1. 本体の背景色を塗りつぶす
+    ctx.fillStyle = this.state ? UI.COLOR.LED_ON : UI.COLOR.LED_OFF;
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.strokeRect(this.x, this.y, this.width, this.height);
+
+    // 2. 文字を黒色で中央に描画する
+    ctx.fillStyle = '#000000';
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(this.getName(), this.x + this.width / 2, this.y + this.height / 2 + 4);
   }
 }
 
