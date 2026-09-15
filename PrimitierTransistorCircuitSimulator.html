@@ -221,14 +221,49 @@ function t(key) {
   return (I18N[currentLang] && I18N[currentLang][key]) || I18N['ja'][key] || key;
 }
 
+// ===================================================================
+// 言語切替 ＆ localStorage 記憶処理
+// ===================================================================
 function changeLanguage(lang) {
   currentLang = lang;
-  document.title = t('appTitle'); // タブのタイトルを言語に合わせて連動
+  document.title = t('appTitle'); // タブのタイトル連動
+
+  // HTML要素の一括書き換え
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (key) el.textContent = t(key);
   });
+
+  // 選択された言語を保存
+  try {
+    localStorage.setItem('primitier_simulator_lang', lang);
+  } catch (e) {
+    console.warn('Language preference save failed:', e);
+  }
 }
+
+// 初期化処理：保存された言語があれば最優先、なければブラウザ言語を取得
+(function initLanguage() {
+  let initialLang = 'ja'; // デフォルト
+
+  try {
+    const saved = localStorage.getItem('primitier_simulator_lang');
+    if (saved && ['ja', 'en', 'ru'].includes(saved)) {
+      initialLang = saved;
+    } else {
+      const browserLang = (navigator.language || navigator.userLanguage || '').slice(0, 2);
+      if (['en', 'ru'].includes(browserLang)) {
+        initialLang = browserLang;
+      }
+    }
+  } catch (e) {}
+
+  // ドロップダウンの表示を合わせてから言語を適用
+  const selectEl = document.getElementById('lang-select');
+  if (selectEl) selectEl.value = initialLang;
+
+  changeLanguage(initialLang);
+})();
 
 // ===================================================================
 // 定数定義
@@ -749,7 +784,7 @@ canvas.addEventListener('mouseup', e => {
       if (hitPin && (hitPin.comp !== connectingPin.comp || hitPin.pin !== connectingPin.pin)) {
         const exists = wires.some(w =>
           (w.fromCompId === connectingPin.comp.id && w.fromPinId === connectingPin.pin.id && w.toCompId === hitPin.comp.id && w.toPinId === hitPin.pin.id) ||
-          (w.fromPinId === hitPin.comp.id && w.fromPinId === hitPin.pin.id && w.toCompId === connectingPin.comp.id && w.toPinId === connectingPin.pin.id)
+          (w.fromCompId === hitPin.comp.id && w.fromPinId === hitPin.pin.id && w.toCompId === connectingPin.comp.id && w.toPinId === connectingPin.pin.id)
         );
         if (!exists) wires.push({ fromCompId: connectingPin.comp.id, fromPinId: connectingPin.pin.id, toCompId: hitPin.comp.id, toPinId: hitPin.pin.id, points: [] });
       }
@@ -870,14 +905,6 @@ function importCircuit(event) {
   };
   reader.readAsText(file);
 }
-
-// ブラウザ言語の自動選択（初期化）
-const userLang = (navigator.language || navigator.userLanguage || '').slice(0, 2);
-if (['en', 'ru'].includes(userLang)) {
-  currentLang = userLang;
-  document.getElementById('lang-select').value = userLang;
-}
-changeLanguage(currentLang);
 
 let lastTime = performance.now();
 function loop(currentTime) {
