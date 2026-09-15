@@ -1,0 +1,949 @@
+<!--
+  ==================================================
+  Primitier Transistor Circuit Simulator v1.0.0
+  Created by fusou66
+  Development Assist: Google Gemini
+  ==================================================
+-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Primitierトランジスタ回路シミュレータ</title>
+  <style>
+    body {
+      margin: 0; font-family: sans-serif; user-select: none;
+      background-color: #1e1e1e; color: #fff; overflow: hidden;
+    }
+    #toolbar {
+      height: 40px; background-color: #333; display: flex;
+      align-items: center; padding: 0 10px; gap: 8px; box-sizing: border-box;
+    }
+    #file-bar {
+      height: 24px; background-color: #252526; border-bottom: 1px solid #333;
+      display: flex; align-items: center; padding: 0 12px; box-sizing: border-box;
+    }
+    button, input[type="file"] {
+      background-color: #444; color: #fff; border: 1px solid #666;
+      padding: 4px 10px; cursor: pointer; border-radius: 4px;
+    }
+    button:hover { background-color: #555; }
+    #canvas-container { width: 100vw; height: calc(100vh - 64px); position: relative; }
+    canvas { display: block; background-color: #252526; }
+    .info-text { color: #aaa; font-size: 12px; margin-left: 6px; }
+    .file-info { color: #00ffcc; font-family: monospace; }
+    /* テキスト入力モーダル */
+    #text-modal {
+      display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.6); z-index: 1000; justify-content: center; align-items: center;
+    }
+    #text-modal-content {
+      background: #2d2d2d; padding: 20px; border-radius: 8px;
+      border: 1px solid #555; display: flex; flex-direction: column; gap: 12px; width: 340px;
+    }
+    #text-modal textarea {
+      width: 100%; height: 90px; background: #1e1e1e; color: #fff;
+      border: 1px solid #666; border-radius: 4px; padding: 8px; resize: vertical; box-sizing: border-box;
+    }
+    .style-setting-row { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+    .style-setting-row input[type="number"] { width: 60px; background: #1e1e1e; color: #fff; border: 1px solid #666; padding: 4px; border-radius: 4px; }
+    .style-setting-row input[type="color"] { border: none; width: 32px; height: 32px; cursor: pointer; background: none; }
+    #text-modal .buttons { display: flex; justify-content: flex-end; gap: 8px; margin-top: 5px; }
+
+    /* 右クリックメニュー */
+    #context-menu {
+      display: none; position: fixed; background: #2d2d2d; border: 1px solid #555;
+      border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 2000;
+      flex-direction: column; padding: 4px 0; min-width: 130px;
+    }
+    #context-menu div {
+      padding: 6px 14px; font-size: 12px; color: #fff; cursor: pointer;
+    }
+    #context-menu div:hover { background-color: #007acc; }
+    #context-menu div.danger:hover { background-color: #a22; }
+  </style>
+</head>
+<body>
+
+<div id="toolbar">
+  <button onclick="addComponent('vcc')">+ 電源(VCC)</button>
+  <button onclick="addComponent('push_switch')">+ 押ボタンSW</button>
+  <button onclick="addComponent('transistor')">+ トランジスタ</button>
+  <button onclick="addComponent('inv_transistor')">+ 反転トランジスタ</button>
+  <button onclick="addComponent('crystal')">+ 水晶(可変)</button>
+  <button onclick="addComponent('pyrite')">+ 黄鉄鉱(ダイオード)</button>
+  <button onclick="addComponent('led')">+ LED</button>
+  <button onclick="addComponent('text')" style="background-color: #2b5b84;">+ テキスト</button>
+  <span style="margin-left: 10px;">|</span>
+  <button onclick="resetZoom()">100%</button>
+  <span id="zoom-text" class="info-text">100%</span>
+  <span style="margin-left: 10px;">|</span>
+  <span class="info-text" style="color: #888; font-weight: bold;">v1.0.0</span>
+  <span style="margin-left: 10px;">|</span>
+  <button onclick="exportCircuit()">保存 (JSON)</button>
+  <button onclick="document.getElementById('file-input').click()">読み込み</button>
+  <input type="file" id="file-input" style="display:none;" onchange="importCircuit(event)">
+  <button onclick="clearCircuit()" style="margin-left:auto; background-color:#822;">クリア</button>
+</div>
+
+<div id="file-bar">
+  <span style="font-size: 11px; color: #888; margin-right: 6px;">編集中のファイル:</span>
+  <span id="current-file-text" class="info-text file-info">[ circuit.json ]</span>
+</div>
+
+<div id="canvas-container">
+  <canvas id="simCanvas"></canvas>
+</div>
+
+<div id="text-modal">
+  <div id="text-modal-content">
+    <label style="font-size: 14px; font-weight: bold;">テキスト編集 (Enterで改行):</label>
+    <textarea id="text-modal-input"></textarea>
+    <div class="style-setting-row">
+      <label>文字サイズ (px):</label>
+      <input type="number" id="text-modal-size" min="8" max="72" value="13">
+    </div>
+    <div class="style-setting-row">
+      <label>背景色:</label>
+      <input type="color" id="text-modal-color" value="#2b3a4a">
+    </div>
+    <div class="buttons">
+      <button onclick="closeTextModal(false)">キャンセル</button>
+      <button onclick="closeTextModal(true)" style="background-color: #007acc;">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 右クリックメニュー -->
+<div id="context-menu">
+  <div onclick="moveSelectedZOrder('front')">⬆ 最前面へ移動</div>
+  <div onclick="moveSelectedZOrder('back')">⬇ 最背面へ移動</div>
+  <div onclick="deleteSelectedTarget()" class="danger" style="border-top: 1px solid #444; margin-top: 2px; padding-top: 6px;">🗑️ 削除</div>
+</div>
+
+<script>
+// ===================================================================
+// 定数定義
+// ===================================================================
+const UI = {
+  GRID_SIZE: 10,
+  COMP_W: 110, COMP_H: 60, // 部品の箱の大きさ
+  TEXT_W: 200, TEXT_H: 60, // テキストの箱の大きさ
+  PIN_R: 6, WAYPOINT_R: 5, // 接点の大きさ
+  WIRE_W: 5,       // 通常配線の太さ
+  WIRE_DASH_W: 2,  // 配線接続中の破線の太さ
+  COLOR: {
+    COMP_BG: '#4a4a58', BORDER_NORM: '#777788', BORDER_SEL: '#00aaff',
+    PIN_ON: '#fbff87', PIN_OFF: '#888', WIRE_ON: '#fbff87', WIRE_OFF: '#888',
+    LED_ON: '#ffff00', LED_OFF: '#444400', TEXT_DEF_BG: '#2b3a4a', WAYPOINT: '#949494'
+  }
+};
+
+function snapToGrid(val) { return Math.round(val / UI.GRID_SIZE) * UI.GRID_SIZE; }
+
+const canvas = document.getElementById('simCanvas');
+const ctx = canvas.getContext('2d');
+window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight - 64; });
+canvas.width = window.innerWidth; canvas.height = window.innerHeight - 64;
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+let components = [];
+let wires = [];
+let nextId = 1;
+let currentFileName = 'circuit';
+
+let scale = 1.0, panX = 0, panY = 0;
+let isPanning = false, panStartX = 0, panStartY = 0, isSpacePressed = false;
+let draggedComponent = null, resizingComponent = null, connectingPin = null;
+let draggedWaypoint = null;
+let rawMousePos = { x: 0, y: 0 }, mousePos = { x: 0, y: 0 };
+let isSelecting = false, selectionStart = { x:0, y:0 }, selectionEnd = { x:0, y:0 };
+
+let selectedComponentIds = new Set();
+let selectedWaypointKeys = new Set();
+let selectedGroupOffsets = [];
+let selectedWaypointOffsets = [];
+
+let rightClickTarget = null;
+let editingTextComp = null;
+
+function screenToWorld(sx, sy) { return { x: (sx - panX) / scale, y: (sy - panY) / scale }; }
+
+function getWaypointKey(wire, pointIndex) {
+  const wIdx = wires.indexOf(wire);
+  return `${wIdx}_${pointIndex}`;
+}
+
+function clearSelections() {
+  selectedComponentIds.clear();
+  selectedWaypointKeys.clear();
+}
+
+function hideContextMenu() {
+  document.getElementById('context-menu').style.display = 'none';
+  rightClickTarget = null;
+}
+
+function moveSelectedZOrder(direction) {
+  if (selectedComponentIds.size === 0) { hideContextMenu(); return; }
+
+  const selectedList = components.filter(c => selectedComponentIds.has(c.id));
+  const unselectedList = components.filter(c => !selectedComponentIds.has(c.id));
+
+  if (direction === 'front') {
+    components = [...unselectedList, ...selectedList];
+  } else if (direction === 'back') {
+    components = [...selectedList, ...unselectedList];
+  }
+  hideContextMenu();
+}
+
+function deleteSelectedTarget() {
+  if (rightClickTarget) {
+    if (rightClickTarget.type === 'waypoint') {
+      rightClickTarget.wire.points.splice(rightClickTarget.index, 1);
+      clearSelections();
+    } else if (rightClickTarget.type === 'wire') {
+      wires.splice(rightClickTarget.wireIndex, 1);
+      clearSelections();
+    } else if (rightClickTarget.type === 'component') {
+      if (selectedComponentIds.has(rightClickTarget.comp.id)) {
+        components = components.filter(c => !selectedComponentIds.has(c.id));
+        wires = wires.filter(w => !selectedComponentIds.has(w.fromCompId) && !selectedComponentIds.has(w.toCompId));
+      } else {
+        components = components.filter(c => c.id !== rightClickTarget.comp.id);
+        wires = wires.filter(w => w.fromCompId !== rightClickTarget.comp.id && w.toCompId !== rightClickTarget.comp.id);
+      }
+      clearSelections();
+    }
+  }
+  hideContextMenu();
+}
+
+// ===================================================================
+// コンポーネントクラス群 (ポリモーフィズム)
+// ===================================================================
+class Component {
+  constructor(id, type, x, y) {
+    this.id = id; this.type = type; this.x = x; this.y = y;
+    this.width = UI.COMP_W; this.height = UI.COMP_H;
+    this.pins = [];
+  }
+  addPin(id, type, relX, relY) { this.pins.push({ id, type, relX, relY, state: false }); }
+  getPin(id) { return this.pins.find(p => p.id === id); }
+  getPinPos(pin) { return { x: this.x + pin.relX, y: this.y + pin.relY }; }
+
+  resetPins() { this.pins.forEach(p => p.state = false); }
+  updateTimer(dt) {}
+  processImmediateLogic() { return false; }
+  getName() { return this.type; }
+  drawCustom(ctx, scale) {}
+
+  draw(ctx, isSelected, scale) {
+    ctx.fillStyle = UI.COLOR.COMP_BG;
+    ctx.strokeStyle = isSelected ? UI.COLOR.BORDER_SEL : UI.COLOR.BORDER_NORM;
+    ctx.lineWidth = (isSelected ? 3 : 2) / scale;
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.strokeRect(this.x, this.y, this.width, this.height);
+
+    ctx.fillStyle = '#fff'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(this.getName(), this.x + this.width / 2, this.y + this.height / 2 + 4);
+
+    this.drawCustom(ctx, scale);
+
+    this.pins.forEach(p => {
+      const pos = this.getPinPos(p);
+      ctx.beginPath(); ctx.arc(pos.x, pos.y, UI.PIN_R, 0, Math.PI * 2);
+      ctx.fillStyle = p.state ? UI.COLOR.PIN_ON : UI.COLOR.PIN_OFF;
+      ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1 / scale; ctx.stroke();
+      ctx.fillStyle = '#aaa'; ctx.font = '9px sans-serif'; ctx.fillText(p.id, pos.x, pos.y - 8);
+    });
+  }
+  serialize() { return { id: this.id, type: this.type, x: this.x, y: this.y, width: this.width, height: this.height }; }
+  deserialize(data) { this.width = data.width; this.height = data.height; }
+}
+
+class Vcc extends Component {
+  constructor(id, x, y) { super(id, 'vcc', x, y); this.addPin('out', 'out', UI.COMP_W, UI.COMP_H/2); }
+  resetPins() { this.getPin('out').state = true; }
+  getName() { return '電源 (VCC)'; }
+}
+
+class PushSwitch extends Component {
+  constructor(id, x, y) { super(id, 'push_switch', x, y); this.addPin('in', 'in', 0, 30); this.addPin('out', 'out', 110, 30); this.switchState = false; }
+  processImmediateLogic() {
+    const pIn = this.getPin('in'), pOut = this.getPin('out');
+    if (pIn.state && this.switchState && !pOut.state) { pOut.state = true; return true; }
+    return false;
+  }
+  getName() { return `押ボタンSW [${this.switchState ? 'ON' : 'OFF'}]`; }
+}
+
+class Pyrite extends Component {
+  constructor(id, x, y) { super(id, 'pyrite', x, y); this.addPin('in', 'in', 0, 30); this.addPin('out', 'out', 110, 30); }
+  processImmediateLogic() {
+    const pIn = this.getPin('in'), pOut = this.getPin('out');
+    if (pIn.state && !pOut.state) { pOut.state = true; return true; }
+    return false;
+  }
+  getName() { return '黄鉄鉱 (▶)'; }
+}
+
+class Led extends Component {
+  constructor(id, x, y) { super(id, 'led', x, y); this.addPin('in', 'in', 0, 30); this.state = false; }
+  processImmediateLogic() {
+    const pIn = this.getPin('in'); this.state = pIn.state; return false;
+  }
+  getName() { return 'LED'; }
+  drawCustom(ctx, scale) {
+    ctx.beginPath(); ctx.arc(this.x + this.width / 2, this.y + 15, 8, 0, Math.PI * 2);
+    ctx.fillStyle = this.state ? UI.COLOR.LED_ON : UI.COLOR.LED_OFF; ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1 / scale; ctx.stroke();
+  }
+}
+
+class BaseTransistor extends Component {
+  constructor(id, type, x, y) {
+    super(id, type, x, y);
+    this.addPin('in', 'in', 0, 30);
+    this.addPin('ctrl', 'in', 60, 0);
+    this.addPin('out', 'out', 110, 30);
+
+    // 反転トランジスタは初期状態でゲートが開いている（true）
+    this.gateOpen = (type === 'inv_transistor');
+    this.gateTimer = 0;
+  }
+}
+
+class Transistor extends BaseTransistor {
+  constructor(id, x, y) { super(id, 'transistor', x, y); }
+
+  updateTimer(dt) {
+    const pCtrl = this.getPin('ctrl');
+    const targetGate = pCtrl.state; // トランジスタは ctrl が ON ならゲートを開けたい
+
+    // ゲートの目標状態と現在の状態が違う場合のみ、100msかけて物理的に動かすのじゃ
+    if (this.gateOpen !== targetGate) {
+      if (this.gateTimer <= 0) {
+        this.gateTimer = 100;
+      } else {
+        this.gateTimer -= dt;
+        if (this.gateTimer <= 0) {
+          this.gateOpen = targetGate;
+          this.gateTimer = 0;
+        }
+      }
+    } else {
+      // 目標状態と同じならタイマーは不要（途中で信号が戻った場合のキャンセル処理も兼ねる）
+      this.gateTimer = 0;
+    }
+  }
+
+  processImmediateLogic() {
+    const pIn = this.getPin('in'), pOut = this.getPin('out');
+    if (pIn.state && this.gateOpen && !pOut.state) {
+      pOut.state = true;
+      return true;
+    }
+    return false;
+  }
+  getName() { return 'トランジスタ'; }
+}
+
+class InvTransistor extends BaseTransistor {
+  constructor(id, x, y) { super(id, 'inv_transistor', x, y); }
+
+  updateTimer(dt) {
+    const pCtrl = this.getPin('ctrl');
+    const targetGate = !pCtrl.state; // 反転トランジスタは ctrl が OFF ならゲートを開けたい
+
+    // ゲートの目標状態と現在の状態が違う場合のみ、100msかけて物理的に動かすのじゃ
+    if (this.gateOpen !== targetGate) {
+      if (this.gateTimer <= 0) {
+        this.gateTimer = 100;
+      } else {
+        this.gateTimer -= dt;
+        if (this.gateTimer <= 0) {
+          this.gateOpen = targetGate;
+          this.gateTimer = 0;
+        }
+      }
+    } else {
+      this.gateTimer = 0;
+    }
+  }
+
+  processImmediateLogic() {
+    const pIn = this.getPin('in'), pOut = this.getPin('out');
+    if (pIn.state && this.gateOpen && !pOut.state) {
+      pOut.state = true;
+      return true;
+    }
+    return false;
+  }
+  getName() { return '反転トランジスタ'; }
+}
+class Crystal extends Component {
+  constructor(id, x, y) {
+    super(id, 'crystal', x, y);
+    this.addPin('in', 'in', 0, 30); this.addPin('out', 'out', 110, 30);
+    this.thickness = 1; this.crystalPhase = 'IDLE'; this.crystalTimer = 0;
+  }
+  updateTimer(dt) {
+    const pIn = this.getPin('in');
+    if (!pIn.state) { this.crystalPhase = 'IDLE'; this.crystalTimer = 0; return; }
+
+    if (this.thickness === 1) {
+      if (this.crystalPhase === 'IDLE') { this.crystalPhase = 'DELAY_START'; this.crystalTimer = 100; }
+      else if (this.crystalPhase === 'DELAY_START') { this.crystalTimer -= dt; if (this.crystalTimer <= 0) this.crystalPhase = 'SUSTAIN'; }
+    } else {
+      if (this.crystalPhase === 'IDLE') { this.crystalPhase = 'DELAY_START'; this.crystalTimer = 100; }
+      else if (this.crystalPhase === 'DELAY_START') { this.crystalTimer -= dt; if (this.crystalTimer <= 0) { this.crystalPhase = 'ON_PULSE'; this.crystalTimer = 100; } }
+      else if (this.crystalPhase === 'ON_PULSE') { this.crystalTimer -= dt; if (this.crystalTimer <= 0) { this.crystalPhase = 'OFF_INTERVAL'; this.crystalTimer = 100 + (this.thickness - 2) * 100; } }
+      else if (this.crystalPhase === 'OFF_INTERVAL') { this.crystalTimer -= dt; if (this.crystalTimer <= 0) this.crystalPhase = 'IDLE'; }
+    }
+  }
+  processImmediateLogic() {
+    const pOut = this.getPin('out');
+    const isActive = (this.thickness === 1 && this.crystalPhase === 'SUSTAIN') || (this.thickness !== 1 && this.crystalPhase === 'ON_PULSE');
+    if (isActive && !pOut.state) { pOut.state = true; return true; }
+    return false;
+  }
+  getName() { return `水晶 (${this.thickness}cm)`; }
+  serialize() { const data = super.serialize(); data.thickness = this.thickness; return data; }
+  deserialize(data) { super.deserialize(data); this.thickness = data.thickness || 1; }
+}
+
+class TextComp extends Component {
+  constructor(id, x, y) {
+    super(id, 'text', x, y);
+    this.width = UI.TEXT_W; this.height = UI.TEXT_H;
+    this.text = '説明テキスト\n(右下ドラッグでサイズ変更)'; this.fontSize = 13; this.bgColor = UI.COLOR.TEXT_DEF_BG;
+  }
+  draw(ctx, isSelected, scale) {
+    ctx.fillStyle = this.bgColor;
+    ctx.strokeStyle = isSelected ? UI.COLOR.BORDER_SEL : '#ffcc00';
+    ctx.lineWidth = (isSelected ? 2 : 1) / scale; ctx.setLineDash([4 / scale, 2 / scale]);
+    ctx.fillRect(this.x, this.y, this.width, this.height); ctx.strokeRect(this.x, this.y, this.width, this.height);
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = '#ffffff'; ctx.font = `${this.fontSize}px sans-serif`; ctx.textAlign = 'left';
+    const lines = this.text.split('\n'), lh = this.fontSize * 1.3;
+    lines.forEach((line, idx) => ctx.fillText(line, this.x + 8, this.y + this.fontSize + 6 + idx * lh));
+    if (isSelected) { ctx.fillStyle = UI.COLOR.BORDER_SEL; ctx.fillRect(this.x + this.width - 8, this.y + this.height - 8, 8, 8); }
+  }
+  serialize() { const d = super.serialize(); d.text = this.text; d.fontSize = this.fontSize; d.bgColor = this.bgColor; return d; }
+  deserialize(data) { super.deserialize(data); this.text = data.text || ''; this.fontSize = data.fontSize || 13; this.bgColor = data.bgColor || UI.COLOR.TEXT_DEF_BG; }
+}
+
+function createComponentObj(type, id, x, y) {
+  switch (type) {
+    case 'vcc': return new Vcc(id, x, y);
+    case 'push_switch': return new PushSwitch(id, x, y);
+    case 'transistor': return new Transistor(id, x, y);
+    case 'inv_transistor': return new InvTransistor(id, x, y);
+    case 'crystal': return new Crystal(id, x, y);
+    case 'pyrite': return new Pyrite(id, x, y);
+    case 'led': return new Led(id, x, y);
+    case 'text': return new TextComp(id, x, y);
+    default: return new Component(id, type, x, y);
+  }
+}
+
+function addComponent(type) {
+  const center = screenToWorld(canvas.width / 2, canvas.height / 2);
+  const snapX = snapToGrid(center.x - 50);
+  const snapY = snapToGrid(center.y - 25);
+  components.push(createComponentObj(type, nextId++, snapX, snapY));
+}
+
+function clearCircuit() { components = []; wires = []; clearSelections(); currentFileName = 'circuit'; updateFileNameDisplay(); hideContextMenu(); }
+function resetZoom() { scale = 1.0; panX = 0; panY = 0; document.getElementById('zoom-text').textContent = '100%'; }
+function updateFileNameDisplay() { document.getElementById('current-file-text').textContent = `[ ${currentFileName}.json ]`; }
+
+function openTextModal(comp) {
+  editingTextComp = comp;
+  document.getElementById('text-modal-input').value = comp.text;
+  document.getElementById('text-modal-size').value = comp.fontSize;
+  document.getElementById('text-modal-color').value = comp.bgColor;
+  document.getElementById('text-modal').style.display = 'flex';
+  document.getElementById('text-modal-input').focus();
+}
+function closeTextModal(save) {
+  if (save && editingTextComp) {
+    editingTextComp.text = document.getElementById('text-modal-input').value;
+    editingTextComp.fontSize = parseInt(document.getElementById('text-modal-size').value, 10);
+    editingTextComp.bgColor = document.getElementById('text-modal-color').value;
+  }
+  document.getElementById('text-modal').style.display = 'none'; editingTextComp = null;
+}
+
+// ===================================================================
+// シミュレーション更新
+// ===================================================================
+function updateSimulation(dt) {
+  components.forEach(c => c.resetPins());
+
+  let changed = true;
+  let loopCount = 0;
+
+  while (changed && loopCount < 100) {
+    changed = false;
+    loopCount++;
+
+    components.forEach(c => {
+      if (c.processImmediateLogic()) changed = true;
+    });
+
+    wires.forEach(w => {
+      const fromComp = components.find(c => c.id === w.fromCompId);
+      const toComp = components.find(c => c.id === w.toCompId);
+      if (!fromComp || !toComp) return;
+      const p1 = fromComp.getPin(w.fromPinId);
+      const p2 = toComp.getPin(w.toPinId);
+
+      if (p1 && p2) {
+        if (p1.state && !p2.state) { p2.state = true; changed = true; }
+        else if (p2.state && !p1.state) { p1.state = true; changed = true; }
+      }
+    });
+  }
+
+  components.forEach(c => c.updateTimer(dt));
+}
+
+function getWirePath(w) {
+  const fromComp = components.find(c => c.id === w.fromCompId);
+  const toComp = components.find(c => c.id === w.toCompId);
+  if (!fromComp || !toComp) return [];
+  const p1 = fromComp.getPinPos(fromComp.getPin(w.fromPinId));
+  const p2 = toComp.getPinPos(toComp.getPin(w.toPinId));
+  return [p1, ...(w.points || []), p2];
+}
+
+// ===================================================================
+// 描画
+// ===================================================================
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.save(); ctx.translate(panX, panY); ctx.scale(scale, scale);
+
+  // 1. コンポーネント（部品・テキスト）の描画（最背面）
+  components.forEach(c => c.draw(ctx, selectedComponentIds.has(c.id), scale));
+
+  // 2. 配線本体の描画（中間層）
+  wires.forEach(w => {
+    const path = getWirePath(w);
+    if (path.length < 2) return;
+
+    const fromComp = components.find(c => c.id === w.fromCompId);
+    const toComp = components.find(c => c.id === w.toCompId);
+    const isWireActive = (fromComp && fromComp.getPin(w.fromPinId).state) || (toComp && toComp.getPin(w.toPinId).state);
+
+    ctx.beginPath();
+    ctx.moveTo(path[0].x, path[0].y);
+    for (let i = 1; i < path.length; i++) {
+      ctx.lineTo(path[i].x, path[i].y);
+    }
+    ctx.strokeStyle = isWireActive ? UI.COLOR.WIRE_ON : UI.COLOR.WIRE_OFF;
+    ctx.lineWidth = UI.WIRE_W / scale; ctx.stroke();
+  });
+
+  // 3. 配線中継ポイント（Waypoints）の描画（最前面）
+  wires.forEach((w, wIdx) => {
+    if (w.points) {
+      w.points.forEach((pt, pIdx) => {
+        const isSelected = selectedWaypointKeys.has(`${wIdx}_${pIdx}`);
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, isSelected ? UI.WAYPOINT_R + 2 : UI.WAYPOINT_R, 0, Math.PI * 2);
+        ctx.fillStyle = isSelected ? UI.COLOR.BORDER_SEL : UI.COLOR.WAYPOINT;
+        ctx.fill();
+        ctx.strokeStyle = isSelected ? '#ffffff' : '#000000';
+        ctx.lineWidth = (isSelected ? 2 : 1) / scale;
+        ctx.stroke();
+      });
+    }
+  });
+
+  if (connectingPin) {
+    const p1 = connectingPin.comp.getPinPos(connectingPin.pin);
+    ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(mousePos.x, mousePos.y);
+    ctx.strokeStyle = '#ffaa00';
+    ctx.lineWidth = UI.WIRE_DASH_W / scale;
+    ctx.setLineDash([4/scale, 4/scale]); ctx.stroke(); ctx.setLineDash([]);
+  }
+
+  if (isSelecting) {
+    const rx = Math.min(selectionStart.x, selectionEnd.x), ry = Math.min(selectionStart.y, selectionEnd.y);
+    const rw = Math.abs(selectionEnd.x - selectionStart.x), rh = Math.abs(selectionEnd.y - selectionStart.y);
+    ctx.strokeStyle = UI.COLOR.BORDER_SEL; ctx.lineWidth = 1 / scale; ctx.setLineDash([6/scale, 3/scale]);
+    ctx.strokeRect(rx, ry, rw, rh); ctx.fillStyle = 'rgba(0, 170, 255, 0.1)'; ctx.fillRect(rx, ry, rw, rh); ctx.setLineDash([]);
+  }
+  ctx.restore();
+}
+
+// ===================================================================
+// 判定ヘルパー
+// ===================================================================
+function getPinAt(x, y) {
+  for (const c of components) {
+    for (const p of c.pins) {
+      const pos = c.getPinPos(p);
+      if (Math.hypot(pos.x - x, pos.y - y) < 10 / scale) return { comp: c, pin: p };
+    }
+  }
+  return null;
+}
+function getComponentAt(x, y) { return components.slice().reverse().find(c => x >= c.x && x <= c.x + c.width && y >= c.y && y <= c.y + c.height); }
+
+function getWaypointAt(x, y) {
+  for (const w of wires) {
+    if (!w.points) continue;
+    for (let i = 0; i < w.points.length; i++) {
+      const pt = w.points[i];
+      const hitRadius = (UI.WAYPOINT_R + 4) / scale;
+      if (Math.hypot(pt.x - x, pt.y - y) < hitRadius) {
+        return { wire: w, index: i };
+      }
+    }
+  }
+  return null;
+}
+
+function getWireSegmentAt(x, y) {
+  for (let i = 0; i < wires.length; i++) {
+    const w = wires[i];
+    const path = getWirePath(w);
+    for (let j = 0; j < path.length - 1; j++) {
+      const p1 = path[j], p2 = path[j+1];
+      const l2 = Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2);
+      if (l2 === 0) continue;
+      let t = Math.max(0, Math.min(1, ((x - p1.x)*(p2.x - p1.x) + (y - p1.y)*(p2.y - p1.y)) / l2));
+      const projX = p1.x + t * (p2.x - p1.x);
+      const projY = p1.y + t * (p2.y - p1.y);
+      const hitRadius = Math.max(8, UI.WIRE_W + 4) / scale;
+      if (Math.hypot(x - projX, y - projY) < hitRadius) {
+        return { wireIndex: i, wire: w, segmentIndex: j };
+      }
+    }
+  }
+  return null;
+}
+
+// ===================================================================
+// マウス＆キー操作
+// ===================================================================
+canvas.addEventListener('wheel', e => {
+  e.preventDefault(); const mx = e.clientX, my = e.clientY - 64;
+  let nScale = Math.max(0.2, Math.min(5.0, e.deltaY < 0 ? scale * 1.1 : scale / 1.1));
+  panX = mx - (mx - panX) * (nScale / scale); panY = my - (my - panY) * (nScale / scale); scale = nScale;
+  document.getElementById('zoom-text').textContent = `${Math.round(scale * 100)}%`;
+}, { passive: false });
+
+canvas.addEventListener('mousedown', e => {
+  hideContextMenu();
+  rawMousePos.x = e.clientX; rawMousePos.y = e.clientY - 64; mousePos = screenToWorld(rawMousePos.x, rawMousePos.y);
+  if (e.button === 1 || (e.button === 0 && isSpacePressed)) { isPanning = true; panStartX = rawMousePos.x - panX; panStartY = rawMousePos.y - panY; return; }
+
+  if (e.button === 0) {
+    const hitWp = getWaypointAt(mousePos.x, mousePos.y);
+    if (hitWp) {
+      const wpKey = getWaypointKey(hitWp.wire, hitWp.index);
+      if (!selectedWaypointKeys.has(wpKey)) {
+        if (!e.shiftKey) clearSelections();
+        selectedWaypointKeys.add(wpKey);
+      }
+
+      draggedWaypoint = hitWp;
+      selectedWaypointOffsets = [];
+      selectedWaypointKeys.forEach(key => {
+        const [wIdxStr, pIdxStr] = key.split('_');
+        const w = wires[parseInt(wIdxStr, 10)];
+        const pIdx = parseInt(pIdxStr, 10);
+        if (w && w.points && w.points[pIdx]) {
+          const pt = w.points[pIdx];
+          selectedWaypointOffsets.push({ point: pt, ox: mousePos.x - pt.x, oy: mousePos.y - pt.y });
+        }
+      });
+      return;
+    }
+
+    const rh = components.find(c => c.type==='text' && selectedComponentIds.has(c.id) && Math.abs(mousePos.x-(c.x+c.width))<=12/scale && Math.abs(mousePos.y-(c.y+c.height))<=12/scale);
+    if (rh) { resizingComponent = rh; return; }
+
+    const hitPin = getPinAt(mousePos.x, mousePos.y); if (hitPin) { connectingPin = hitPin; return; }
+
+    const hitComp = getComponentAt(mousePos.x, mousePos.y);
+    if (hitComp) {
+      if (!selectedComponentIds.has(hitComp.id)) { if (!e.shiftKey) clearSelections(); selectedComponentIds.add(hitComp.id); }
+      if (hitComp.type === 'push_switch') hitComp.switchState = true;
+      draggedComponent = hitComp;
+
+      selectedGroupOffsets = Array.from(selectedComponentIds).map(id => {
+        const c = components.find(c=>c.id===id); return { comp: c, ox: mousePos.x - c.x, oy: mousePos.y - c.y };
+      });
+
+      selectedWaypointOffsets = [];
+      selectedWaypointKeys.forEach(key => {
+        const [wIdxStr, pIdxStr] = key.split('_');
+        const w = wires[parseInt(wIdxStr, 10)];
+        const pIdx = parseInt(pIdxStr, 10);
+        if (w && w.points && w.points[pIdx]) {
+          const pt = w.points[pIdx];
+          selectedWaypointOffsets.push({ point: pt, ox: mousePos.x - pt.x, oy: mousePos.y - pt.y });
+        }
+      });
+    } else {
+      if (!e.shiftKey) clearSelections();
+      isSelecting = true;
+      selectionStart = { ...mousePos };
+      selectionEnd = { ...mousePos };
+    }
+  }
+
+  else if (e.button === 2) {
+    const hitWp = getWaypointAt(mousePos.x, mousePos.y);
+    if (hitWp) {
+      rightClickTarget = { type: 'waypoint', wire: hitWp.wire, index: hitWp.index };
+    } else {
+      const hitComp = getComponentAt(mousePos.x, mousePos.y);
+      if (hitComp) {
+        if (!selectedComponentIds.has(hitComp.id)) {
+          clearSelections();
+          selectedComponentIds.add(hitComp.id);
+        }
+        rightClickTarget = { type: 'component', comp: hitComp };
+      } else {
+        const hitSeg = getWireSegmentAt(mousePos.x, mousePos.y);
+        if (hitSeg) {
+          rightClickTarget = { type: 'wire', wireIndex: hitSeg.wireIndex };
+        }
+      }
+    }
+
+    if (rightClickTarget) {
+      const menu = document.getElementById('context-menu');
+      menu.style.left = `${e.clientX}px`;
+      menu.style.top = `${e.clientY}px`;
+      menu.style.display = 'flex';
+    }
+  }
+});
+
+canvas.addEventListener('mousemove', e => {
+  rawMousePos.x = e.clientX; rawMousePos.y = e.clientY - 64;
+  if (isPanning) { panX = rawMousePos.x - panStartX; panY = rawMousePos.y - panStartY; return; }
+  mousePos = screenToWorld(rawMousePos.x, rawMousePos.y);
+
+  if (draggedWaypoint) {
+    selectedWaypointOffsets.forEach(i => {
+      i.point.x = snapToGrid(mousePos.x - i.ox);
+      i.point.y = snapToGrid(mousePos.y - i.oy);
+    });
+  } else if (resizingComponent) {
+    resizingComponent.width = snapToGrid(Math.max(50, mousePos.x - resizingComponent.x));
+    resizingComponent.height = snapToGrid(Math.max(30, mousePos.y - resizingComponent.y));
+  } else if (draggedComponent) {
+    selectedGroupOffsets.forEach(i => {
+      i.comp.x = snapToGrid(mousePos.x - i.ox);
+      i.comp.y = snapToGrid(mousePos.y - i.oy);
+    });
+    selectedWaypointOffsets.forEach(i => {
+      i.point.x = snapToGrid(mousePos.x - i.ox);
+      i.point.y = snapToGrid(mousePos.y - i.oy);
+    });
+  } else if (isSelecting) selectionEnd = { ...mousePos };
+});
+
+canvas.addEventListener('mouseup', e => {
+  if (isPanning) { isPanning = false; return; }
+  if (draggedWaypoint) { draggedWaypoint = null; return; }
+  if (resizingComponent) { resizingComponent = null; return; }
+  if (e.button === 0) {
+    if (connectingPin) {
+      const hitPin = getPinAt(mousePos.x, mousePos.y);
+
+      if (hitPin && (hitPin.comp !== connectingPin.comp || hitPin.pin !== connectingPin.pin)) {
+        const exists = wires.some(w =>
+          (w.fromCompId === connectingPin.comp.id && w.fromPinId === connectingPin.pin.id && w.toCompId === hitPin.comp.id && w.toPinId === hitPin.pin.id) ||
+          (w.fromPinId === hitPin.comp.id && w.fromPinId === hitPin.pin.id && w.toCompId === connectingPin.comp.id && w.toPinId === connectingPin.pin.id)
+        );
+        if (!exists) wires.push({ fromCompId: connectingPin.comp.id, fromPinId: connectingPin.pin.id, toCompId: hitPin.comp.id, toPinId: hitPin.pin.id, points: [] });
+      }
+      connectingPin = null;
+    }
+
+    if (isSelecting) {
+      isSelecting = false;
+      const rx = Math.min(selectionStart.x, selectionEnd.x), ry = Math.min(selectionStart.y, selectionEnd.y);
+      const rw = Math.abs(selectionEnd.x - selectionStart.x), rh = Math.abs(selectionEnd.y - selectionStart.y);
+
+      components.forEach(c => { if (c.x + c.width >= rx && c.x <= rx + rw && c.y + c.height >= ry && c.y <= ry + rh) selectedComponentIds.add(c.id); });
+
+      wires.forEach((w, wIdx) => {
+        if (!w.points) return;
+        w.points.forEach((pt, pIdx) => {
+          if (pt.x >= rx && pt.x <= rx + rw && pt.y >= ry && pt.y <= ry + rh) {
+            selectedWaypointKeys.add(`${wIdx}_${pIdx}`);
+          }
+        });
+      });
+    }
+    if (draggedComponent && draggedComponent.type === 'push_switch') draggedComponent.switchState = false;
+    draggedComponent = null;
+  }
+});
+
+canvas.addEventListener('dblclick', e => {
+  const hitSeg = getWireSegmentAt(mousePos.x, mousePos.y);
+  if (hitSeg) {
+    if (!hitSeg.wire.points) hitSeg.wire.points = [];
+    const newPt = { x: snapToGrid(mousePos.x), y: snapToGrid(mousePos.y) };
+    hitSeg.wire.points.splice(hitSeg.segmentIndex, 0, newPt);
+    return;
+  }
+
+  const hitComp = getComponentAt(mousePos.x, mousePos.y); if (!hitComp) return;
+  if (hitComp.type === 'crystal') {
+    const val = prompt('水晶の厚さを入力してください（cm / 下限1cm）:', hitComp.thickness);
+    if (val !== null) { const p = parseFloat(val); if (!isNaN(p) && p >= 1) hitComp.thickness = p; else alert('1cm以上の数字を入力してくださいのじゃ！'); }
+  } else if (hitComp.type === 'text') openTextModal(hitComp);
+});
+
+// ===================================================================
+// コピー＆ペースト (localStorage)
+// ===================================================================
+const CLIPBOARD_KEY = 'primitier_circuit_clipboard';
+
+function copySelectedComponents() {
+  if (selectedComponentIds.size === 0 && selectedWaypointKeys.size === 0) return;
+  const copyComps = components.filter(c => selectedComponentIds.has(c.id));
+  const copyWires = wires.filter(w => selectedComponentIds.has(w.fromCompId) && selectedComponentIds.has(w.toCompId));
+
+  const dataToCopy = {
+    components: copyComps.map(c => c.serialize()),
+    wires: copyWires
+  };
+
+  try { localStorage.setItem(CLIPBOARD_KEY, JSON.stringify(dataToCopy)); }
+  catch (err) { console.warn('localStorage への保存に失敗したのじゃ:', err); }
+}
+
+function pasteComponents() {
+  let rawData = null;
+  try {
+    const stored = localStorage.getItem(CLIPBOARD_KEY);
+    if (stored) rawData = JSON.parse(stored);
+  } catch (err) { console.warn('localStorage からの読み込みに失敗したのじゃ:', err); return; }
+
+  if (!rawData || !rawData.components || rawData.components.length === 0) return;
+
+  const idMap = new Map();
+  clearSelections();
+
+  let minX = Infinity, minY = Infinity;
+  rawData.components.forEach(c => {
+    if (c.x < minX) minX = c.x;
+    if (c.y < minY) minY = c.y;
+  });
+
+  const targetX = snapToGrid(mousePos.x || minX + 30);
+  const targetY = snapToGrid(mousePos.y || minY + 30);
+
+  rawData.components.forEach(cData => {
+    const snapX = snapToGrid(targetX + (cData.x - minX));
+    const snapY = snapToGrid(targetY + (cData.y - minY));
+
+    const newComp = createComponentObj(cData.type, nextId++, snapX, snapY);
+    newComp.deserialize(cData);
+
+    components.push(newComp);
+    idMap.set(cData.id, newComp.id);
+    selectedComponentIds.add(newComp.id);
+  });
+
+  if (rawData.wires) {
+    rawData.wires.forEach(wData => {
+      const newFromId = idMap.get(wData.fromCompId);
+      const newToId = idMap.get(wData.toCompId);
+      if (newFromId && newToId) {
+        const copiedPoints = wData.points ? wData.points.map(pt => ({
+          x: snapToGrid(targetX + (pt.x - minX)),
+          y: snapToGrid(targetY + (pt.y - minY))
+        })) : [];
+
+        const newWire = {
+          fromCompId: newFromId,
+          fromPinId: wData.fromPinId,
+          toCompId: newToId,
+          toPinId: wData.toPinId,
+          points: copiedPoints
+        };
+
+        wires.push(newWire);
+
+        const newWIdx = wires.length - 1;
+        copiedPoints.forEach((_, pIdx) => {
+          selectedWaypointKeys.add(`${newWIdx}_${pIdx}`);
+        });
+      }
+    });
+  }
+}
+
+window.addEventListener('keydown', e => {
+  if (document.getElementById('text-modal').style.display === 'flex') return;
+  if (e.code === 'Space') isSpacePressed = true;
+  if (e.key === 'Delete' || e.key === 'Backspace') {
+    components = components.filter(c => !selectedComponentIds.has(c.id));
+    wires = wires.filter(w => !selectedComponentIds.has(w.fromCompId) && !selectedComponentIds.has(w.toCompId));
+    clearSelections();
+  }
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C' || e.code === 'KeyC')) {
+    e.preventDefault(); copySelectedComponents();
+  }
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'v' || e.key === 'V' || e.code === 'KeyV')) {
+    e.preventDefault(); pasteComponents();
+  }
+});
+window.addEventListener('keyup', e => { if (e.code === 'Space') isSpacePressed = false; });
+
+// ===================================================================
+// 保存 / 読み込み
+// ===================================================================
+function exportCircuit() {
+  let name = prompt('保存するファイル名を入力してください:', currentFileName); if (name === null) return;
+  currentFileName = name.trim().replace(/\.json$/i, '') || 'circuit'; updateFileNameDisplay();
+  const data = { nextId, components: components.map(c => c.serialize()), wires };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = currentFileName + '.json'; a.click(); URL.revokeObjectURL(a.href);
+}
+
+function importCircuit(event) {
+  const file = event.target.files[0]; if (!file) return;
+  currentFileName = file.name.replace(/\.json$/i, ''); updateFileNameDisplay();
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      nextId = data.nextId || 1;
+      wires = (data.wires || []).map(w => ({ ...w, points: w.points || [] }));
+      components = (data.components || []).map(cd => {
+        const c = createComponentObj(cd.type, cd.id, cd.x, cd.y);
+        c.deserialize(cd); return c;
+      });
+      clearSelections();
+    } catch (err) { alert('読み込み失敗なのじゃ: ' + err.message); }
+  };
+  reader.readAsText(file);
+}
+
+let lastTime = performance.now();
+function loop(currentTime) {
+  const dt = currentTime - lastTime; lastTime = currentTime;
+  updateSimulation(dt); draw(); requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
