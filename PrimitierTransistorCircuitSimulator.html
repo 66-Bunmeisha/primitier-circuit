@@ -1015,6 +1015,7 @@ function importCircuit(event) {
         c.deserialize(cd); return c;
       });
       clearSelections();
+      clearHistory();
       saveState();
     } catch (err) { alert(t('loadErr') + err.message); }
   };
@@ -1027,6 +1028,12 @@ function importCircuit(event) {
 const undoStack = [];
 const redoStack = [];
 const MAX_HISTORY = 50;
+
+// 履歴をリセットする関数なのじゃ
+function clearHistory() {
+  undoStack.length = 0;
+  redoStack.length = 0;
+}
 
 function saveState() {
   const state = JSON.stringify({
