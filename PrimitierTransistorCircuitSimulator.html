@@ -434,6 +434,7 @@ class Component {
   deserialize(data) {
     this.width = data.width; this.height = data.height;
     this.flipped = !!data.flipped;
+    this.updatePinPositions();
   }
 }
 
