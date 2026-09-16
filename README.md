@@ -6,7 +6,7 @@
 
 ## 日本語
 
-### PrimitierTransistorCircuitSimulator_v1.1.0
+### PrimitierTransistorCircuitSimulator_v1.2.0
 - プリミティアのトランジスタ回路の図面を作成して、ブラウザ上で動作確認できるツールです。
 - HTMLファイル単体で動作します。ネットワーク環境不要です。
 - 実際にプリミティアで使うときは、作成した図面を見ながら手動で組み立てる必要があります。
@@ -18,6 +18,8 @@
 
 ### 基本操作
 - **部品配置・移動:** 画面上部ボタンから追加、ドラッグで移動（10pxグリッド吸着）、範囲選択も可能
+- **部品の左右反転:** 部品を選択して `R` キーを押すか、右クリックメニューから左右反転（in/outピンの位置入れ替え）
+- **サイズ変更:** テキスト、黄鉄鉱、LEDは選択時に右下をドラッグしてサイズ変更が可能
 - **配線接続:** ピン同士をドラッグして接続
 - **中継ポイント:** 配線上をダブルクリックで折れ曲がり点追加 / ドラッグ移動 / 右クリックで削除
 - **テキスト・水晶厚設定:** コンポーネントをダブルクリックで編集
@@ -25,6 +27,7 @@
 - **画面操作:** マウスホイールでズーム、中クリックドラッグ（または Space + 左ドラッグ）で画面移動
 
 ### ショートカットキー
+- `R`: 選択した部品の左右反転
 - `Ctrl + C` (Cmd + C): 選択した回路のコピー
 - `Ctrl + V` (Cmd + V): カーソル位置へのペースト、タブ間でのコピーも可能
 - `Delete` / `Backspace`: 選択した部品の削除
@@ -33,7 +36,7 @@
 
 ## English
 
-### PrimitierTransistorCircuitSimulator_v1.1.0
+### PrimitierTransistorCircuitSimulator_v1.2.0
 - A browser-based simulator for designing and verifying transistor circuits in Primitier.
 - Runs as a standalone HTML file without an internet connection.
 - When building in Primitier, you need to manually assemble the circuit while referencing the diagram.
@@ -45,6 +48,8 @@
 
 ### Basic Controls
 - **Place & Move Components:** Click toolbar buttons to add, drag to move (snaps to 10px grid). Area selection is supported.
+- **Flip Component:** Select a component and press `R` key, or use the right-click menu to flip horizontally (swaps in/out pins).
+- **Resize Components:** Text, Pyrite, and LED components can be resized by dragging the bottom-right corner when selected.
 - **Wire Connection:** Drag between pins to connect.
 - **Waypoints:** Double-click a wire to add a waypoint / drag to move / right-click to delete.
 - **Text & Crystal Thickness:** Double-click a component to edit settings.
@@ -52,6 +57,7 @@
 - **Canvas Control:** Mouse wheel to zoom, middle-click drag (or Space + Left-drag) to pan.
 
 ### Shortcuts
+- `R`: Flip selected component horizontally
 - `Ctrl + C` (Cmd + C): Copy selected circuit
 - `Ctrl + V` (Cmd + V): Paste at cursor position (supports copy-pasting across browser tabs)
 - `Delete` / `Backspace`: Delete selected items
@@ -60,7 +66,7 @@
 
 ## Русский
 
-### PrimitierTransistorCircuitSimulator_v1.1.0
+### PrimitierTransistorCircuitSimulator_v1.2.0
 - Инструмент для проектирования и проверки транзисторных схем Primitier прямо в браузере.
 - Работает как автономный HTML-файл без подключения к Интернету.
 - При сборке в Primitier вам потребуется вручную собрать схему, ориентируясь на созданный чертеж.
@@ -72,6 +78,8 @@
 
 ### Основное управление
 - **Размещение и перемещение:** Добавление через верхние кнопки, перетаскивание с привязкой к сетке 10px. Поддерживается выделение области.
+- **Отражение компонента:** Выделите компонент и нажмите клавишу `R` или используйте контекстное меню для отражения по горизонтали (меняет местами входы и выходы).
+- **Изменение размера:** Для текста, пирита и светодиода можно менять размер, потянув за правый нижний угол выделенного элемента.
 - **Соединение проводов:** Перетащите линию от одного пина к другому.
 - **Точки изгиба (Waypoints):** Двойной клик по проводу для добавления / перетаскивание / правый клик для удаления.
 - **Текст и толщина кристалла:** Двойной клик по компоненту для редактирования.
@@ -79,7 +87,7 @@
 - **Навигация:** Колесо мыши для масштабирования, зажатие колесика (или Space + ЛКМ) для перемещения по холсту.
 
 ### Горячие клавиши
+- `R`: Отразить выделенный компонент по горизонтали
 - `Ctrl + C` (Cmd + C): Копировать выделенные элементы
 - `Ctrl + V` (Cmd + V): Вставить в позиции курсора (работает между вкладками)
 - `Delete` / `Backspace`: Удалить выделенные элементы
-
