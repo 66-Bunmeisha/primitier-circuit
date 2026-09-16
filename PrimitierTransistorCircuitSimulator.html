@@ -171,10 +171,8 @@ const I18N = {
     editText: "テキスト編集 (Enterで改行):", fontSize: "文字サイズ (px):", bgColor: "背景色:",
     cancel: "キャンセル", saveBtn: "保存", bringToFront: "最前面へ移動", sendToBack: "最背面へ移動", delete: "削除",
     flip: "左右反転 (R)",
-    // 部品名
     compVcc: "電源 (VCC)", compBtn: "押ボタンSW", compTr: "トランジスタ", compInvTr: "反転トランジスタ",
     compCrystal: "水晶", compPyrite: "黄鉄鉱 (▶)", compLed: "LED",
-    // ダイアログ・テキスト
     promptFileName: "保存するファイル名を入力してください:",
     promptCrystal: "水晶の厚さを入力してください（cm / 下限1cm）:",
     alertCrystalErr: "1cm以上の数字を入力してくださいのじゃ！",
@@ -189,10 +187,8 @@ const I18N = {
     editText: "Edit Text (Enter for newline):", fontSize: "Font Size (px):", bgColor: "Background Color:",
     cancel: "Cancel", saveBtn: "Save", bringToFront: "Bring to Front", sendToBack: "Send to Back", delete: "Delete",
     flip: "Flip Horizontally (R)",
-    // Component Names
     compVcc: "VCC Power", compBtn: "Push SW", compTr: "Transistor", compInvTr: "NOT Transistor",
     compCrystal: "Crystal", compPyrite: "Pyrite (▶)", compLed: "LED",
-    // Dialogs
     promptFileName: "Enter file name to save:",
     promptCrystal: "Enter crystal thickness (cm / min 1cm):",
     alertCrystalErr: "Please enter a number >= 1cm!",
@@ -207,10 +203,8 @@ const I18N = {
     editText: "Редактировать текст (Enter для переноса):", fontSize: "Размер шрифта (px):", bgColor: "Цвет фона:",
     cancel: "Отмена", saveBtn: "Сохранить", bringToFront: "На передний план", sendToBack: "На задний план", delete: "Удалить",
     flip: "Отразить по горизонтали (R)",
-    // Component Names
     compVcc: "Питание (VCC)", compBtn: "Кнопка SW", compTr: "Транзистор", compInvTr: "Инв. транзистор",
     compCrystal: "Кристалл", compPyrite: "Пирит (▶)", compLed: "Светодиод",
-    // Dialogs
     promptFileName: "Введите имя файла для сохранения:",
     promptCrystal: "Введите толщину кристалла (см / мин. 1 см):",
     alertCrystalErr: "Пожалуйста, введите число >= 1 см!",
@@ -220,53 +214,35 @@ const I18N = {
 };
 
 let currentLang = 'ja';
+function t(key) { return (I18N[currentLang] && I18N[currentLang][key]) || I18N['ja'][key] || key; }
 
-function t(key) {
-  return (I18N[currentLang] && I18N[currentLang][key]) || I18N['ja'][key] || key;
-}
-
-// ===================================================================
-// 言語切替 ＆ localStorage 記憶処理
-// ===================================================================
 function changeLanguage(lang) {
   currentLang = lang;
   document.title = t('appTitle');
-
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (key) el.textContent = t(key);
   });
-
-  try {
-    localStorage.setItem('primitier_simulator_lang', lang);
-  } catch (e) {
-    console.warn('Language preference save failed:', e);
-  }
+  try { localStorage.setItem('primitier_simulator_lang', lang); } catch (e) {}
 }
 
 (function initLanguage() {
   let initialLang = 'ja';
-
   try {
     const saved = localStorage.getItem('primitier_simulator_lang');
-    if (saved && ['ja', 'en', 'ru'].includes(saved)) {
-      initialLang = saved;
-    } else {
+    if (saved && ['ja', 'en', 'ru'].includes(saved)) initialLang = saved;
+    else {
       const browserLang = (navigator.language || navigator.userLanguage || '').slice(0, 2);
-      if (['en', 'ru'].includes(browserLang)) {
-        initialLang = browserLang;
-      }
+      if (['en', 'ru'].includes(browserLang)) initialLang = browserLang;
     }
   } catch (e) {}
-
   const selectEl = document.getElementById('lang-select');
   if (selectEl) selectEl.value = initialLang;
-
   changeLanguage(initialLang);
 })();
 
 // ===================================================================
-// 定数定義
+// 定数定義 ＆ 判定ヘルパー
 // ===================================================================
 const UI = {
   GRID_SIZE: 10,
@@ -277,9 +253,23 @@ const UI = {
   COLOR: {
     COMP_BG: '#4a4a58', BORDER_NORM: '#777788', BORDER_SEL: '#00aaff',
     PIN_ON: '#fbff87', PIN_OFF: '#888', WIRE_ON: '#fbff87', WIRE_OFF: '#888',
-    LED_ON: '#ffffff', LED_OFF: '#909090', TEXT_DEF_BG: '#2b3a4a', WAYPOINT: '#949494'
-  }
+    LED_ON: '#ffffff', LED_OFF: '#909090', TEXT_DEF_BG: '#2b3a4a',
+    WAYPOINT: '#949494',
+    WAYPOINT_BORDER_SEL: '#ffffff', WAYPOINT_BORDER_NORM: '#000000'
+  },
+  DIODE_COMPS: ['transistor', 'inv_transistor', 'led'],
+  INPUT_PINS: ['in', 'ctrl']
 };
+
+function isInputPinOfDiodeComp(comp, pinId) {
+  if (!comp || !pinId) return false;
+
+  if (UI.DIODE_COMPS.includes(comp.type)) {
+    return UI.INPUT_PINS.includes(pinId);
+  }
+
+  return false;
+}
 
 function snapToGrid(val) { return Math.round(val / UI.GRID_SIZE) * UI.GRID_SIZE; }
 
@@ -445,21 +435,55 @@ class Vcc extends Component {
 }
 
 class PushSwitch extends Component {
-  constructor(id, x, y) { super(id, 'push_switch', x, y); this.addPin('in', 'in', 0, snapToGrid(UI.COMP_H/2)); this.addPin('out', 'out', UI.COMP_W, snapToGrid(UI.COMP_H/2)); this.switchState = false; }
-  processImmediateLogic() {
-    const pIn = this.getPin('in'), pOut = this.getPin('out');
-    if (pIn.state && this.switchState && !pOut.state) { pOut.state = true; return true; }
-    return false;
+  constructor(id, x, y) {
+    super(id, 'push_switch', x, y);
+    this.addPin('a', 'in', 0, snapToGrid(UI.COMP_H / 2));
+    this.addPin('b', 'out', UI.COMP_W, snapToGrid(UI.COMP_H / 2));
+    this.switchState = false;
   }
-  getName() { return `${t('compBtn')} [${this.switchState ? 'ON' : 'OFF'}]`; }
+
+  getPin(id) {
+    if (id === 'in') id = 'a';
+    if (id === 'out') id = 'b';
+    return this.pins.find(p => p.id === id);
+  }
+
+  updatePinPositions() {
+    const midY = snapToGrid(this.height / 2);
+    const pA = this.getPin('a');
+    const pB = this.getPin('b');
+    if (pA) { pA.relY = midY; }
+    if (pB) { pB.relX = this.width; pB.relY = midY; }
+  }
+
+  processImmediateLogic() {
+    const pA = this.getPin('a');
+    const pB = this.getPin('b');
+    let changed = false;
+
+    if (this.switchState) {
+      if (pA.state && !pB.state) { pB.state = true; changed = true; }
+      if (pB.state && !pA.state) { pA.state = true; changed = true; }
+    }
+
+    return changed;
+  }
+
+  getName() {
+    return `${t('compBtn')} [${this.switchState ? 'ON' : 'OFF'}]`;
+  }
 }
 
 class Pyrite extends Component {
   constructor(id, x, y) { super(id, 'pyrite', x, y); this.addPin('in', 'in', 0, snapToGrid(UI.COMP_H/2)); this.addPin('out', 'out', UI.COMP_W, snapToGrid(UI.COMP_H/2)); }
   processImmediateLogic() {
     const pIn = this.getPin('in'), pOut = this.getPin('out');
-    if (pIn.state && !pOut.state) { pOut.state = true; return true; }
-    return false;
+    let changed = false;
+
+    if (pIn.state && !pOut.state) { pOut.state = true; changed = true; }
+    if (pOut.state && !pIn.state) { pIn.state = true; changed = true; }
+
+    return changed;
   }
   getName() {
     return this.flipped ? "黄鉄鉱 (◀)" : t('compPyrite');
@@ -479,9 +503,7 @@ class Led extends Component {
     return false;
   }
 
-  getName() {
-    return t('compLed');
-  }
+  getName() { return t('compLed'); }
 
   drawCustom(ctx, scale) {
     ctx.fillStyle = this.state ? UI.COLOR.LED_ON : UI.COLOR.LED_OFF;
@@ -639,23 +661,46 @@ function closeTextModal(save) {
 }
 
 // ===================================================================
-// シミュレーション更新
+// シミュレーション更新 (LED逆流防止・個別判定対応版)
 // ===================================================================
 function updateSimulation(dt) {
   components.forEach(c => c.resetPins());
+
   let changed = true, loopCount = 0;
   while (changed && loopCount < 100) {
     changed = false; loopCount++;
+
     components.forEach(c => { if (c.processImmediateLogic()) changed = true; });
+
     wires.forEach(w => {
-      const fromComp = components.find(c => c.id === w.fromCompId);
-      const toComp = components.find(c => c.id === w.toCompId);
-      if (!fromComp || !toComp) return;
-      const p1 = fromComp.getPin(w.fromPinId), p2 = toComp.getPin(w.toPinId);
-      if (p1 && p2) {
-        if (p1.state && !p2.state) { p2.state = true; changed = true; }
-        else if (p2.state && !p1.state) { p1.state = true; changed = true; }
-      }
+      const compA = components.find(c => c.id === w.fromCompId);
+      const compB = components.find(c => c.id === w.toCompId);
+      if (!compA || !compB) return;
+
+      const pA = compA.getPin(w.fromPinId);
+      const pB = compB.getPin(w.toPinId);
+      if (!pA || !pB) return;
+
+      const pairs = [
+        { srcComp: compA, srcPin: pA, destComp: compB, destPin: pB },
+        { srcComp: compB, srcPin: pB, destComp: compA, destPin: pA }
+      ];
+
+      pairs.forEach(({ srcComp, srcPin, destComp, destPin }) => {
+        if (srcPin.state && !destPin.state) {
+
+          if (srcComp.type === 'led') return;
+
+          if (destComp.type === 'push_switch' && !destComp.switchState) return;
+
+          if (isInputPinOfDiodeComp(srcComp, srcPin.id)) {
+            if (!isInputPinOfDiodeComp(destComp, destPin.id)) return;
+          }
+
+          destPin.state = true;
+          changed = true;
+        }
+      });
     });
   }
   components.forEach(c => c.updateTimer(dt));
@@ -684,7 +729,27 @@ function draw() {
     if (path.length < 2) return;
     const fromComp = components.find(c => c.id === w.fromCompId);
     const toComp = components.find(c => c.id === w.toCompId);
-    const isWireActive = (fromComp && fromComp.getPin(w.fromPinId).state) || (toComp && toComp.getPin(w.toPinId).state);
+
+    const isWireActive = (() => {
+      const p1 = fromComp ? fromComp.getPin(w.fromPinId) : null;
+      const p2 = toComp ? toComp.getPin(w.toPinId) : null;
+      if (!p1 || !p2) return false;
+
+      if (p1.state && p2.state) return true;
+
+      const checkSource = (srcComp, srcPinId, destComp, destPinId) => {
+        const pin = srcComp ? srcComp.getPin(srcPinId) : null;
+        if (!pin || !pin.state) return false;
+
+        if (isInputPinOfDiodeComp(srcComp, srcPinId)) {
+          return destPinId !== 'out';
+        }
+        return true;
+      };
+
+      return checkSource(fromComp, w.fromPinId, toComp, w.toPinId) ||
+             checkSource(toComp, w.toPinId, fromComp, w.fromPinId);
+    })();
 
     ctx.beginPath();
     ctx.moveTo(path[0].x, path[0].y);
@@ -700,7 +765,8 @@ function draw() {
         ctx.beginPath();
         ctx.arc(pt.x, pt.y, isSelected ? UI.WAYPOINT_R + 2 : UI.WAYPOINT_R, 0, Math.PI * 2);
         ctx.fillStyle = isSelected ? UI.COLOR.BORDER_SEL : UI.COLOR.WAYPOINT;
-        ctx.fill(); ctx.strokeStyle = isSelected ? '#ffffff' : '#000000';
+        ctx.fill();
+        ctx.strokeStyle = isSelected ? UI.COLOR.WAYPOINT_BORDER_SEL : UI.COLOR.WAYPOINT_BORDER_NORM;
         ctx.lineWidth = (isSelected ? 2 : 1) / scale; ctx.stroke();
       });
     }
@@ -723,7 +789,7 @@ function draw() {
 }
 
 // ===================================================================
-// 判定ヘルパー
+// 判定ヘルパー（その他）
 // ===================================================================
 function getPinAt(x, y) {
   for (const c of components) {
@@ -1029,7 +1095,6 @@ const undoStack = [];
 const redoStack = [];
 const MAX_HISTORY = 50;
 
-// 履歴をリセットする関数なのじゃ
 function clearHistory() {
   undoStack.length = 0;
   redoStack.length = 0;
