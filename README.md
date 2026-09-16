@@ -23,10 +23,13 @@
 - **配線接続:** ピン同士をドラッグして接続
 - **中継ポイント:** 配線上をダブルクリックで折れ曲がり点追加 / ドラッグ移動 / 右クリックで削除
 - **テキスト・水晶厚設定:** コンポーネントをダブルクリックで編集
+- **操作の取り消し・やり直し:** 回路の編集操作をいつでも `Ctrl + Z` で元に戻し、`Ctrl + Y` でやり直し可能
 - **削除:** 部品・配線・中継ポイント上で右クリック（または選択してDelete / Backspace）
 - **画面操作:** マウスホイールでズーム、中クリックドラッグ（または Space + 左ドラッグ）で画面移動
 
 ### ショートカットキー
+- `Ctrl + Z` (Cmd + Z): 操作を元に戻す (Undo)
+- `Ctrl + Y` (Cmd + Y) / `Ctrl + Shift + Z`: やり直す (Redo)
 - `R`: 選択した部品の左右反転
 - `Ctrl + C` (Cmd + C): 選択した回路のコピー
 - `Ctrl + V` (Cmd + V): カーソル位置へのペースト、タブ間でのコピーも可能
@@ -53,10 +56,13 @@
 - **Wire Connection:** Drag between pins to connect.
 - **Waypoints:** Double-click a wire to add a waypoint / drag to move / right-click to delete.
 - **Text & Crystal Thickness:** Double-click a component to edit settings.
+- **Undo / Redo:** Easily undo changes with `Ctrl + Z` and redo with `Ctrl + Y`.
 - **Delete:** Right-click a component, wire, or waypoint (or press Delete / Backspace when selected).
 - **Canvas Control:** Mouse wheel to zoom, middle-click drag (or Space + Left-drag) to pan.
 
 ### Shortcuts
+- `Ctrl + Z` (Cmd + Z): Undo last action
+- `Ctrl + Y` (Cmd + Y) / `Ctrl + Shift + Z`: Redo last action
 - `R`: Flip selected component horizontally
 - `Ctrl + C` (Cmd + C): Copy selected circuit
 - `Ctrl + V` (Cmd + V): Paste at cursor position (supports copy-pasting across browser tabs)
@@ -83,10 +89,13 @@
 - **Соединение проводов:** Перетащите линию от одного пина к другому.
 - **Точки изгиба (Waypoints):** Двойной клик по проводу для добавления / перетаскивание / правый клик для удаления.
 - **Текст и толщина кристалла:** Двойной клик по компоненту для редактирования.
+- **Отмена и повтор действий:** Отмена изменений комбинацией `Ctrl + Z`, повтор — `Ctrl + Y`.
 - **Удаление:** Правый клик по компоненту, проводу или точке (либо клавиши Delete / Backspace для выделенного).
 - **Навигация:** Колесо мыши для масштабирования, зажатие колесика (или Space + ЛКМ) для перемещения по холсту.
 
 ### Горячие клавиши
+- `Ctrl + Z` (Cmd + Z): Отменить действие (Undo)
+- `Ctrl + Y` (Cmd + Y) / `Ctrl + Shift + Z`: Повторить действие (Redo)
 - `R`: Отразить выделенный компонент по горизонтали
 - `Ctrl + C` (Cmd + C): Копировать выделенные элементы
 - `Ctrl + V` (Cmd + V): Вставить в позиции курсора (работает между вкладками)

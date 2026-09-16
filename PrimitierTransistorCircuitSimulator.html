@@ -320,6 +320,7 @@ function moveSelectedZOrder(direction) {
   const unselectedList = components.filter(c => !selectedComponentIds.has(c.id));
   components = (direction === 'front') ? [...unselectedList, ...selectedList] : [...selectedList, ...unselectedList];
   hideContextMenu();
+  saveState();
 }
 
 function toggleSelectedFlip() {
@@ -330,6 +331,7 @@ function toggleSelectedFlip() {
     }
   });
   hideContextMenu();
+  saveState();
 }
 
 function deleteSelectedTarget() {
@@ -350,6 +352,7 @@ function deleteSelectedTarget() {
       }
       clearSelections();
     }
+    saveState();
   }
   hideContextMenu();
 }
@@ -368,7 +371,6 @@ class Component {
   addPin(id, type, relX, relY) { this.pins.push({ id, type, relX, relY, state: false }); }
   getPin(id) { return this.pins.find(p => p.id === id); }
 
-  // サイズ変更時にピンの位置関係を再計算するメソッドを追加なのじゃ
   updatePinPositions() {
     const midY = snapToGrid(this.height / 2);
     const pIn = this.getPin('in');
@@ -401,7 +403,6 @@ class Component {
     ctx.fillStyle = '#fff'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
     ctx.fillText(this.getName(), this.x + this.width / 2, this.y + this.height / 2 + 4);
 
-    // 左右反転している場合は右上に [R] マークを表示するのじゃ
     if (this.flipped) {
       ctx.fillStyle = '#ffaa00'; ctx.font = '10px sans-serif'; ctx.textAlign = 'right';
       ctx.fillText('[R]', this.x + this.width - 4, this.y + 12);
@@ -409,7 +410,6 @@ class Component {
 
     this.drawCustom(ctx, scale);
 
-    // サイズ変更可能なコンポーネントが選択中なら右下にリサイズハンドルを表示するのじゃ
     if (isSelected && ['text', 'pyrite', 'led'].includes(this.type)) {
       ctx.fillStyle = UI.COLOR.BORDER_SEL;
       ctx.fillRect(this.x + this.width - 8, this.y + this.height - 8, 8, 8);
@@ -462,7 +462,6 @@ class Pyrite extends Component {
     return false;
   }
   getName() {
-    // 反転時は矢印の向きも入れ替えるのじゃ
     return this.flipped ? "黄鉄鉱 (◀)" : t('compPyrite');
   }
 }
@@ -485,12 +484,10 @@ class Led extends Component {
   }
 
   drawCustom(ctx, scale) {
-    // 本体の背景色を塗りつぶすのじゃ
     ctx.fillStyle = this.state ? UI.COLOR.LED_ON : UI.COLOR.LED_OFF;
     ctx.fillRect(this.x, this.y, this.width, this.height);
     ctx.strokeRect(this.x, this.y, this.width, this.height);
 
-    // 文字を黒色で中央に描画するのじゃ
     ctx.fillStyle = '#000000';
     ctx.font = '12px sans-serif';
     ctx.textAlign = 'center';
@@ -613,9 +610,13 @@ function addComponent(type) {
   const snapX = snapToGrid(center.x - 50);
   const snapY = snapToGrid(center.y - 25);
   components.push(createComponentObj(type, nextId++, snapX, snapY));
+  saveState();
 }
 
-function clearCircuit() { components = []; wires = []; clearSelections(); currentFileName = 'circuit'; updateFileNameDisplay(); hideContextMenu(); }
+function clearCircuit() {
+  components = []; wires = []; clearSelections(); currentFileName = 'circuit'; updateFileNameDisplay(); hideContextMenu();
+  saveState();
+}
 function resetZoom() { scale = 1.0; panX = 0; panY = 0; document.getElementById('zoom-text').textContent = '100%'; }
 function updateFileNameDisplay() { document.getElementById('current-file-text').textContent = `[ ${currentFileName}.json ]`; }
 
@@ -632,6 +633,7 @@ function closeTextModal(save) {
     editingTextComp.text = document.getElementById('text-modal-input').value;
     editingTextComp.fontSize = parseInt(document.getElementById('text-modal-size').value, 10);
     editingTextComp.bgColor = document.getElementById('text-modal-color').value;
+    saveState();
   }
   document.getElementById('text-modal').style.display = 'none'; editingTextComp = null;
 }
@@ -788,7 +790,6 @@ canvas.addEventListener('mousedown', e => {
       return;
     }
 
-    // テキスト、黄鉄鉱、LEDのリサイズハンドル判定なのじゃ
     const rh = components.find(c =>
       ['text', 'pyrite', 'led'].includes(c.type) &&
       selectedComponentIds.has(c.id) &&
@@ -856,8 +857,13 @@ canvas.addEventListener('mousemove', e => {
 
 canvas.addEventListener('mouseup', e => {
   if (isPanning) { isPanning = false; return; }
-  if (draggedWaypoint) { draggedWaypoint = null; return; }
-  if (resizingComponent) { resizingComponent = null; return; }
+
+  let needSave = false;
+  if (draggedWaypoint || resizingComponent || draggedComponent) needSave = true;
+
+  if (draggedWaypoint) { draggedWaypoint = null; }
+  if (resizingComponent) { resizingComponent = null; }
+
   if (e.button === 0) {
     if (connectingPin) {
       const hitPin = getPinAt(mousePos.x, mousePos.y);
@@ -866,7 +872,10 @@ canvas.addEventListener('mouseup', e => {
           (w.fromCompId === connectingPin.comp.id && w.fromPinId === connectingPin.pin.id && w.toCompId === hitPin.comp.id && w.toPinId === hitPin.pin.id) ||
           (w.fromCompId === hitPin.comp.id && w.fromPinId === hitPin.pin.id && w.toCompId === connectingPin.comp.id && w.toPinId === connectingPin.pin.id)
         );
-        if (!exists) wires.push({ fromCompId: connectingPin.comp.id, fromPinId: connectingPin.pin.id, toCompId: hitPin.comp.id, toPinId: hitPin.pin.id, points: [] });
+        if (!exists) {
+          wires.push({ fromCompId: connectingPin.comp.id, fromPinId: connectingPin.pin.id, toCompId: hitPin.comp.id, toPinId: hitPin.pin.id, points: [] });
+          needSave = true;
+        }
       }
       connectingPin = null;
     }
@@ -884,6 +893,8 @@ canvas.addEventListener('mouseup', e => {
     if (draggedComponent && draggedComponent.type === 'push_switch') draggedComponent.switchState = false;
     draggedComponent = null;
   }
+
+  if (needSave) saveState();
 });
 
 canvas.addEventListener('dblclick', e => {
@@ -891,12 +902,19 @@ canvas.addEventListener('dblclick', e => {
   if (hitSeg) {
     if (!hitSeg.wire.points) hitSeg.wire.points = [];
     hitSeg.wire.points.splice(hitSeg.segmentIndex, 0, { x: snapToGrid(mousePos.x), y: snapToGrid(mousePos.y) });
+    saveState();
     return;
   }
   const hitComp = getComponentAt(mousePos.x, mousePos.y); if (!hitComp) return;
   if (hitComp.type === 'crystal') {
     const val = prompt(t('promptCrystal'), hitComp.thickness);
-    if (val !== null) { const p = parseFloat(val); if (!isNaN(p) && p >= 1) hitComp.thickness = p; else alert(t('alertCrystalErr')); }
+    if (val !== null) {
+      const p = parseFloat(val);
+      if (!isNaN(p) && p >= 1) {
+        hitComp.thickness = p;
+        saveState();
+      } else alert(t('alertCrystalErr'));
+    }
   } else if (hitComp.type === 'text') openTextModal(hitComp);
 });
 
@@ -941,6 +959,7 @@ function pasteComponents() {
       }
     });
   }
+  saveState();
 }
 
 window.addEventListener('keydown', e => {
@@ -951,12 +970,23 @@ window.addEventListener('keydown', e => {
     toggleSelectedFlip();
   }
   if (e.key === 'Delete' || e.key === 'Backspace') {
-    components = components.filter(c => !selectedComponentIds.has(c.id));
-    wires = wires.filter(w => !selectedComponentIds.has(w.fromCompId) && !selectedComponentIds.has(w.toCompId));
-    clearSelections();
+    if (selectedComponentIds.size > 0 || selectedWaypointKeys.size > 0) {
+      components = components.filter(c => !selectedComponentIds.has(c.id));
+      wires = wires.filter(w => !selectedComponentIds.has(w.fromCompId) && !selectedComponentIds.has(w.toCompId));
+      clearSelections();
+      saveState();
+    }
   }
   if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C' || e.code === 'KeyC')) { e.preventDefault(); copySelectedComponents(); }
   if ((e.ctrlKey || e.metaKey) && (e.key === 'v' || e.key === 'V' || e.code === 'KeyV')) { e.preventDefault(); pasteComponents(); }
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z') && !e.shiftKey) {
+    e.preventDefault();
+    undo();
+  }
+  if ((e.ctrlKey || e.metaKey) && ((e.key === 'y' || e.key === 'Y') || (e.shiftKey && (e.key === 'z' || e.key === 'Z')))) {
+    e.preventDefault();
+    redo();
+  }
 });
 window.addEventListener('keyup', e => { if (e.code === 'Space') isSpacePressed = false; });
 
@@ -985,10 +1015,61 @@ function importCircuit(event) {
         c.deserialize(cd); return c;
       });
       clearSelections();
+      saveState();
     } catch (err) { alert(t('loadErr') + err.message); }
   };
   reader.readAsText(file);
 }
+
+// ===================================================================
+// Undo / Redo 履歴管理
+// ===================================================================
+const undoStack = [];
+const redoStack = [];
+const MAX_HISTORY = 50;
+
+function saveState() {
+  const state = JSON.stringify({
+    nextId,
+    components: components.map(c => c.serialize()),
+    wires
+  });
+
+  if (undoStack.length > 0 && undoStack[undoStack.length - 1] === state) return;
+
+  undoStack.push(state);
+  if (undoStack.length > MAX_HISTORY) undoStack.shift();
+  redoStack.length = 0;
+}
+
+function loadState(stateJson) {
+  const data = JSON.parse(stateJson);
+  nextId = data.nextId || 1;
+  wires = (data.wires || []).map(w => ({ ...w, points: w.points || [] }));
+  components = (data.components || []).map(cd => {
+    const c = createComponentObj(cd.type, cd.id, cd.x, cd.y);
+    c.deserialize(cd);
+    return c;
+  });
+  clearSelections();
+}
+
+function undo() {
+  if (undoStack.length <= 1) return;
+  const currentState = undoStack.pop();
+  redoStack.push(currentState);
+  const prevState = undoStack[undoStack.length - 1];
+  loadState(prevState);
+}
+
+function redo() {
+  if (redoStack.length === 0) return;
+  const nextState = redoStack.pop();
+  undoStack.push(nextState);
+  loadState(nextState);
+}
+
+saveState();
 
 let lastTime = performance.now();
 function loop(currentTime) {
