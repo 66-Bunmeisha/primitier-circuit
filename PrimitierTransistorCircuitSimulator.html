@@ -17,33 +17,109 @@
       background-color: #1e1e1e; color: #fff; overflow: hidden;
     }
 
-    /* ツールバーの基本スタイル（横スクロール対応） */
-    #toolbar {
-      height: 40px; background-color: #333; display: flex;
-      align-items: center; padding: 0 10px; gap: 8px; box-sizing: border-box;
+    /* ツールバーの基本スタイル */
+#toolbar {
+      height: 42px;
+      background-color: #1e1e2e;
+      border-bottom: 1px solid #2b2b3b;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 6px;
+      box-sizing: border-box;
       overflow-x: auto;
       white-space: nowrap;
     }
-    #toolbar::-webkit-scrollbar {
-      height: 4px;
-    }
-    #toolbar::-webkit-scrollbar-thumb {
-      background: #555;
-      border-radius: 2px;
-    }
+    #toolbar::-webkit-scrollbar { height: 3px; }
+    #toolbar::-webkit-scrollbar-thumb { background: #44445a; border-radius: 2px; }
 
-    /* ボタン・選択ボックスの共通設定 */
-    #toolbar button, #toolbar select {
-      background-color: #444; color: #fff; border: 1px solid #666;
-      padding: 4px 10px; cursor: pointer; border-radius: 4px;
+    /* 共通ボタン・セレクトボックス */
+    #toolbar button, #toolbar select, #file-bar button, #file-bar select {
+      background-color: #2a2a3c;
+      color: #e0e0e0;
+      border: 1px solid #3f3f5a;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 5px;
       flex-shrink: 0;
-      white-space: nowrap;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
-    button:hover { background-color: #555; }
+    #toolbar button:hover, #file-bar button:hover {
+      background-color: #3b3b54;
+      border-color: #5a5a80;
+      color: #fff;
+    }
+    #toolbar button:active, #file-bar button:active {
+      transform: translateY(1px);
+    }
 
+    /* アクセントボタン（テキスト・言語など） */
+    .btn-accent { background-color: #2b5b84 !important; border-color: #3b7baf !important; }
+    .btn-accent:hover { background-color: #356c9c !important; }
+    .btn-danger { background-color: #6e2a2a !important; border-color: #8f3a3a !important; }
+    .btn-danger:hover { background-color: #8c3535 !important; }
+
+    /* 縦区切り線（ディバイダー） */
+    .divider {
+      width: 1px;
+      height: 18px;
+      background-color: #3f3f5a;
+      margin: 0 4px;
+      flex-shrink: 0;
+    }
+
+    /* 2段目ファイル＆速度コントロールバー */
     #file-bar {
-      height: 24px; background-color: #252526; border-bottom: 1px solid #333;
-      display: flex; align-items: center; padding: 0 12px; box-sizing: border-box;
+      height: 32px;
+      background-color: #181824;
+      border-bottom: 1px solid #2b2b3b;
+      display: flex;
+      align-items: center;
+      justify-content: space-between; /* 左右に綺麗に分散 */
+      padding: 0 12px;
+      box-sizing: border-box;
+    }
+
+    /* 2段目の左側（再生・速度エリア） */
+    .file-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* 2段目の右側（ファイル情報・保存エリア：固定位置） */
+    .file-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    /* ファイル名表示エリア（固定幅＆溢れたら省略表示） */
+    .file-info-container {
+      display: inline-flex;
+      align-items: center;
+      background: #11111b;
+      border: 1px solid #2b2b3b;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 11px;
+    }
+    .file-info-label { color: #888; margin-right: 6px; }
+    .file-info-name {
+      color: #00ffcc;
+      max-width: 340px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
+      vertical-align: middle;
     }
     #canvas-container { width: 100vw; height: calc(100vh - 64px); position: relative; }
     canvas { display: block; background-color: #252526; }
@@ -92,7 +168,6 @@
   </style>
 </head>
 <body>
-
 <div id="toolbar">
   <button onclick="addComponent('vcc')" data-i18n="addVcc">+ 電源(VCC)</button>
   <button onclick="addComponent('push_switch')" data-i18n="addBtn">+ トリガーSW</button>
@@ -101,33 +176,52 @@
   <button onclick="addComponent('crystal')" data-i18n="addCrystal">+ 水晶(可変)</button>
   <button onclick="addComponent('pyrite')" data-i18n="addPyrite">+ 黄鉄鉱(ダイオード)</button>
   <button onclick="addComponent('led')" data-i18n="addLed">+ LED</button>
-  <button onclick="addComponent('text')" style="background-color: #2b5b84;" data-i18n="addText">+ テキスト</button>
-  <span style="margin-left: 10px;">|</span>
+  <button onclick="addComponent('text')" class="btn-accent" data-i18n="addText">+ テキスト</button>
+
+  <div class="divider"></div>
+
   <button onclick="resetZoom()">100%</button>
   <button onclick="zoomOut()">－</button>
   <span id="zoom-text" class="info-text">100%</span>
   <button onclick="zoomIn()">＋</button>
   <button onclick="fitCircuitToScreen()" data-i18n="fitView">全体フィット</button>
-  <span style="margin-left: 10px;">|</span>
-  <span class="info-text" style="color: #888; font-weight: bold;">v1.2.0</span>
-  <span style="margin-left: 10px;">|</span>
 
-  <select id="lang-select" onchange="changeLanguage(this.value)" style="margin-left: 10px; background-color: #2b5b84;">
+  <div class="divider"></div>
+
+  <select id="lang-select" onchange="changeLanguage(this.value)" class="btn-accent">
     <option value="ja">日本語</option>
     <option value="en">English</option>
     <option value="ru">Русский</option>
   </select>
 
-  <button onclick="clearCircuit()" style="margin-left:auto; background-color:#822;" data-i18n="clear">クリア</button>
+  <span class="info-text" style="color: #666; font-weight: bold; margin-left: 4px;">v1.2.0</span>
+
+  <button onclick="clearCircuit()" class="btn-danger" style="margin-left:auto;" data-i18n="clear">クリア</button>
 </div>
 
 <div id="file-bar">
-  <span style="font-size: 11px; color: #888; margin-right: 6px;" data-i18n="editingFile">編集中のファイル:</span>
-  <span id="current-file-text" class="info-text file-info" style="margin-right: 12px;">[ circuit.json ]</span>
+  <div class="file-bar-left">
+    <button id="play-pause-btn" onclick="togglePlayPause()" data-i18n="pause">⏸ 一時停止</button>
+    <button id="step-btn" onclick="stepSim()" title="0.1秒分進める" data-i18n="step">⏭ 1チック</button>
+    <select id="speed-select" onchange="changeSpeed(this.value)">
+      <option value="1.0">1.0x</option>
+      <option value="0.5">0.5x</option>
+      <option value="0.2">0.2x</option>
+      <option value="0.1">0.1x</option>
+      <option value="2.0">2.0x</option>
+    </select>
+  </div>
 
-  <button onclick="exportCircuit()" data-i18n="save" style="background-color: #444; color: #fff; border: 1px solid #666; padding: 2px 8px; font-size: 11px; cursor: pointer; border-radius: 3px; margin-right: 6px;">保存 (JSON)</button>
-  <button onclick="document.getElementById('file-input').click()" data-i18n="load" style="background-color: #444; color: #fff; border: 1px solid #666; padding: 2px 8px; font-size: 11px; cursor: pointer; border-radius: 3px;">読み込み</button>
-  <input type="file" id="file-input" style="display:none;" onchange="importCircuit(event)">
+  <div class="file-bar-right">
+    <div class="file-info-container">
+      <span class="file-info-label" data-i18n="editingFile">ファイル:</span>
+      <span id="current-file-text" class="file-info-name">circuit.json</span>
+    </div>
+
+    <button onclick="exportCircuit()" data-i18n="save">保存 (JSON)</button>
+    <button onclick="document.getElementById('file-input').click()" data-i18n="load">読み込み</button>
+    <input type="file" id="file-input" style="display:none;" onchange="importCircuit(event)">
+  </div>
 </div>
 
 <div id="canvas-container">
@@ -171,7 +265,7 @@ const I18N = {
     appTitle: "Primitierトランジスタ回路シミュレータ",
     addVcc: "+ 電源(VCC)", addBtn: "+ トリガーSW", addTr: "+ トランジスタ", addInvTr: "+ 反転トランジスタ",
     addCrystal: "+ 水晶(可変)", addPyrite: "+ 黄鉄鉱(ダイオード)", addLed: "+ LED", addText: "+ テキスト",
-    save: "保存 (JSON)", load: "読み込み", clear: "クリア", editingFile: "編集中のファイル:",
+    save: "保存 (JSON)", load: "読み込み", clear: "クリア", editingFile: "ファイル:",
     fitView: "全体フィット",
     editText: "テキスト編集 (Enterで改行):", fontSize: "文字サイズ (px):", bgColor: "背景色:",
     cancel: "キャンセル", saveBtn: "保存", bringToFront: "最前面へ移動", sendToBack: "最背面へ移動",
@@ -183,13 +277,14 @@ const I18N = {
     promptCrystal: "水晶の厚さを入力してください（cm / 下限1cm）:",
     alertCrystalErr: "1cm以上の数字を入力してくださいのじゃ！",
     loadErr: "読み込み失敗なのじゃ: ",
-    defaultText: "説明テキスト\n(右下ドラッグでサイズ変更)"
+    defaultText: "説明テキスト\n(右下ドラッグでサイズ変更)",
+    play: "▶ 再生", pause: "⏸ 一時停止", step: "⏭ 1チック"
   },
   en: {
     appTitle: "Primitier Transistor Circuit Simulator",
     addVcc: "+ VCC Power", addBtn: "+ Trigger SW", addTr: "+ Transistor", addInvTr: "+ NOT Transistor",
     addCrystal: "+ Crystal (Var)", addPyrite: "+ Pyrite (Diode)", addLed: "+ LED", addText: "+ Text",
-    save: "Save (JSON)", load: "Load", clear: "Clear", editingFile: "Editing File:",
+    save: "Save (JSON)", load: "Load", clear: "Clear", editingFile: "File:",
     fitView: "Fit View",
     editText: "Edit Text (Enter for newline):", fontSize: "Font Size (px):", bgColor: "Background Color:",
     cancel: "Cancel", saveBtn: "Save", bringToFront: "Bring to Front", sendToBack: "Send to Back",
@@ -201,13 +296,14 @@ const I18N = {
     promptCrystal: "Enter crystal thickness (cm / min 1cm):",
     alertCrystalErr: "Please enter a number >= 1cm!",
     loadErr: "Failed to load: ",
-    defaultText: "Description Text\n(Drag bottom-right to resize)"
+    defaultText: "Description Text\n(Drag bottom-right to resize)",
+    play: "▶ Play", pause: "⏸ Pause", step: "⏭ 1-Tick"
   },
   ru: {
     appTitle: "Симулятор транзисторных схем Primitier",
     addVcc: "+ Питание (VCC)", addBtn: "+ Триггер(SW)", addTr: "+ Транзистор", addInvTr: "+ Инв. транзистор",
     addCrystal: "+ Кристалл", addPyrite: "+ Пирит (Диод)", addLed: "+ Светодиод", addText: "+ Текст",
-    save: "Сохранить (JSON)", load: "Загрузить", clear: "Очистить", editingFile: "Редактируемый файл:",
+    save: "Сохранить (JSON)", load: "Загрузить", clear: "Очистить", editingFile: "Файл:",
     fitView: "По размеру экрана",
     editText: "Редактировать текст (Enter для переноса):", fontSize: "Размер шрифта (px):", bgColor: "Цвет фона:",
     cancel: "Отмена", saveBtn: "Сохранить", bringToFront: "На передний план", sendToBack: "На задний план",
@@ -219,7 +315,8 @@ const I18N = {
     promptCrystal: "Введите толщину кристалла (см / мин. 1 см):",
     alertCrystalErr: "Пожалуйста, введите число >= 1 см!",
     loadErr: "Ошибка загрузки: ",
-    defaultText: "Текст описания\n(Потяните за правый нижний угол)"
+    defaultText: "Текст описания\n(Потяните за правый нижний угол)",
+    play: "▶ Пуск", pause: "⏸ Пауза", step: "⏭ 1 такт"
   }
 };
 
@@ -300,6 +397,11 @@ let draggedComponent = null, resizingComponent = null, connectingPin = null;
 let draggedWaypoint = null;
 let rawMousePos = { x: 0, y: 0 }, mousePos = { x: 0, y: 0 };
 let isSelecting = false, selectionStart = { x:0, y:0 }, selectionEnd = { x:0, y:0 };
+
+let isPaused = false;            // 一時停止状態フラグ
+let simSpeed = 1.0;              // 速度倍率 (1.0 = 標準)
+let simAccumulator = 0;          // 時間蓄積用カウンター
+const TICK_TIME = 100;           // 1チックあたりの基本時間 (100ms = 0.1秒)
 
 let selectedComponentIds = new Set();
 let selectedWaypointKeys = new Set();
@@ -543,28 +645,33 @@ class Led extends Component {
   }
 }
 
+// ===================================================================
+// トランジスタ基底クラス
+// ===================================================================
 class BaseTransistor extends Component {
   constructor(id, type, x, y) {
     super(id, type, x, y);
-    this.addPin('in', 'in', 0, snapToGrid(UI.COMP_H/2)); this.addPin('ctrl', 'in', snapToGrid(UI.COMP_W/2), 0); this.addPin('out', 'out', UI.COMP_W, snapToGrid(UI.COMP_H/2));
+    this.addPin('in', 'in', 0, snapToGrid(UI.COMP_H/2));
+    this.addPin('ctrl', 'in', snapToGrid(UI.COMP_W/2), 0);
+    this.addPin('out', 'out', UI.COMP_W, snapToGrid(UI.COMP_H/2));
     this.gateOpen = (type === 'inv_transistor');
-    this.gateTimer = 0;
   }
 }
 
 class Transistor extends BaseTransistor {
   constructor(id, x, y) { super(id, 'transistor', x, y); }
+
   updateTimer(dt) {
     const pCtrl = this.getPin('ctrl');
-    const targetGate = pCtrl.state;
-    if (this.gateOpen !== targetGate) {
-      if (this.gateTimer <= 0) this.gateTimer = 100;
-      else { this.gateTimer -= dt; if (this.gateTimer <= 0) { this.gateOpen = targetGate; this.gateTimer = 0; } }
-    } else this.gateTimer = 0;
+    this.gateOpen = pCtrl.state;
   }
+
   processImmediateLogic() {
     const pIn = this.getPin('in'), pOut = this.getPin('out');
-    if (pIn.state && this.gateOpen && !pOut.state) { pOut.state = true; return true; }
+    if (pIn.state && this.gateOpen && !pOut.state) {
+      pOut.state = true;
+      return true;
+    }
     return false;
   }
   getName() { return t('compTr'); }
@@ -572,47 +679,75 @@ class Transistor extends BaseTransistor {
 
 class InvTransistor extends BaseTransistor {
   constructor(id, x, y) { super(id, 'inv_transistor', x, y); }
+
   updateTimer(dt) {
     const pCtrl = this.getPin('ctrl');
-    const targetGate = !pCtrl.state;
-    if (this.gateOpen !== targetGate) {
-      if (this.gateTimer <= 0) this.gateTimer = 100;
-      else { this.gateTimer -= dt; if (this.gateTimer <= 0) { this.gateOpen = targetGate; this.gateTimer = 0; } }
-    } else this.gateTimer = 0;
+    this.gateOpen = !pCtrl.state;
   }
+
   processImmediateLogic() {
     const pIn = this.getPin('in'), pOut = this.getPin('out');
-    if (pIn.state && this.gateOpen && !pOut.state) { pOut.state = true; return true; }
+    if (pIn.state && this.gateOpen && !pOut.state) {
+      pOut.state = true;
+      return true;
+    }
     return false;
   }
   getName() { return t('compInvTr'); }
 }
 
+// ===================================================================
+// 水晶クラス
+// ===================================================================
 class Crystal extends Component {
   constructor(id, x, y) {
     super(id, 'crystal', x, y);
-    this.addPin('in', 'in', 0, snapToGrid(UI.COMP_H/2)); this.addPin('out', 'out', UI.COMP_W, snapToGrid(UI.COMP_H/2));
-    this.thickness = 1; this.crystalPhase = 'IDLE'; this.crystalTimer = 0;
+    this.addPin('in', 'in', 0, snapToGrid(UI.COMP_H/2));
+    this.addPin('out', 'out', UI.COMP_W, snapToGrid(UI.COMP_H/2));
+    this.thickness = 1;
+    this.crystalPhase = 'IDLE';
+    this.crystalTimer = 0;
   }
+
   updateTimer(dt) {
     const pIn = this.getPin('in');
-    if (!pIn.state) { this.crystalPhase = 'IDLE'; this.crystalTimer = 0; return; }
+    if (!pIn.state) {
+      this.crystalPhase = 'IDLE';
+      return;
+    }
+
     if (this.thickness === 1) {
-      if (this.crystalPhase === 'IDLE') { this.crystalPhase = 'DELAY_START'; this.crystalTimer = 100; }
-      else if (this.crystalPhase === 'DELAY_START') { this.crystalTimer -= dt; if (this.crystalTimer <= 0) this.crystalPhase = 'SUSTAIN'; }
+      if (this.crystalPhase === 'IDLE') {
+        this.crystalPhase = 'SUSTAIN';
+      }
     } else {
-      if (this.crystalPhase === 'IDLE') { this.crystalPhase = 'DELAY_START'; this.crystalTimer = 100; }
-      else if (this.crystalPhase === 'DELAY_START') { this.crystalTimer -= dt; if (this.crystalTimer <= 0) { this.crystalPhase = 'ON_PULSE'; this.crystalTimer = 100; } }
-      else if (this.crystalPhase === 'ON_PULSE') { this.crystalTimer -= dt; if (this.crystalTimer <= 0) { this.crystalPhase = 'OFF_INTERVAL'; this.crystalTimer = 100 + (this.thickness - 2) * 100; } }
-      else if (this.crystalPhase === 'OFF_INTERVAL') { this.crystalTimer -= dt; if (this.crystalTimer <= 0) this.crystalPhase = 'IDLE'; }
+      if (this.crystalPhase === 'IDLE') {
+        this.crystalPhase = 'ON_PULSE';
+        this.crystalTimer = 1;
+      } else if (this.crystalPhase === 'ON_PULSE') {
+        this.crystalPhase = 'OFF_INTERVAL';
+        this.crystalTimer = this.thickness - 1;
+      } else if (this.crystalPhase === 'OFF_INTERVAL') {
+        this.crystalTimer--;
+        if (this.crystalTimer <= 0) {
+          this.crystalPhase = 'ON_PULSE';
+          this.crystalTimer = 1;
+        }
+      }
     }
   }
+
   processImmediateLogic() {
     const pOut = this.getPin('out');
-    const isActive = (this.thickness === 1 && this.crystalPhase === 'SUSTAIN') || (this.thickness !== 1 && this.crystalPhase === 'ON_PULSE');
-    if (isActive && !pOut.state) { pOut.state = true; return true; }
+    const isActive = (this.thickness === 1 && this.crystalPhase === 'SUSTAIN') ||
+                     (this.thickness !== 1 && this.crystalPhase === 'ON_PULSE');
+    if (isActive && !pOut.state) {
+      pOut.state = true;
+      return true;
+    }
     return false;
   }
+
   getName() { return `${t('compCrystal')} (${this.thickness}cm)`; }
   serialize() { const data = super.serialize(); data.thickness = this.thickness; return data; }
   deserialize(data) { super.deserialize(data); this.thickness = data.thickness || 1; }
@@ -771,14 +906,16 @@ function closeTextModal(save) {
 }
 
 // ===================================================================
-// シミュレーション更新 (LED逆流防止・個別判定対応版)
+// シミュレーション更新
 // ===================================================================
 function updateSimulation(dt) {
+
   components.forEach(c => c.resetPins());
 
   let changed = true, loopCount = 0;
   while (changed && loopCount < 100) {
-    changed = false; loopCount++;
+    changed = false;
+    loopCount++;
 
     components.forEach(c => { if (c.processImmediateLogic()) changed = true; });
 
@@ -798,7 +935,6 @@ function updateSimulation(dt) {
 
       pairs.forEach(({ srcComp, srcPin, destComp, destPin }) => {
         if (srcPin.state && !destPin.state) {
-
           if (destComp.type === 'push_switch' && !destComp.switchState) return;
 
           if (isInputPinOfDiodeComp(srcComp, srcPin.id)) {
@@ -821,6 +957,7 @@ function getWirePath(w) {
   const p1 = fromComp.getPinPos(fromComp.getPin(w.fromPinId));
   const p2 = toComp.getPinPos(toComp.getPin(w.toPinId));
   return [p1, ...(w.points || []), p2];
+  components.forEach(c => c.updateTimer(dt));
 }
 
 // ===================================================================
@@ -1178,6 +1315,29 @@ window.addEventListener('keydown', e => {
 });
 window.addEventListener('keyup', e => { if (e.code === 'Space') isSpacePressed = false; });
 
+
+// ===================================================================
+// 再生速度制御
+// ===================================================================
+function togglePlayPause() {
+  isPaused = !isPaused;
+  const btn = document.getElementById('play-pause-btn');
+  if (btn) {
+    const key = isPaused ? 'play' : 'pause';
+    btn.setAttribute('data-i18n', key);
+    btn.textContent = t(key);
+  }
+}
+
+function changeSpeed(val) {
+  simSpeed = parseFloat(val) || 1.0;
+}
+
+function stepSim() {
+  updateSimulation(TICK_TIME);
+  saveState();
+}
+
 // ===================================================================
 // 保存 / 読み込み
 // ===================================================================
@@ -1288,17 +1448,28 @@ saveState();
 
 let lastTime = performance.now();
 function loop(currentTime) {
-  const dt = currentTime - lastTime; lastTime = currentTime;
-  updateSimulation(dt); draw(); requestAnimationFrame(loop);
+  const realDt = currentTime - lastTime;
+  lastTime = currentTime;
+
+  if (!isPaused) {
+    simAccumulator += realDt * simSpeed;
+
+    while (simAccumulator >= TICK_TIME) {
+      updateSimulation(TICK_TIME);
+      simAccumulator -= TICK_TIME;
+    }
+  }
+
+  draw();
+  requestAnimationFrame(loop);
 }
+requestAnimationFrame(loop);
 
 const contextMenuEl = document.getElementById('context-menu');
 contextMenuEl.addEventListener('contextmenu', e => {
   e.preventDefault();
   e.stopPropagation();
 });
-
-requestAnimationFrame(loop);
 </script>
 </body>
 </html>
