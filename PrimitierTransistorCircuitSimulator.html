@@ -1291,6 +1291,13 @@ function loop(currentTime) {
   const dt = currentTime - lastTime; lastTime = currentTime;
   updateSimulation(dt); draw(); requestAnimationFrame(loop);
 }
+
+const contextMenuEl = document.getElementById('context-menu');
+contextMenuEl.addEventListener('contextmenu', e => {
+  e.preventDefault();
+  e.stopPropagation();
+});
+
 requestAnimationFrame(loop);
 </script>
 </body>
