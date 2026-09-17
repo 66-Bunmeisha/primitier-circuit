@@ -95,7 +95,7 @@
 
 <div id="toolbar">
   <button onclick="addComponent('vcc')" data-i18n="addVcc">+ 電源(VCC)</button>
-  <button onclick="addComponent('push_switch')" data-i18n="addBtn">+ 押ボタンSW</button>
+  <button onclick="addComponent('push_switch')" data-i18n="addBtn">+ トリガーSW</button>
   <button onclick="addComponent('transistor')" data-i18n="addTr">+ トランジスタ</button>
   <button onclick="addComponent('inv_transistor')" data-i18n="addInvTr">+ 反転トランジスタ</button>
   <button onclick="addComponent('crystal')" data-i18n="addCrystal">+ 水晶(可変)</button>
@@ -167,7 +167,7 @@
 const I18N = {
   ja: {
     appTitle: "Primitierトランジスタ回路シミュレータ",
-    addVcc: "+ 電源(VCC)", addBtn: "+ 押ボタンSW", addTr: "+ トランジスタ", addInvTr: "+ 反転トランジスタ",
+    addVcc: "+ 電源(VCC)", addBtn: "+ トリガーSW", addTr: "+ トランジスタ", addInvTr: "+ 反転トランジスタ",
     addCrystal: "+ 水晶(可変)", addPyrite: "+ 黄鉄鉱(ダイオード)", addLed: "+ LED", addText: "+ テキスト",
     save: "保存 (JSON)", load: "読み込み", clear: "クリア", editingFile: "編集中のファイル:",
     fitView: "全体フィット",
@@ -175,7 +175,7 @@ const I18N = {
     cancel: "キャンセル", saveBtn: "保存", bringToFront: "最前面へ移動", sendToBack: "最背面へ移動",
     delete: "削除", deleteWire: "電線を削除",
     flip: "左右反転 (R)",
-    compVcc: "電源 (VCC)", compBtn: "押ボタンSW", compTr: "トランジスタ", compInvTr: "反転トランジスタ",
+    compVcc: "電源 (VCC)", compBtn: "トリガーSW", compTr: "トランジスタ", compInvTr: "反転トランジスタ",
     compCrystal: "水晶", compPyrite: "黄鉄鉱 (▶)", compLed: "LED",
     promptFileName: "保存するファイル名を入力してください:",
     promptCrystal: "水晶の厚さを入力してください（cm / 下限1cm）:",
@@ -185,7 +185,7 @@ const I18N = {
   },
   en: {
     appTitle: "Primitier Transistor Circuit Simulator",
-    addVcc: "+ VCC Power", addBtn: "+ Push SW", addTr: "+ Transistor", addInvTr: "+ NOT Transistor",
+    addVcc: "+ VCC Power", addBtn: "+ Trigger SW", addTr: "+ Transistor", addInvTr: "+ NOT Transistor",
     addCrystal: "+ Crystal (Var)", addPyrite: "+ Pyrite (Diode)", addLed: "+ LED", addText: "+ Text",
     save: "Save (JSON)", load: "Load", clear: "Clear", editingFile: "Editing File:",
     fitView: "Fit View",
@@ -193,7 +193,7 @@ const I18N = {
     cancel: "Cancel", saveBtn: "Save", bringToFront: "Bring to Front", sendToBack: "Send to Back",
     delete: "Delete", deleteWire: "Delete Wire",
     flip: "Flip Horizontally (R)",
-    compVcc: "VCC Power", compBtn: "Push SW", compTr: "Transistor", compInvTr: "NOT Transistor",
+    compVcc: "VCC Power", compBtn: "Trigger SW", compTr: "Transistor", compInvTr: "NOT Transistor",
     compCrystal: "Crystal", compPyrite: "Pyrite (▶)", compLed: "LED",
     promptFileName: "Enter file name to save:",
     promptCrystal: "Enter crystal thickness (cm / min 1cm):",
@@ -203,7 +203,7 @@ const I18N = {
   },
   ru: {
     appTitle: "Симулятор транзисторных схем Primitier",
-    addVcc: "+ Питание (VCC)", addBtn: "+ Кнопка SW", addTr: "+ Транзистор", addInvTr: "+ Инв. транзистор",
+    addVcc: "+ Питание (VCC)", addBtn: "+ Триггер(SW)", addTr: "+ Транзистор", addInvTr: "+ Инв. транзистор",
     addCrystal: "+ Кристалл", addPyrite: "+ Пирит (Диод)", addLed: "+ Светодиод", addText: "+ Текст",
     save: "Сохранить (JSON)", load: "Загрузить", clear: "Очистить", editingFile: "Редактируемый файл:",
     fitView: "По размеру экрана",
@@ -211,7 +211,7 @@ const I18N = {
     cancel: "Отмена", saveBtn: "Сохранить", bringToFront: "На передний план", sendToBack: "На задний план",
     delete: "Удалить", deleteWire: "Удалить провод",
     flip: "Отразить по горизонтали (R)",
-    compVcc: "Питание (VCC)", compBtn: "Кнопка SW", compTr: "Транзистор", compInvTr: "Инв. транзистор",
+    compVcc: "Питание (VCC)", compBtn: "Триггер(SW)", compTr: "Транзистор", compInvTr: "Инв. транзистор",
     compCrystal: "Кристалл", compPyrite: "Пирит (▶)", compLed: "Светодиод",
     promptFileName: "Введите имя файла для сохранения:",
     promptCrystal: "Введите толщину кристалла (см / мин. 1 см):",
