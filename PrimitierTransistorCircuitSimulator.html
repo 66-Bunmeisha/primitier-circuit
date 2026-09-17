@@ -257,7 +257,7 @@ const UI = {
     WAYPOINT: '#949494',
     WAYPOINT_BORDER_SEL: '#ffffff', WAYPOINT_BORDER_NORM: '#000000'
   },
-  DIODE_COMPS: ['transistor', 'inv_transistor', 'led'],
+  DIODE_COMPS: ['transistor', 'inv_transistor'],
   INPUT_PINS: ['in', 'ctrl']
 };
 
@@ -688,8 +688,6 @@ function updateSimulation(dt) {
 
       pairs.forEach(({ srcComp, srcPin, destComp, destPin }) => {
         if (srcPin.state && !destPin.state) {
-
-          if (srcComp.type === 'led') return;
 
           if (destComp.type === 'push_switch' && !destComp.switchState) return;
 
