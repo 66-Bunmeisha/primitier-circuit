@@ -8,6 +8,7 @@
 
 ### PrimitierTransistorCircuitSimulator_v1.2.0
 - プリミティアのトランジスタ回路の図面を作成して、ブラウザ上で動作確認できるツールです。
+- **※本ツールは非公式（ファンメイド）の便利ツールであり、ゲーム開発元・公式とは関係ありません。**
 - HTMLファイル単体で動作します。ネットワーク環境不要です。
 - 実際にプリミティアで使うときは、作成した図面を見ながら手動で組み立てる必要があります。
 - 動作確認環境: Windows 11 / Google Chrome
@@ -41,6 +42,7 @@
 
 ### PrimitierTransistorCircuitSimulator_v1.2.0
 - A browser-based simulator for designing and verifying transistor circuits in Primitier.
+- *** Note: This is an unofficial fan-made tool and is not affiliated with the official game developers.**
 - Runs as a standalone HTML file without an internet connection.
 - When building in Primitier, you need to manually assemble the circuit while referencing the diagram.
 - Tested Environment: Windows 11 / Google Chrome
@@ -74,6 +76,7 @@
 
 ### PrimitierTransistorCircuitSimulator_v1.2.0
 - Инструмент для проектирования и проверки транзисторных схем Primitier прямо в браузере.
+- *** Примечание: Это неофициальный фанатский инструмент, который не связан с официальными разработчиками игры.**
 - Работает как автономный HTML-файл без подключения к Интернету.
 - При сборке в Primitier вам потребуется вручную собрать схему, ориентируясь на созданный чертеж.
 - Протестировано в: Windows 11 / Google Chrome
