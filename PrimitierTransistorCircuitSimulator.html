@@ -104,15 +104,12 @@
   <button onclick="addComponent('text')" style="background-color: #2b5b84;" data-i18n="addText">+ テキスト</button>
   <span style="margin-left: 10px;">|</span>
   <button onclick="resetZoom()">100%</button>
+  <button onclick="fitCircuitToScreen()" data-i18n="fitView">全体フィット</button>
   <span id="zoom-text" class="info-text">100%</span>
   <span style="margin-left: 10px;">|</span>
   <span class="info-text" style="color: #888; font-weight: bold;">v1.2.0</span>
   <span style="margin-left: 10px;">|</span>
-  <button onclick="exportCircuit()" data-i18n="save">保存 (JSON)</button>
-  <button onclick="document.getElementById('file-input').click()" data-i18n="load">読み込み</button>
-  <input type="file" id="file-input" style="display:none;" onchange="importCircuit(event)">
 
-  <!-- 言語切替セレクトボックス -->
   <select id="lang-select" onchange="changeLanguage(this.value)" style="margin-left: 10px; background-color: #2b5b84;">
     <option value="ja">日本語</option>
     <option value="en">English</option>
@@ -124,7 +121,11 @@
 
 <div id="file-bar">
   <span style="font-size: 11px; color: #888; margin-right: 6px;" data-i18n="editingFile">編集中のファイル:</span>
-  <span id="current-file-text" class="info-text file-info">[ circuit.json ]</span>
+  <span id="current-file-text" class="info-text file-info" style="margin-right: 12px;">[ circuit.json ]</span>
+
+  <button onclick="exportCircuit()" data-i18n="save" style="background-color: #444; color: #fff; border: 1px solid #666; padding: 2px 8px; font-size: 11px; cursor: pointer; border-radius: 3px; margin-right: 6px;">保存 (JSON)</button>
+  <button onclick="document.getElementById('file-input').click()" data-i18n="load" style="background-color: #444; color: #fff; border: 1px solid #666; padding: 2px 8px; font-size: 11px; cursor: pointer; border-radius: 3px;">読み込み</button>
+  <input type="file" id="file-input" style="display:none;" onchange="importCircuit(event)">
 </div>
 
 <div id="canvas-container">
@@ -169,6 +170,7 @@ const I18N = {
     addVcc: "+ 電源(VCC)", addBtn: "+ 押ボタンSW", addTr: "+ トランジスタ", addInvTr: "+ 反転トランジスタ",
     addCrystal: "+ 水晶(可変)", addPyrite: "+ 黄鉄鉱(ダイオード)", addLed: "+ LED", addText: "+ テキスト",
     save: "保存 (JSON)", load: "読み込み", clear: "クリア", editingFile: "編集中のファイル:",
+    fitView: "全体フィット",
     editText: "テキスト編集 (Enterで改行):", fontSize: "文字サイズ (px):", bgColor: "背景色:",
     cancel: "キャンセル", saveBtn: "保存", bringToFront: "最前面へ移動", sendToBack: "最背面へ移動",
     delete: "削除", deleteWire: "電線を削除",
@@ -186,6 +188,7 @@ const I18N = {
     addVcc: "+ VCC Power", addBtn: "+ Push SW", addTr: "+ Transistor", addInvTr: "+ NOT Transistor",
     addCrystal: "+ Crystal (Var)", addPyrite: "+ Pyrite (Diode)", addLed: "+ LED", addText: "+ Text",
     save: "Save (JSON)", load: "Load", clear: "Clear", editingFile: "Editing File:",
+    fitView: "Fit View",
     editText: "Edit Text (Enter for newline):", fontSize: "Font Size (px):", bgColor: "Background Color:",
     cancel: "Cancel", saveBtn: "Save", bringToFront: "Bring to Front", sendToBack: "Send to Back",
     delete: "Delete", deleteWire: "Delete Wire",
@@ -203,6 +206,7 @@ const I18N = {
     addVcc: "+ Питание (VCC)", addBtn: "+ Кнопка SW", addTr: "+ Транзистор", addInvTr: "+ Инв. транзистор",
     addCrystal: "+ Кристалл", addPyrite: "+ Пирит (Диод)", addLed: "+ Светодиод", addText: "+ Текст",
     save: "Сохранить (JSON)", load: "Загрузить", clear: "Очистить", editingFile: "Редактируемый файл:",
+    fitView: "По размеру экрана",
     editText: "Редактировать текст (Enter для переноса):", fontSize: "Размер шрифта (px):", bgColor: "Цвет фона:",
     cancel: "Отмена", saveBtn: "Сохранить", bringToFront: "На передний план", sendToBack: "На задний план",
     delete: "Удалить", deleteWire: "Удалить провод",
@@ -659,8 +663,74 @@ function clearCircuit() {
   components = []; wires = []; clearSelections(); currentFileName = 'circuit'; updateFileNameDisplay(); hideContextMenu();
   saveState();
 }
-function resetZoom() { scale = 1.0; panX = 0; panY = 0; document.getElementById('zoom-text').textContent = '100%'; }
+
+function resetZoom() {
+  const screenCenterX = canvas.width / 2;
+  const screenCenterY = canvas.height / 2;
+
+  const worldCenterX = (screenCenterX - panX) / scale;
+  const worldCenterY = (screenCenterY - panY) / scale;
+
+  scale = 1.0;
+
+  panX = screenCenterX - worldCenterX * scale;
+  panY = screenCenterY - worldCenterY * scale;
+
+  document.getElementById('zoom-text').textContent = '100%';
+}
+
 function updateFileNameDisplay() { document.getElementById('current-file-text').textContent = `[ ${currentFileName}.json ]`; }
+
+function fitCircuitToScreen(onlyIfOversized = false) {
+  if (components.length === 0) {
+    resetZoom();
+    return;
+  }
+
+  let minX = Infinity, minY = Infinity;
+  let maxX = -Infinity, maxY = -Infinity;
+
+  components.forEach(c => {
+    if (c.x < minX) minX = c.x;
+    if (c.y < minY) minY = c.y;
+    if (c.x + c.width > maxX) maxX = c.x + c.width;
+    if (c.y + c.height > maxY) maxY = c.y + c.height;
+  });
+
+  const margin = 40; // 画面端のマージン(px)
+  const circuitW = maxX - minX;
+  const circuitH = maxY - minY;
+
+  const availW = canvas.width - margin * 2;
+  const availH = canvas.height - margin * 2;
+
+  const currentNeededW = circuitW * scale;
+  const currentNeededH = circuitH * scale;
+  const isOversized = (currentNeededW > availW) || (currentNeededH > availH);
+
+  if (onlyIfOversized && !isOversized) {
+    panX = margin - minX * scale;
+    panY = margin - minY * scale;
+    return;
+  }
+
+  let newScale = Math.min(availW / circuitW, availH / circuitH);
+
+  const minAllowedScale = 0.2;
+  const maxAllowedScale = 1.5;
+
+  if (newScale < minAllowedScale) {
+    scale = minAllowedScale;
+    panX = margin - minX * scale;
+    panY = margin - minY * scale;
+  } else {
+    scale = Math.min(newScale, maxAllowedScale);
+    panX = margin - minX * scale;
+    panY = margin - minY * scale;
+  }
+
+  document.getElementById('zoom-text').textContent = `${Math.round(scale * 100)}%`;
+}
 
 function openTextModal(comp) {
   editingTextComp = comp;
@@ -1094,7 +1164,20 @@ window.addEventListener('keyup', e => { if (e.code === 'Space') isSpacePressed =
 function exportCircuit() {
   let name = prompt(t('promptFileName'), currentFileName); if (name === null) return;
   currentFileName = name.trim().replace(/\.json$/i, '') || 'circuit'; updateFileNameDisplay();
-  const data = { nextId, components: components.map(c => c.serialize()), wires };
+
+  const data = {
+    nextId,
+    components: components.map(c => c.serialize()),
+    wires,
+    viewState: {
+      panX,
+      panY,
+      scale,
+      canvasWidth: canvas.width,
+      canvasHeight: canvas.height
+    }
+  };
+
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = currentFileName + '.json'; a.click(); URL.revokeObjectURL(a.href);
 }
@@ -1114,6 +1197,14 @@ function importCircuit(event) {
       });
       clearSelections();
       clearHistory();
+
+      if (data.viewState) {
+        if (data.viewState.scale !== undefined) scale = data.viewState.scale;
+        if (data.viewState.panX !== undefined) panX = data.viewState.panX;
+        if (data.viewState.panY !== undefined) panY = data.viewState.panY;
+        document.getElementById('zoom-text').textContent = `${Math.round(scale * 100)}%`;
+      }
+
       saveState();
     } catch (err) { alert(t('loadErr') + err.message); }
   };
