@@ -104,8 +104,10 @@
   <button onclick="addComponent('text')" style="background-color: #2b5b84;" data-i18n="addText">+ テキスト</button>
   <span style="margin-left: 10px;">|</span>
   <button onclick="resetZoom()">100%</button>
-  <button onclick="fitCircuitToScreen()" data-i18n="fitView">全体フィット</button>
+  <button onclick="zoomOut()">－</button>
   <span id="zoom-text" class="info-text">100%</span>
+  <button onclick="zoomIn()">＋</button>
+  <button onclick="fitCircuitToScreen()" data-i18n="fitView">全体フィット</button>
   <span style="margin-left: 10px;">|</span>
   <span class="info-text" style="color: #888; font-weight: bold;">v1.2.0</span>
   <span style="margin-left: 10px;">|</span>
@@ -157,7 +159,7 @@
   <div onclick="moveSelectedZOrder('front')" data-i18n="bringToFront">最前面へ移動</div>
   <div onclick="moveSelectedZOrder('back')" data-i18n="sendToBack">最背面へ移動</div>
   <div id="menu-delete-wire" onclick="deleteSelectedWire()" class="danger" style="border-top: 1px solid #444; margin-top: 2px; padding-top: 6px;" data-i18n="deleteWire">電線を削除</div>
-  <div id="menu-delete" onclick="deleteSelectedTarget()" class="danger" data-i18n="delete">削除</div></div>
+  <div id="menu-delete" onclick="deleteSelectedTarget()" class="danger" data-i18n="delete">削除</div>
 </div>
 
 <script>
@@ -677,6 +679,24 @@ function resetZoom() {
   panY = screenCenterY - worldCenterY * scale;
 
   document.getElementById('zoom-text').textContent = '100%';
+}
+
+function zoomIn() {
+  const center = { x: canvas.width / 2, y: canvas.height / 2 };
+  let nScale = Math.min(5.0, scale * 1.2); // 最大500%まで拡大
+  panX = center.x - (center.x - panX) * (nScale / scale);
+  panY = center.y - (center.y - panY) * (nScale / scale);
+  scale = nScale;
+  document.getElementById('zoom-text').textContent = `${Math.round(scale * 100)}%`;
+}
+
+function zoomOut() {
+  const center = { x: canvas.width / 2, y: canvas.height / 2 };
+  let nScale = Math.max(0.2, scale / 1.2); // 最小20%まで縮小
+  panX = center.x - (center.x - panX) * (nScale / scale);
+  panY = center.y - (center.y - panY) * (nScale / scale);
+  scale = nScale;
+  document.getElementById('zoom-text').textContent = `${Math.round(scale * 100)}%`;
 }
 
 function updateFileNameDisplay() { document.getElementById('current-file-text').textContent = `[ ${currentFileName}.json ]`; }
