@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <!--
   ==================================================
   Primitier Transistor Circuit Simulator v1.2.0 (i18n)
@@ -5,7 +6,6 @@
   Development Assist: Google Gemini
   ==================================================
 -->
-<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -155,7 +155,8 @@
   <div onclick="toggleSelectedFlip()" data-i18n="flip">左右反転 (R)</div>
   <div onclick="moveSelectedZOrder('front')" data-i18n="bringToFront">最前面へ移動</div>
   <div onclick="moveSelectedZOrder('back')" data-i18n="sendToBack">最背面へ移動</div>
-  <div onclick="deleteSelectedTarget()" class="danger" style="border-top: 1px solid #444; margin-top: 2px; padding-top: 6px;" data-i18n="delete">削除</div>
+  <div id="menu-delete-wire" onclick="deleteSelectedWire()" class="danger" style="border-top: 1px solid #444; margin-top: 2px; padding-top: 6px;" data-i18n="deleteWire">電線を削除</div>
+  <div id="menu-delete" onclick="deleteSelectedTarget()" class="danger" data-i18n="delete">削除</div></div>
 </div>
 
 <script>
@@ -169,7 +170,8 @@ const I18N = {
     addCrystal: "+ 水晶(可変)", addPyrite: "+ 黄鉄鉱(ダイオード)", addLed: "+ LED", addText: "+ テキスト",
     save: "保存 (JSON)", load: "読み込み", clear: "クリア", editingFile: "編集中のファイル:",
     editText: "テキスト編集 (Enterで改行):", fontSize: "文字サイズ (px):", bgColor: "背景色:",
-    cancel: "キャンセル", saveBtn: "保存", bringToFront: "最前面へ移動", sendToBack: "最背面へ移動", delete: "削除",
+    cancel: "キャンセル", saveBtn: "保存", bringToFront: "最前面へ移動", sendToBack: "最背面へ移動",
+    delete: "削除", deleteWire: "電線を削除",
     flip: "左右反転 (R)",
     compVcc: "電源 (VCC)", compBtn: "押ボタンSW", compTr: "トランジスタ", compInvTr: "反転トランジスタ",
     compCrystal: "水晶", compPyrite: "黄鉄鉱 (▶)", compLed: "LED",
@@ -185,7 +187,8 @@ const I18N = {
     addCrystal: "+ Crystal (Var)", addPyrite: "+ Pyrite (Diode)", addLed: "+ LED", addText: "+ Text",
     save: "Save (JSON)", load: "Load", clear: "Clear", editingFile: "Editing File:",
     editText: "Edit Text (Enter for newline):", fontSize: "Font Size (px):", bgColor: "Background Color:",
-    cancel: "Cancel", saveBtn: "Save", bringToFront: "Bring to Front", sendToBack: "Send to Back", delete: "Delete",
+    cancel: "Cancel", saveBtn: "Save", bringToFront: "Bring to Front", sendToBack: "Send to Back",
+    delete: "Delete", deleteWire: "Delete Wire",
     flip: "Flip Horizontally (R)",
     compVcc: "VCC Power", compBtn: "Push SW", compTr: "Transistor", compInvTr: "NOT Transistor",
     compCrystal: "Crystal", compPyrite: "Pyrite (▶)", compLed: "LED",
@@ -201,7 +204,8 @@ const I18N = {
     addCrystal: "+ Кристалл", addPyrite: "+ Пирит (Диод)", addLed: "+ Светодиод", addText: "+ Текст",
     save: "Сохранить (JSON)", load: "Загрузить", clear: "Очистить", editingFile: "Редактируемый файл:",
     editText: "Редактировать текст (Enter для переноса):", fontSize: "Размер шрифта (px):", bgColor: "Цвет фона:",
-    cancel: "Отмена", saveBtn: "Сохранить", bringToFront: "На передний план", sendToBack: "На задний план", delete: "Удалить",
+    cancel: "Отмена", saveBtn: "Сохранить", bringToFront: "На передний план", sendToBack: "На задний план",
+    delete: "Удалить", deleteWire: "Удалить провод",
     flip: "Отразить по горизонтали (R)",
     compVcc: "Питание (VCC)", compBtn: "Кнопка SW", compTr: "Транзистор", compInvTr: "Инв. транзистор",
     compCrystal: "Кристалл", compPyrite: "Пирит (▶)", compLed: "Светодиод",
@@ -343,6 +347,22 @@ function deleteSelectedTarget() {
       clearSelections();
     }
     saveState();
+  }
+  hideContextMenu();
+}
+
+function deleteSelectedWire() {
+  if (rightClickTarget) {
+    if (rightClickTarget.type === 'waypoint') {
+      const targetWire = rightClickTarget.wire;
+      wires = wires.filter(w => w !== targetWire);
+      clearSelections();
+      saveState();
+    } else if (rightClickTarget.type === 'wire') {
+      wires.splice(rightClickTarget.wireIndex, 1);
+      clearSelections();
+      saveState();
+    }
   }
   hideContextMenu();
 }
@@ -896,6 +916,20 @@ canvas.addEventListener('mousedown', e => {
     }
     if (rightClickTarget) {
       const menu = document.getElementById('context-menu');
+      const deleteWireBtn = document.getElementById('menu-delete-wire');
+      const deleteBtn = document.getElementById('menu-delete');
+
+      if (rightClickTarget.type === 'component') {
+        if (deleteWireBtn) deleteWireBtn.style.display = 'none';
+        if (deleteBtn) deleteBtn.style.display = 'block';
+      } else if (rightClickTarget.type === 'waypoint') {
+        if (deleteWireBtn) deleteWireBtn.style.display = 'block';
+        if (deleteBtn) deleteBtn.style.display = 'block';
+      } else if (rightClickTarget.type === 'wire') {
+        if (deleteWireBtn) deleteWireBtn.style.display = 'block';
+        if (deleteBtn) deleteBtn.style.display = 'none';
+      }
+
       menu.style.left = `${e.clientX}px`; menu.style.top = `${e.clientY}px`; menu.style.display = 'flex';
     }
   }
