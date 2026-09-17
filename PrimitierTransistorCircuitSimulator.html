@@ -169,14 +169,14 @@
 </head>
 <body>
 <div id="toolbar">
-  <button onclick="addComponent('vcc')" data-i18n="addVcc">+ 電源(VCC)</button>
-  <button onclick="addComponent('push_switch')" data-i18n="addBtn">+ トリガーSW</button>
-  <button onclick="addComponent('transistor')" data-i18n="addTr">+ トランジスタ</button>
-  <button onclick="addComponent('inv_transistor')" data-i18n="addInvTr">+ 反転トランジスタ</button>
-  <button onclick="addComponent('crystal')" data-i18n="addCrystal">+ 水晶(可変)</button>
-  <button onclick="addComponent('pyrite')" data-i18n="addPyrite">+ 黄鉄鉱(ダイオード)</button>
-  <button onclick="addComponent('led')" data-i18n="addLed">+ LED</button>
-  <button onclick="addComponent('text')" class="btn-accent" data-i18n="addText">+ テキスト</button>
+  <button onclick="addComponent('vcc')" data-i18n-title="tipVcc" data-i18n="addVcc">+ 電源(VCC)</button>
+  <button onclick="addComponent('push_switch')" data-i18n-title="tipBtn" data-i18n="addBtn">+ トリガーSW</button>
+  <button onclick="addComponent('transistor')" data-i18n-title="tipTr" data-i18n="addTr">+ トランジスタ</button>
+  <button onclick="addComponent('inv_transistor')" data-i18n-title="tipInvTr" data-i18n="addInvTr">+ 反転トランジスタ</button>
+  <button onclick="addComponent('crystal')" data-i18n-title="tipCrystal" data-i18n="addCrystal">+ 水晶(可変)</button>
+  <button onclick="addComponent('pyrite')" data-i18n-title="tipPyrite" data-i18n="addPyrite">+ 黄鉄鉱(ダイオード)</button>
+  <button onclick="addComponent('led')" data-i18n-title="tipLed" data-i18n="addLed">+ LED</button>
+  <button onclick="addComponent('text')" data-i18n-title="tipText" class="btn-accent" data-i18n="addText">+ テキスト</button>
 
   <div class="divider"></div>
 
@@ -199,10 +199,11 @@
   <button onclick="clearCircuit()" class="btn-danger" style="margin-left:auto;" data-i18n="clear">クリア</button>
 </div>
 
+<!-- 2段目：1チックボタンのクリック演出対応バー -->
 <div id="file-bar">
   <div class="file-bar-left">
     <button id="play-pause-btn" onclick="togglePlayPause()" data-i18n="pause">⏸ 一時停止</button>
-    <button id="step-btn" onclick="stepSim()" title="0.1秒分進める" data-i18n="step">⏭ 1チック</button>
+    <button id="step-btn" onclick="stepSim()" data-i18n-title="tipStep" data-i18n="step">⏭ 1チック</button>
     <select id="speed-select" onchange="changeSpeed(this.value)">
       <option value="1.0">1.0x</option>
       <option value="0.5">0.5x</option>
@@ -278,7 +279,16 @@ const I18N = {
     alertCrystalErr: "1cm以上の数字を入力してくださいのじゃ！",
     loadErr: "読み込み失敗なのじゃ: ",
     defaultText: "説明テキスト\n(右下ドラッグでサイズ変更)",
-    play: "▶ 再生", pause: "⏸ 一時停止", step: "⏭ 1チック"
+    play: "▶ 再生", pause: "⏸ 一時停止", step: "⏭ 1チック",
+    tipVcc: "電源(VCC)を追加 (ショートカット: 1)",
+    tipBtn: "トリガーSWを追加 (ショートカット: 2)",
+    tipTr: "トランジスタを追加 (ショートカット: 3)",
+    tipInvTr: "反転トランジスタを追加 (ショートカット: 4)",
+    tipCrystal: "水晶(可変)を追加 (ショートカット: 5)",
+    tipPyrite: "黄鉄鉱(ダイオード)を追加 (ショートカット: 6)",
+    tipLed: "LEDを追加 (ショートカット: 7)",
+    tipText: "テキストを追加 (ショートカット: 8)",
+    tipStep: "0.1秒分進める (ショートカット: N)"
   },
   en: {
     appTitle: "Primitier Transistor Circuit Simulator",
@@ -297,7 +307,16 @@ const I18N = {
     alertCrystalErr: "Please enter a number >= 1cm!",
     loadErr: "Failed to load: ",
     defaultText: "Description Text\n(Drag bottom-right to resize)",
-    play: "▶ Play", pause: "⏸ Pause", step: "⏭ 1-Tick"
+    play: "▶ Play", pause: "⏸ Pause", step: "⏭ 1-Tick",
+    tipVcc: "Add VCC Power (Shortcut: 1)",
+    tipBtn: "Add Trigger SW (Shortcut: 2)",
+    tipTr: "Add Transistor (Shortcut: 3)",
+    tipInvTr: "Add NOT Transistor (Shortcut: 4)",
+    tipCrystal: "Add Crystal (Shortcut: 5)",
+    tipPyrite: "Add Pyrite (Shortcut: 6)",
+    tipLed: "Add LED (Shortcut: 7)",
+    tipText: "Add Text (Shortcut: 8)",
+    tipStep: "Step 0.1s (Shortcut: N)"
   },
   ru: {
     appTitle: "Симулятор транзисторных схем Primitier",
@@ -316,7 +335,16 @@ const I18N = {
     alertCrystalErr: "Пожалуйста, введите число >= 1 см!",
     loadErr: "Ошибка загрузки: ",
     defaultText: "Текст описания\n(Потяните за правый нижний угол)",
-    play: "▶ Пуск", pause: "⏸ Пауза", step: "⏭ 1 такт"
+    play: "▶ Пуск", pause: "⏸ Пауза", step: "⏭ 1 такт",
+    tipVcc: "Добавить VCC (Ярлык: 1)",
+    tipBtn: "Добавить Триггер (Ярлык: 2)",
+    tipTr: "Добавить Транзистор (Ярлык: 3)",
+    tipInvTr: "Добавить Инв. транзистор (Ярлык: 4)",
+    tipCrystal: "Добавить Кристалл (Ярлык: 5)",
+    tipPyrite: "Добавить Пирит (Ярлык: 6)",
+    tipLed: "Добавить Светодиод (Ярлык: 7)",
+    tipText: "Добавить Текст (Ярлык: 8)",
+    tipStep: "Шаг 0.1с (Ярлык: N)"
   }
 };
 
@@ -326,10 +354,17 @@ function t(key) { return (I18N[currentLang] && I18N[currentLang][key]) || I18N['
 function changeLanguage(lang) {
   currentLang = lang;
   document.title = t('appTitle');
+
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (key) el.textContent = t(key);
   });
+
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const key = el.getAttribute('data-i18n-title');
+    if (key) el.title = t(key);
+  });
+
   try { localStorage.setItem('primitier_simulator_lang', lang); } catch (e) {}
 }
 
@@ -788,11 +823,21 @@ function createComponentObj(type, id, x, y) {
   }
 }
 
-function addComponent(type) {
-  const center = screenToWorld(canvas.width / 2, canvas.height / 2);
-  const snapX = snapToGrid(center.x - 50);
-  const snapY = snapToGrid(center.y - 25);
-  components.push(createComponentObj(type, nextId++, snapX, snapY));
+function addComponent(type, atCursor = false) {
+  let targetX, targetY;
+
+  const isMouseInCanvas = (rawMousePos.x >= 0 && rawMousePos.x <= canvas.width && rawMousePos.y >= 0 && rawMousePos.y <= canvas.height);
+
+  if (atCursor && isMouseInCanvas) {
+    targetX = snapToGrid(mousePos.x - UI.COMP_W / 2);
+    targetY = snapToGrid(mousePos.y - UI.COMP_H / 2);
+  } else {
+    const center = screenToWorld(canvas.width / 2, canvas.height / 2);
+    targetX = snapToGrid(center.x - UI.COMP_W / 2);
+    targetY = snapToGrid(center.y - UI.COMP_H / 2);
+  }
+
+  components.push(createComponentObj(type, nextId++, targetX, targetY));
   saveState();
 }
 
@@ -1289,7 +1334,42 @@ function pasteComponents() {
 
 window.addEventListener('keydown', e => {
   if (document.getElementById('text-modal').style.display === 'flex') return;
+
+  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+
   if (e.code === 'Space') isSpacePressed = true;
+
+  const compKeys = {
+    'Digit1': 'vcc',
+    'Digit2': 'push_switch',
+    'Digit3': 'transistor',
+    'Digit4': 'inv_transistor',
+    'Digit5': 'crystal',
+    'Digit6': 'pyrite',
+    'Digit7': 'led',
+    'Digit8': 'text'
+  };
+  if (compKeys[e.code]) {
+    e.preventDefault();
+    addComponent(compKeys[e.code], true);
+    return;
+  }
+
+  if (e.key === 'n' || e.key === 'N' || e.code === 'KeyN') {
+    e.preventDefault();
+    stepSim();
+
+    const stepButton = document.getElementById('step-btn');
+    if (stepButton) {
+      stepButton.focus();
+
+      setTimeout(() => {
+        stepButton.blur();
+      }, 150);
+    }
+    return;
+  }
+
   if (e.key === 'r' || e.key === 'R' || e.code === 'KeyR') {
     e.preventDefault();
     toggleSelectedFlip();
