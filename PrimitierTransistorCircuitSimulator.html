@@ -886,6 +886,18 @@ class Crystal extends Component {
   }
 
   getName() { return `${t('compCrystal')} (${this.thickness}cm)`; }
+
+  drawCustom(ctx, scale) {
+    ctx.fillStyle = UI.COLOR.LED_OFF;
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.strokeRect(this.x, this.y, this.width, this.height);
+
+    ctx.fillStyle = '#000000';
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(this.getName(), this.x + this.width / 2, this.y + this.height / 2 + 4);
+  }
+
   serialize() { const data = super.serialize(); data.thickness = this.thickness; return data; }
   deserialize(data) { super.deserialize(data); this.thickness = data.thickness || 1; }
 }
