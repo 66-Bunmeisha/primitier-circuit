@@ -232,17 +232,29 @@
 </div>
 
 <div id="text-modal">
-  <div id="text-modal-content">
+  <div id="text-modal-content" style="max-height: 85vh; overflow-y: auto;">
     <label style="font-size: 14px; font-weight: bold;" data-i18n="editText">テキスト編集 (Enterで改行):</label>
     <textarea id="text-modal-input"></textarea>
+
     <div class="style-setting-row">
       <label data-i18n="fontSize">文字サイズ (px):</label>
       <input type="number" id="text-modal-size" min="8" max="72" value="13">
     </div>
+
     <div class="style-setting-row">
       <label data-i18n="bgColor">背景色:</label>
       <input type="color" id="text-modal-color" value="#2b3a4a">
     </div>
+
+    <div class="style-setting-row">
+      <label>背景画像:</label>
+      <div style="display: flex; flex-direction: column; gap: 4px; flex: 1;">
+        <input type="text" id="text-modal-image-display" placeholder="URLを手入力 または下のボタンで選択" style="width: 100%; background:#1e1e1e; color:#fff; border:1px solid #666; padding:4px; border-radius:4px; box-sizing: border-box;">
+        <input type="file" id="text-modal-image-file" accept="image/*" onchange="handleImageFileSelect(event)" style="font-size: 11px; color: #ccc;">
+      </div>
+    </div>
+
+    <!-- 下部の操作ボタンエリア -->
     <div class="buttons">
       <button onclick="closeTextModal(false)" data-i18n="cancel">キャンセル</button>
       <button onclick="closeTextModal(true)" style="background-color: #007acc;" data-i18n="saveBtn">保存</button>
@@ -902,25 +914,166 @@ class Crystal extends Component {
   deserialize(data) { super.deserialize(data); this.thickness = data.thickness || 1; }
 }
 
+// ===================================================================
+// テキストコンポーネントクラス
+// ===================================================================
 class TextComp extends Component {
   constructor(id, x, y) {
     super(id, 'text', x, y);
-    this.width = UI.TEXT_W; this.height = UI.TEXT_H;
-    this.text = t('defaultText'); this.fontSize = 13; this.bgColor = UI.COLOR.TEXT_DEF_BG;
+    this.width = UI.TEXT_W;
+    this.height = UI.TEXT_H;
+    this.text = t('defaultText');
+    this.fontSize = 13;
+    this.bgColor = UI.COLOR.TEXT_DEF_BG;
+    this.bgImage = '';
+    this.imgObj = null;
+    this.imgError = false;
   }
+
+setBgImage(src) {
+    this.bgImage = src || '';
+    this.imgError = false;
+
+    if (this.bgImage) {
+      const img = new Image();
+      img.onload = () => {
+        this.imgObj = img;
+        this.imgError = false;
+        draw();
+      };
+      img.onerror = () => {
+        this.imgObj = null;
+        this.imgError = true;
+        draw();
+      };
+      img.src = this.bgImage;
+    } else {
+      this.imgObj = null;
+      draw();
+    }
+  }
+
   draw(ctx, isSelected, scale) {
     ctx.fillStyle = this.bgColor;
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+
+    if (this.imgObj && this.imgObj.complete && this.imgObj.naturalWidth !== 0) {
+      const imgW = this.imgObj.naturalWidth;
+      const imgH = this.imgObj.naturalHeight;
+      const imgAspect = imgW / imgH;
+      const compAspect = this.width / this.height;
+      let drawW, drawH, drawX, drawY;
+
+      if (compAspect > imgAspect) {
+        drawH = this.height;
+        drawW = this.height * imgAspect;
+        drawX = this.x + (this.width - drawW) / 2;
+        drawY = this.y;
+      } else {
+        drawW = this.width;
+        drawH = this.width / imgAspect;
+        drawX = this.x;
+        drawY = this.y + (this.height - drawH) / 2;
+      }
+      ctx.drawImage(this.imgObj, drawX, drawY, drawW, drawH);
+    }
+
     ctx.strokeStyle = isSelected ? UI.COLOR.BORDER_SEL : '#ffcc00';
-    ctx.lineWidth = (isSelected ? 2 : 1) / scale; ctx.setLineDash([4 / scale, 2 / scale]);
-    ctx.fillRect(this.x, this.y, this.width, this.height); ctx.strokeRect(this.x, this.y, this.width, this.height);
+    ctx.lineWidth = (isSelected ? 2 : 1) / scale;
+    ctx.setLineDash([4 / scale, 2 / scale]);
+    ctx.strokeRect(this.x, this.y, this.width, this.height);
     ctx.setLineDash([]);
-    ctx.fillStyle = '#ffffff'; ctx.font = `${this.fontSize}px sans-serif`; ctx.textAlign = 'left';
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = `${this.fontSize}px sans-serif`;
+    ctx.textAlign = 'left';
     const lines = this.text.split('\n'), lh = this.fontSize * 1.3;
     lines.forEach((line, idx) => ctx.fillText(line, this.x + 8, this.y + this.fontSize + 6 + idx * lh));
-    if (isSelected) { ctx.fillStyle = UI.COLOR.BORDER_SEL; ctx.fillRect(this.x + this.width - 8, this.y + this.height - 8, 8, 8); }
+
+    if (this.imgError) {
+      ctx.fillStyle = 'rgba(255, 60, 60, 0.9)';
+      ctx.fillRect(this.x + 2, this.y + 2, this.width - 4, this.height - 4);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('× 画像読込エラー', this.x + this.width / 2, this.y + this.height / 2 + 5);
+    }
+
+    if (isSelected) {
+      ctx.fillStyle = UI.COLOR.BORDER_SEL;
+      ctx.fillRect(this.x + this.width - 8, this.y + this.height - 8, 8, 8);
+    }
   }
-  serialize() { const d = super.serialize(); d.text = this.text; d.fontSize = this.fontSize; d.bgColor = this.bgColor; return d; }
-  deserialize(data) { super.deserialize(data); this.text = data.text || ''; this.fontSize = data.fontSize || 13; this.bgColor = data.bgColor || UI.COLOR.TEXT_DEF_BG; }
+
+  serialize() {
+    const d = super.serialize();
+    d.text = this.text;
+    d.fontSize = this.fontSize;
+    d.bgColor = this.bgColor;
+    d.bgImage = this.bgImage;
+    return d;
+  }
+
+  deserialize(data) {
+    super.deserialize(data);
+    this.text = data.text || '';
+    this.fontSize = data.fontSize || 13;
+    this.bgColor = data.bgColor || UI.COLOR.TEXT_DEF_BG;
+    this.setBgImage(data.bgImage || '');
+  }
+}
+
+// ===================================================================
+// モーダル表示・画像ファイル読み込み処理
+// ===================================================================
+let currentLoadedBase64 = '';
+
+function handleImageFileSelect(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    currentLoadedBase64 = e.target.result;
+    document.getElementById('text-modal-image-display').value = `[選択済み: ${file.name}]`;
+  };
+  reader.readAsDataURL(file);
+}
+
+function openTextModal(comp) {
+  editingTextComp = comp;
+  document.getElementById('text-modal-input').value = comp.text;
+  document.getElementById('text-modal-size').value = comp.fontSize;
+  document.getElementById('text-modal-color').value = comp.bgColor;
+
+  const isBase64 = comp.bgImage && comp.bgImage.startsWith('data:');
+  document.getElementById('text-modal-image-display').value = isBase64 ? "[PCから画像を設定済み]" : (comp.bgImage || '');
+
+  currentLoadedBase64 = '';
+  document.getElementById('text-modal-image-file').value = '';
+  document.getElementById('text-modal').style.display = 'flex';
+  document.getElementById('text-modal-input').focus();
+}
+
+function closeTextModal(save) {
+  if (save && editingTextComp) {
+    editingTextComp.text = document.getElementById('text-modal-input').value;
+    editingTextComp.fontSize = parseInt(document.getElementById('text-modal-size').value, 10);
+    editingTextComp.bgColor = document.getElementById('text-modal-color').value;
+
+    const displayVal = document.getElementById('text-modal-image-display').value.trim();
+
+    if (currentLoadedBase64) {
+      editingTextComp.setBgImage(currentLoadedBase64);
+    } else if (displayVal !== "[PCから画像を設定済み]") {
+      editingTextComp.setBgImage(displayVal);
+    }
+
+    saveState();
+  }
+  document.getElementById('text-modal').style.display = 'none';
+  editingTextComp = null;
+  draw();
 }
 
 function createComponentObj(type, id, x, y) {
@@ -1067,24 +1220,6 @@ function fitCircuitToScreen(onlyIfOversized = false) {
   document.getElementById('zoom-text').textContent = `${Math.round(scale * 100)}%`;
 }
 
-function openTextModal(comp) {
-  editingTextComp = comp;
-  document.getElementById('text-modal-input').value = comp.text;
-  document.getElementById('text-modal-size').value = comp.fontSize;
-  document.getElementById('text-modal-color').value = comp.bgColor;
-  document.getElementById('text-modal').style.display = 'flex';
-  document.getElementById('text-modal-input').focus();
-}
-function closeTextModal(save) {
-  if (save && editingTextComp) {
-    editingTextComp.text = document.getElementById('text-modal-input').value;
-    editingTextComp.fontSize = parseInt(document.getElementById('text-modal-size').value, 10);
-    editingTextComp.bgColor = document.getElementById('text-modal-color').value;
-    saveState();
-  }
-  document.getElementById('text-modal').style.display = 'none'; editingTextComp = null;
-}
-
 // ===================================================================
 // シミュレーション更新
 // ===================================================================
@@ -1143,6 +1278,30 @@ function getWirePath(w) {
 }
 
 // ===================================================================
+// 電線の通電判定ロジック
+// ===================================================================
+function checkWireActive(w, fromComp, toComp) {
+  const p1 = fromComp ? fromComp.getPin(w.fromPinId) : null;
+  const p2 = toComp ? toComp.getPin(w.toPinId) : null;
+  if (!p1 || !p2) return false;
+
+  if (p1.state && p2.state) return true;
+
+  const checkSource = (srcComp, srcPinId, destComp, destPinId) => {
+    const pin = srcComp ? srcComp.getPin(srcPinId) : null;
+    if (!pin || !pin.state) return false;
+
+    if (isInputPinOfDiodeComp(srcComp, srcPinId)) {
+      return destPinId !== 'out';
+    }
+    return true;
+  };
+
+  return checkSource(fromComp, w.fromPinId, toComp, w.toPinId) ||
+         checkSource(toComp, w.toPinId, fromComp, w.fromPinId);
+}
+
+// ===================================================================
 // 描画
 // ===================================================================
 function draw() {
@@ -1156,27 +1315,7 @@ function draw() {
     if (path.length < 2) return;
     const fromComp = components.find(c => c.id === w.fromCompId);
     const toComp = components.find(c => c.id === w.toCompId);
-
-    const isWireActive = (() => {
-      const p1 = fromComp ? fromComp.getPin(w.fromPinId) : null;
-      const p2 = toComp ? toComp.getPin(w.toPinId) : null;
-      if (!p1 || !p2) return false;
-
-      if (p1.state && p2.state) return true;
-
-      const checkSource = (srcComp, srcPinId, destComp, destPinId) => {
-        const pin = srcComp ? srcComp.getPin(srcPinId) : null;
-        if (!pin || !pin.state) return false;
-
-        if (isInputPinOfDiodeComp(srcComp, srcPinId)) {
-          return destPinId !== 'out';
-        }
-        return true;
-      };
-
-      return checkSource(fromComp, w.fromPinId, toComp, w.toPinId) ||
-             checkSource(toComp, w.toPinId, fromComp, w.fromPinId);
-    })();
+    const isWireActive = checkWireActive(w, fromComp, toComp);
 
     ctx.beginPath();
     ctx.moveTo(path[0].x, path[0].y);
