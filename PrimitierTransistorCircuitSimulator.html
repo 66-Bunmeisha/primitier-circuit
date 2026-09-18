@@ -18,7 +18,7 @@
     }
 
     /* ツールバーの基本スタイル */
-#toolbar {
+    #toolbar {
       height: 42px;
       background-color: #1e1e2e;
       border-bottom: 1px solid #2b2b3b;
@@ -396,7 +396,8 @@ const UI = {
   PIN_R: 6, WAYPOINT_R: 5,
   WIRE_W: 5, WIRE_DASH_W: 2,
   COLOR: {
-    COMP_BG: '#4a4a58', BORDER_NORM: '#777788', BORDER_SEL: '#00aaff',
+    COMP_BG: '#4a4a58', PYRITE_BG: '#636300',
+    BORDER_NORM: '#777788', BORDER_SEL: '#00aaff',
     PIN_ON: '#fbff87', PIN_OFF: '#888', WIRE_ON: '#fbff87', WIRE_OFF: '#888',
     LED_ON: '#ffffff', LED_OFF: '#909090', TEXT_DEF_BG: '#2b3a4a',
     WAYPOINT: '#949494',
@@ -570,11 +571,17 @@ class Component {
     ctx.fillRect(this.x, this.y, this.width, this.height);
     ctx.strokeRect(this.x, this.y, this.width, this.height);
 
-    ctx.fillStyle = '#fff'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText(this.getName(), this.x + this.width / 2, this.y + this.height / 2 + 4);
+    if (this.drawCustom === Component.prototype.drawCustom) {
+      ctx.fillStyle = '#fff';
+      ctx.font = '12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(this.getName(), this.x + this.width / 2, this.y + this.height / 2 + 4);
+    }
 
     if (this.flipped) {
-      ctx.fillStyle = '#ffaa00'; ctx.font = '10px sans-serif'; ctx.textAlign = 'right';
+      ctx.fillStyle = '#ffaa00';
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'right';
       ctx.fillText('[R]', this.x + this.width - 4, this.y + 12);
     }
 
@@ -587,10 +594,16 @@ class Component {
 
     this.pins.forEach(p => {
       const pos = this.getPinPos(p);
-      ctx.beginPath(); ctx.arc(pos.x, pos.y, UI.PIN_R, 0, Math.PI * 2);
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, UI.PIN_R, 0, Math.PI * 2);
       ctx.fillStyle = p.state ? UI.COLOR.PIN_ON : UI.COLOR.PIN_OFF;
-      ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1 / scale; ctx.stroke();
-      ctx.fillStyle = '#aaa'; ctx.font = '9px sans-serif'; ctx.textAlign = 'center';
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1 / scale;
+      ctx.stroke();
+      ctx.fillStyle = '#aaa';
+      ctx.font = '9px sans-serif';
+      ctx.textAlign = 'center';
       ctx.fillText(p.id, pos.x, pos.y - 8);
     });
   }
@@ -673,6 +686,35 @@ class Pyrite extends Component {
 
   getName() {
     return this.flipped ? "黄鉄鉱 (◀)" : t('compPyrite');
+  }
+
+  drawCustom(ctx, scale) {
+    ctx.fillStyle = UI.COLOR.PYRITE_BG;
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.strokeRect(this.x, this.y, this.width, this.height);
+
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+
+    let displayText = this.getName();
+    let fontSize = 12;
+
+    if (this.width <= 50) {
+      displayText = this.flipped ? "黄 (◀)" : "黄 (▶)";
+      fontSize = 9;
+    } else if (this.width < 80) {
+      fontSize = 10;
+    }
+
+    ctx.font = `${fontSize}px sans-serif`;
+    ctx.fillText(displayText, this.x + this.width / 2, this.y + this.height / 2 + 3);
+
+    if (this.flipped) {
+      ctx.fillStyle = '#ffaa00';
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('[R]', this.x + this.width - 4, this.y + 12);
+    }
   }
 }
 
