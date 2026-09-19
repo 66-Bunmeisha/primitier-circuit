@@ -6,7 +6,7 @@
 
 ## 日本語
 
-### PrimitierTransistorCircuitSimulator_v1.2.0
+### PrimitierTransistorCircuitSimulator
 - プリミティアのトランジスタ回路の図面を作成して、ブラウザ上で動作確認できるツールです。
 - **※本ツールは非公式（ファンメイド）の便利ツールであり、ゲーム開発元・公式とは関係ありません。**
 - HTMLファイル単体で動作します。ネットワーク環境不要です。
@@ -45,7 +45,7 @@
 
 ## English
 
-### PrimitierTransistorCircuitSimulator_v1.2.0
+### PrimitierTransistorCircuitSimulator
 - A browser-based simulator for designing and verifying transistor circuits in Primitier.
 - ***Note: This is an unofficial fan-made tool and is not affiliated with the official game developers.**
 - Runs as a standalone HTML file without an internet connection.
@@ -84,7 +84,7 @@
 
 ## Русский
 
-### PrimitierTransistorCircuitSimulator_v1.2.0
+### PrimitierTransistorCircuitSimulator
 - Инструмент для проектирования и проверки транзисторных схем Primitier прямо в браузере.
 - ***Примечание: Это неофициальный фанатский инструмент, который не связан с официальными разработчиками игры.**
 - Работает как автономный HTML-файл без подключения к Интернету.
@@ -118,3 +118,8 @@
 - `Ctrl + C` (Cmd + C): Копировать выделенные элементы
 - `Ctrl + V` (Cmd + V): Вставить в позиции курсора (работает между вкладками)
 - `Delete` / `Backspace`: Удалить выделенные элементы
+
+### 更新履歴 (Change Log)
+- **v1.2.0** :(2026-09-19) 範囲選択、コピペ、電線の折り曲げ、ショートカットキー追加。オブジェクト構造強化。トリガー・黄鉄鉱・水晶・LEDのデザイン変更。シミュレーション速度調整機能、コマ送り（1チック）機能の追加。描画処理の高速化、テキストコンポーネントの画像読み込みロジックの最適化。
+- **v1.1.0**:(2026-09-16) 多言語対応(JA/EN/RU)
+- **v1.0.0**:(2026-09-14) 初版

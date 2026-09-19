@@ -146,6 +146,27 @@
     .style-setting-row input[type="color"] { border: none; width: 32px; height: 32px; cursor: pointer; background: none; }
     #text-modal .buttons { display: flex; justify-content: flex-end; gap: 8px; margin-top: 5px; }
 
+    #count-modal {
+      display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.6); z-index: 1000; justify-content: center; align-items: center;
+    }
+    #count-modal-content {
+      background: #2d2d2d; padding: 20px; border-radius: 8px;
+      border: 1px solid #555; display: flex; flex-direction: column; width: 300px;
+    }
+    .count-item {
+      display: flex; justify-content: space-between; border-bottom: 1px solid #444; padding: 6px 0; font-size: 14px;
+    }
+    .count-item:last-child {
+      border-bottom: none;
+    }
+    .count-item:nth-last-child(2) {
+      border-bottom: none;
+    }
+    .count-total {
+      font-weight: bold; border-top: 2px solid #666; margin-top: 5px; padding-top: 5px; color: #00ffcc;
+    }
+
     /* 右クリックメニュー */
     #context-menu {
       display: none; position: fixed; background: #2d2d2d; border: 1px solid #555;
@@ -176,6 +197,7 @@
   <button onclick="addComponent('transistor')" data-i18n-title="tipTr" data-i18n="addTr">+ トランジスタ</button>
   <button onclick="addComponent('inv_transistor')" data-i18n-title="tipInvTr" data-i18n="addInvTr">+ 反転トランジスタ</button>
   <button onclick="addComponent('crystal')" data-i18n-title="tipCrystal" data-i18n="addCrystal">+ 水晶(可変)</button>
+  <button onclick="addComponent('ancient_alloy')" data-i18n-title="tipAlloy" data-i18n="addAlloy">+ 古代の合金</button>
   <button onclick="addComponent('pyrite')" data-i18n-title="tipPyrite" data-i18n="addPyrite">+ 黄鉄鉱(ダイオード)</button>
   <button onclick="addComponent('led')" data-i18n-title="tipLed" data-i18n="addLed">+ LED</button>
   <button onclick="addComponent('text')" data-i18n-title="tipText" class="btn-accent" data-i18n="addText">+ テキスト</button>
@@ -197,7 +219,7 @@
   </select>
 
   <span class="info-text" style="color: #666; font-weight: bold; margin-left: 4px;">v1.2.0</span>
-
+  <button onclick="showComponentCount()" data-i18n-title="tipCount" data-i18n="btnCount" style="margin-left: 12px;">部品集計</button>
   <button onclick="clearCircuit()" class="btn-danger" style="margin-left:auto;" data-i18n="clear">クリア</button>
 </div>
 
@@ -262,6 +284,17 @@
   </div>
 </div>
 
+<!-- 部品集計モーダル -->
+<div id="count-modal">
+  <div id="count-modal-content">
+    <h3 style="margin-top: 0; color: #fff;" data-i18n="modalCountTitle">部品集計</h3>
+    <div id="count-modal-list" style="max-height: 400px; overflow-y: auto; margin-bottom: 15px;"></div>
+    <div class="buttons" style="display: flex; justify-content: flex-end;">
+      <button onclick="closeCountModal()" style="background-color: #007acc;" data-i18n="closeBtn">閉じる</button>
+    </div>
+  </div>
+</div>
+
 <!-- 右クリックメニュー -->
 <div id="context-menu">
   <div id="menu-flip" onclick="toggleSelectedFlip()" data-i18n="flip">左右反転 (R)</div>
@@ -280,14 +313,16 @@ const I18N = {
     appTitle: "Primitierトランジスタ回路シミュレータ",
     addVcc: "+ 電源(VCC)", addBtn: "+ トリガーSW", addTr: "+ トランジスタ", addInvTr: "+ 反転トランジスタ",
     addCrystal: "+ 水晶(可変)", addPyrite: "+ 黄鉄鉱(ダイオード)", addLed: "+ LED", addText: "+ テキスト",
+    addAlloy: "+ 古代の合金",
     save: "保存 (JSON)", load: "読み込み", clear: "クリア", editingFile: "ファイル:",
-    fitView: "全体フィット",
+    fitView: "全体フィット", btnCount: "部品集計", tipCount: "選択中(または全体)の部品数を集計", modalCountTitle: "部品集計",
+    modalCountTotal: "合計", closeBtn: "閉じる", compText: "テキスト",
     editText: "テキスト編集 (Enterで改行):", fontSize: "文字サイズ (px):", bgColor: "背景色:",
     cancel: "キャンセル", saveBtn: "保存", bringToFront: "最前面へ移動", sendToBack: "最背面へ移動",
     delete: "削除", deleteWire: "電線を削除",
     flip: "左右反転 (R)",
     compVcc: "電源 (VCC)", compBtn: "トリガーSW", compTr: "トランジスタ", compInvTr: "反転トランジスタ",
-    compCrystal: "水晶", compPyrite: "黄鉄鉱 (▶)", compLed: "LED",
+    compCrystal: "水晶", compPyrite: "黄鉄鉱 (▶)", compLed: "LED", compAlloy: "合金",
     promptFileName: "保存するファイル名を入力してください:",
     promptCrystal: "水晶の厚さを入力してください（cm / 下限1cm）:",
     alertCrystalErr: "1cm以上の数字を入力してくださいのじゃ！",
@@ -300,22 +335,25 @@ const I18N = {
     tipInvTr: "反転トランジスタを追加 (ショートカット: 4)",
     tipCrystal: "水晶(可変)を追加 (ショートカット: 5)",
     tipPyrite: "黄鉄鉱(ダイオード)を追加 (ショートカット: 6)",
-    tipLed: "LEDを追加 (ショートカット: 7)",
-    tipText: "テキストを追加 (ショートカット: 8)",
+    tipAlloy: "古代の合金を追加 (ショートカット: 7)",
+    tipLed: "LEDを追加 (ショートカット: 8)",
+    tipText: "テキストを追加 (ショートカット: 9)",
     tipStep: "0.1秒分進める (ショートカット: N)"
   },
   en: {
     appTitle: "Primitier Transistor Circuit Simulator",
     addVcc: "+ VCC Power", addBtn: "+ Trigger SW", addTr: "+ Transistor", addInvTr: "+ NOT Transistor",
     addCrystal: "+ Crystal (Var)", addPyrite: "+ Pyrite (Diode)", addLed: "+ LED", addText: "+ Text",
+    addAlloy: "+ Ancient Alloy",
     save: "Save (JSON)", load: "Load", clear: "Clear", editingFile: "File:",
-    fitView: "Fit View",
+    fitView: "Fit View", btnCount: "Count", tipCount: "Count selected/all components",
+    modalCountTitle: "Component Count", modalCountTotal: "Total", closeBtn: "Close", compText: "Text",
     editText: "Edit Text (Enter for newline):", fontSize: "Font Size (px):", bgColor: "Background Color:",
     cancel: "Cancel", saveBtn: "Save", bringToFront: "Bring to Front", sendToBack: "Send to Back",
     delete: "Delete", deleteWire: "Delete Wire",
     flip: "Flip Horizontally (R)",
     compVcc: "VCC Power", compBtn: "Trigger SW", compTr: "Transistor", compInvTr: "NOT Transistor",
-    compCrystal: "Crystal", compPyrite: "Pyrite (▶)", compLed: "LED",
+    compCrystal: "Crystal", compPyrite: "Pyrite (▶)", compLed: "LED", compAlloy: "Alloy",
     promptFileName: "Enter file name to save:",
     promptCrystal: "Enter crystal thickness (cm / min 1cm):",
     alertCrystalErr: "Please enter a number >= 1cm!",
@@ -328,22 +366,25 @@ const I18N = {
     tipInvTr: "Add NOT Transistor (Shortcut: 4)",
     tipCrystal: "Add Crystal (Shortcut: 5)",
     tipPyrite: "Add Pyrite (Shortcut: 6)",
-    tipLed: "Add LED (Shortcut: 7)",
-    tipText: "Add Text (Shortcut: 8)",
+    tipAlloy: "Add Ancient Alloy (Shortcut: 7)",
+    tipLed: "Add LED (Shortcut: 8)",
+    tipText: "Add Text (Shortcut: 9)",
     tipStep: "Step 0.1s (Shortcut: N)"
   },
   ru: {
     appTitle: "Симулятор транзисторных схем Primitier",
     addVcc: "+ Питание (VCC)", addBtn: "+ Триггер(SW)", addTr: "+ Транзистор", addInvTr: "+ Инв. транзистор",
     addCrystal: "+ Кристалл", addPyrite: "+ Пирит (Диод)", addLed: "+ Светодиод", addText: "+ Текст",
+    addAlloy: "+ Древний сплав",
     save: "Сохранить (JSON)", load: "Загрузить", clear: "Очистить", editingFile: "Файл:",
-    fitView: "По размеру экрана",
+    fitView: "По размеру экрана", btnCount: "Подсчет",tipCount: "Подсчет выделенных/всех компонентов",
+    modalCountTitle: "Подсчет компонентов", modalCountTotal: "Итого", closeBtn: "Закрыть", compText: "Текст",
     editText: "Редактировать текст (Enter для переноса):", fontSize: "Размер шрифта (px):", bgColor: "Цвет фона:",
     cancel: "Отмена", saveBtn: "Сохранить", bringToFront: "На передний план", sendToBack: "На задний план",
     delete: "Удалить", deleteWire: "Удалить провод",
     flip: "Отразить по горизонтали (R)",
     compVcc: "Питание (VCC)", compBtn: "Триггер(SW)", compTr: "Транзистор", compInvTr: "Инв. транзистор",
-    compCrystal: "Кристалл", compPyrite: "Пирит (▶)", compLed: "Светодиод",
+    compCrystal: "Кристалл", compPyrite: "Пирит (▶)", compLed: "Светодиод", compAlloy: "сплав",
     promptFileName: "Введите имя файла для сохранения:",
     promptCrystal: "Введите толщину кристалла (см / мин. 1 см):",
     alertCrystalErr: "Пожалуйста, введите число >= 1 см!",
@@ -356,8 +397,9 @@ const I18N = {
     tipInvTr: "Добавить Инв. транзистор (Ярлык: 4)",
     tipCrystal: "Добавить Кристалл (Ярлык: 5)",
     tipPyrite: "Добавить Пирит (Ярлык: 6)",
-    tipLed: "Добавить Светодиод (Ярлык: 7)",
-    tipText: "Добавить Текст (Ярлык: 8)",
+    tipAlloy: "Добавить Древний сплав (Ярлык: 7)",
+    tipLed: "Добавить Светодиод (Ярлык: 8)",
+    tipText: "Добавить Текст (Ярлык: 9)",
     tipStep: "Шаг 0.1с (Ярлык: N)"
   }
 };
@@ -408,26 +450,15 @@ const UI = {
   PIN_R: 6, WAYPOINT_R: 5,
   WIRE_W: 5, WIRE_DASH_W: 2,
   COLOR: {
-    COMP_BG: '#4a4a58', PYRITE_BG: '#636300',
+    COMP_BG: '#4a4a58', PYRITE_BG: '#636300', ANCIENT_ALLOY_BG: '#5c6a87',
     BORDER_NORM: '#777788', BORDER_SEL: '#00aaff',
-    PIN_ON: '#fbff87', PIN_OFF: '#888', WIRE_ON: '#fbff87', WIRE_OFF: '#888',
+    PIN_ON: '#fbff87', PIN_OFF: '#999', WIRE_ON: '#fbff87', WIRE_OFF: '#a3a3d1',
     LED_ON: '#ffffff', LED_OFF: '#909090', TEXT_DEF_BG: '#2b3a4a',
     WAYPOINT: '#949494',
     WAYPOINT_BORDER_SEL: '#ffffff', WAYPOINT_BORDER_NORM: '#000000'
   },
-  DIODE_COMPS: ['transistor', 'inv_transistor'],
   INPUT_PINS: ['in', 'ctrl']
 };
-
-function isInputPinOfDiodeComp(comp, pinId) {
-  if (!comp || !pinId) return false;
-
-  if (UI.DIODE_COMPS.includes(comp.type)) {
-    return UI.INPUT_PINS.includes(pinId);
-  }
-
-  return false;
-}
 
 function snapToGrid(val) { return Math.round(val / UI.GRID_SIZE) * UI.GRID_SIZE; }
 
@@ -443,6 +474,7 @@ let currentFileName = 'circuit';
 
 let scale = 1.0, panX = 0, panY = 0;
 let isPanning = false, panStartX = 0, panStartY = 0
+let isSpacePressed = false;
 let draggedComponent = null, resizingComponent = null, connectingPin = null;
 let draggedWaypoint = null;
 let rawMousePos = { x: 0, y: 0 }, mousePos = { x: 0, y: 0 };
@@ -590,7 +622,7 @@ class Component {
       ctx.fillText(this.getName(), this.x + this.width / 2, this.y + this.height / 2 + 4);
     }
 
-    if (this.flipped) {
+    if (this.flipped && !['trigger_switch', 'crystal', 'led', 'ancient_alloy'].includes(this.type)) {
       ctx.fillStyle = '#ffaa00';
       ctx.font = '10px sans-serif';
       ctx.textAlign = 'right';
@@ -599,7 +631,7 @@ class Component {
 
     this.drawCustom(ctx, scale);
 
-    if (isSelected && ['text', 'pyrite', 'led'].includes(this.type)) {
+    if (isSelected && ['text', 'pyrite', 'led', 'ancient_alloy'].includes(this.type)) {
       ctx.fillStyle = UI.COLOR.BORDER_SEL;
       ctx.fillRect(this.x + this.width - 8, this.y + this.height - 8, 8, 8);
     }
@@ -613,10 +645,13 @@ class Component {
       ctx.strokeStyle = '#fff';
       ctx.lineWidth = 1 / scale;
       ctx.stroke();
-      ctx.fillStyle = '#aaa';
-      ctx.font = '9px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(p.id, pos.x, pos.y - 8);
+
+      if (!['trigger_switch', 'crystal', 'led', 'ancient_alloy'].includes(this.type)) {
+        ctx.fillStyle = '#aaa';
+        ctx.font = '9px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(p.id, pos.x, pos.y - 8);
+      }
     });
   }
 
@@ -639,37 +674,81 @@ class Vcc extends Component {
   getName() { return t('compVcc'); }
 }
 
+// ===================================================================
+// トリガーSW クラス
+// ===================================================================
 class TriggerSwitch extends Component {
   constructor(id, x, y) {
     super(id, 'trigger_switch', x, y);
     this.width = UI.TRIGGER_W;
     this.height = UI.TRIGGER_H;
-    this.addPin('a', 'in', 0, snapToGrid(this.height / 2));
-    this.addPin('b', 'out', this.width, snapToGrid(this.height / 2));
+    this.addPin('in', 'in', 0, snapToGrid(this.height / 2));
+    this.addPin('out', 'out', this.width, snapToGrid(this.height / 2));
     this.switchState = false;
-  }
-
-  getPin(id) {
-    if (id === 'in') id = 'a';
-    if (id === 'out') id = 'b';
-    return this.pins.find(p => p.id === id);
-  }
-
-  updatePinPositions() {
-    const midY = snapToGrid(this.height / 2);
-    const pA = this.getPin('a');
-    const pB = this.getPin('b');
-    if (pA) { pA.relY = midY; }
-    if (pB) { pB.relX = this.width; pB.relY = midY; }
   }
 
   processImmediateLogic() {
     if (!this.switchState) return false;
-    return this.bidirectionalConduct(this.getPin('a'), this.getPin('b'));
+    return this.bidirectionalConduct(this.getPin('in'), this.getPin('out'));
   }
 
   getName() {
     return `${t('compBtn')} [${this.switchState ? 'ON' : 'OFF'}]`;
+  }
+}
+// ===================================================================
+// 古代の合金クラス
+// ===================================================================
+class AncientAlloy extends Component {
+  constructor(id, x, y) {
+    super(id, 'ancient_alloy', x, y);
+    this.width = 60;
+    this.height = 60;
+    this.addPin('top', 'inout', snapToGrid(this.width / 2), 0);
+    this.addPin('bottom', 'inout', snapToGrid(this.width / 2), this.height);
+    this.addPin('left', 'inout', 0, snapToGrid(this.height / 2));
+    this.addPin('right', 'inout', this.width, snapToGrid(this.height / 2));
+  }
+
+  updatePinPositions() {
+    const pTop = this.getPin('top');
+    const pBottom = this.getPin('bottom');
+    const pLeft = this.getPin('left');
+    const pRight = this.getPin('right');
+
+    if (pTop) { pTop.relX = snapToGrid(this.width / 2); pTop.relY = 0; }
+    if (pBottom) { pBottom.relX = snapToGrid(this.width / 2); pBottom.relY = this.height; }
+    if (pLeft) { pLeft.relX = 0; pLeft.relY = snapToGrid(this.height / 2); }
+    if (pRight) { pRight.relX = this.width; pRight.relY = snapToGrid(this.height / 2); }
+  }
+
+  processImmediateLogic() {
+    let changed = false;
+    const anyOn = this.pins.some(p => p.state);
+    if (anyOn) {
+      this.pins.forEach(p => {
+        if (!p.state) {
+          p.state = true;
+          changed = true;
+        }
+      });
+    }
+    return changed;
+  }
+
+  getName() { return t('compAlloy'); }
+
+  drawCustom(ctx, scale) {
+    ctx.fillStyle = UI.COLOR.ANCIENT_ALLOY_BG;
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.strokeRect(this.x, this.y, this.width, this.height);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    let text = this.getName();
+    if(currentLang === 'ja') text = "合金";
+    ctx.fillText(text, this.x + this.width / 2, this.y + this.height / 2 + 4);
   }
 }
 
@@ -679,8 +758,10 @@ class TriggerSwitch extends Component {
 class Pyrite extends Component {
   constructor(id, x, y) {
     super(id, 'pyrite', x, y);
-    this.addPin('in', 'in', 0, snapToGrid(UI.COMP_H/2));
-    this.addPin('out', 'out', UI.COMP_W, snapToGrid(UI.COMP_H/2));
+    this.width = 60;
+    this.height = 60;
+    this.addPin('in', 'in', 0, snapToGrid(this.height / 2));
+    this.addPin('out', 'out', this.width, snapToGrid(this.height / 2));
   }
 
   processImmediateLogic() {
@@ -712,7 +793,7 @@ class Pyrite extends Component {
     let fontSize = 12;
 
     if (this.width <= 50) {
-      displayText = this.flipped ? "黄 (◀)" : "黄 (▶)";
+      displayText = this.flipped ? " (◀)" : " (▶)";
       fontSize = 9;
     } else if (this.width < 80) {
       fontSize = 10;
@@ -738,30 +819,16 @@ class Led extends Component {
     super(id, 'led', x, y);
     this.width = UI.COMP_H;
     this.height = UI.COMP_H;
-    this.addPin('a', 'in', 0, snapToGrid(this.height / 2));
-    this.addPin('b', 'out', this.width, snapToGrid(this.height / 2));
+    this.addPin('in', 'in', 0, snapToGrid(this.height / 2));
+    this.addPin('out', 'out', this.width, snapToGrid(this.height / 2));
     this.state = false;
   }
 
-  getPin(id) {
-    if (id === 'in') id = 'a';
-    if (id === 'out') id = 'b';
-    return this.pins.find(p => p.id === id);
-  }
-
-  updatePinPositions() {
-    const midY = snapToGrid(this.height / 2);
-    const pA = this.getPin('a');
-    const pB = this.getPin('b');
-    if (pA) { pA.relY = midY; }
-    if (pB) { pB.relX = this.width; pB.relY = midY; }
-  }
-
   processImmediateLogic() {
-    const pA = this.getPin('a');
-    const pB = this.getPin('b');
-    this.state = (pA && pA.state) || (pB && pB.state);
-    return this.bidirectionalConduct(pA, pB);
+    const pIn = this.getPin('in');
+    const pOut = this.getPin('out');
+    this.state = (pIn && pIn.state) || (pOut && pOut.state);
+    return false;
   }
 
   getName() { return t('compLed'); }
@@ -835,33 +902,19 @@ class InvTransistor extends BaseTransistor {
 class Crystal extends Component {
   constructor(id, x, y) {
     super(id, 'crystal', x, y);
-    this.addPin('a', 'in', 0, snapToGrid(UI.COMP_H/2));
-    this.addPin('b', 'out', UI.COMP_W, snapToGrid(UI.COMP_H/2));
+    this.addPin('in', 'in', 0, snapToGrid(UI.COMP_H/2));
+    this.addPin('out', 'out', UI.COMP_W, snapToGrid(UI.COMP_H/2));
     this.thickness = 1;
     this.crystalPhase = 'IDLE';
     this.crystalTimer = 0;
   }
 
-  getPin(id) {
-    if (id === 'in') id = 'a';
-    if (id === 'out') id = 'b';
-    return this.pins.find(p => p.id === id);
-  }
-
-  updatePinPositions() {
-    const midY = snapToGrid(this.height / 2);
-    const pA = this.getPin('a');
-    const pB = this.getPin('b');
-    if (pA) { pA.relY = midY; }
-    if (pB) { pB.relX = this.width; pB.relY = midY; }
-  }
-
   updateTimer(dt) {
-    const pA = this.getPin('a');
-    const pB = this.getPin('b');
-    if (!pA || !pB) return;
+    const pIn = this.getPin('in');
+    const pOut = this.getPin('out');
+    if (!pIn || !pOut) return;
 
-    const hasInput = pA.state || pB.state;
+    const hasInput = pIn.state || pOut.state;
 
     if (!hasInput) {
       this.crystalPhase = 'IDLE';
@@ -894,7 +947,7 @@ class Crystal extends Component {
                      (this.thickness !== 1 && this.crystalPhase === 'ON_PULSE');
 
     if (!isActive) return false;
-    return this.bidirectionalConduct(this.getPin('a'), this.getPin('b'));
+    return this.bidirectionalConduct(this.getPin('in'), this.getPin('out'));
   }
 
   getName() { return `${t('compCrystal')} (${this.thickness}cm)`; }
@@ -1082,6 +1135,7 @@ function createComponentObj(type, id, x, y) {
     case 'trigger_switch': return new TriggerSwitch(id, x, y);
     case 'transistor': return new Transistor(id, x, y);
     case 'inv_transistor': return new InvTransistor(id, x, y);
+    case 'ancient_alloy': return new AncientAlloy(id, x, y);
     case 'crystal': return new Crystal(id, x, y);
     case 'pyrite': return new Pyrite(id, x, y);
     case 'led': return new Led(id, x, y);
@@ -1252,9 +1306,10 @@ function updateSimulation(dt) {
         if (srcPin.state && !destPin.state) {
           if (destComp.type === 'trigger_switch' && !destComp.switchState) return;
 
-          if (isInputPinOfDiodeComp(srcComp, srcPin.id)) {
-            if (!isInputPinOfDiodeComp(destComp, destPin.id)) return;
-          }
+          const NO_REVERSE_COMPS = ['transistor', 'inv_transistor', 'led', 'pyrite'];
+
+          if (NO_REVERSE_COMPS.includes(srcComp.type) && srcPin.type === 'in') return;
+          if (NO_REVERSE_COMPS.includes(destComp.type) && destPin.type === 'out') return;
 
           destPin.state = true;
           changed = true;
@@ -1287,18 +1342,18 @@ function checkWireActive(w, fromComp, toComp) {
 
   if (p1.state && p2.state) return true;
 
-  const checkSource = (srcComp, srcPinId, destComp, destPinId) => {
-    const pin = srcComp ? srcComp.getPin(srcPinId) : null;
-    if (!pin || !pin.state) return false;
+  const NO_REVERSE_COMPS = ['transistor', 'inv_transistor', 'led', 'pyrite'];
 
-    if (isInputPinOfDiodeComp(srcComp, srcPinId)) {
-      return destPinId !== 'out';
-    }
+  const checkSource = (srcComp, srcPin, destComp, destPin) => {
+    if (!srcPin || !srcPin.state) return false;
+    if (NO_REVERSE_COMPS.includes(srcComp.type) && srcPin.type === 'in') return false;
+    if (NO_REVERSE_COMPS.includes(destComp.type) && destPin.type === 'out') return false;
+
     return true;
   };
 
-  return checkSource(fromComp, w.fromPinId, toComp, w.toPinId) ||
-         checkSource(toComp, w.toPinId, fromComp, w.fromPinId);
+  return checkSource(fromComp, p1, toComp, p2) ||
+         checkSource(toComp, p2, fromComp, p1);
 }
 
 // ===================================================================
@@ -1480,7 +1535,7 @@ canvas.addEventListener('contextmenu', e => {
 
     if (menuFlip) {
       if (rightClickTarget.type === 'component' && rightClickTarget.comp) {
-        const noFlipTypes = ['trigger_switch', 'crystal', 'led', 'text'];
+        const noFlipTypes = ['text'];
         if (noFlipTypes.includes(rightClickTarget.comp.type)) {
           menuFlip.style.display = 'none';
         } else {
@@ -1511,11 +1566,19 @@ canvas.addEventListener('mousedown', e => {
   mousePos = screenToWorld(rawMousePos.x, rawMousePos.y);
   isMouseDown = true;
 
+  if ((e.button === 0 && isSpacePressed) || e.button === 1 || e.button === 2) {
+    isPanning = true;
+    panStartX = e.clientX - panX;
+    panStartY = e.clientY - panY;
+    draw();
+    return;
+  }
+
   if (e.button === 0) {
     if (selectedComponentIds.size === 1) {
       const selectedId = Array.from(selectedComponentIds)[0];
       const comp = components.find(c => c.id === selectedId);
-      if (comp && ['text', 'pyrite', 'led'].includes(comp.type)) {
+      if (comp && ['text', 'pyrite', 'led', 'ancient_alloy'].includes(comp.type)) {
         const handleX = comp.x + comp.width - 8;
         const handleY = comp.y + comp.height - 8;
         if (mousePos.x >= handleX && mousePos.x <= handleX + 8 &&
@@ -1572,10 +1635,6 @@ canvas.addEventListener('mousedown', e => {
       selectionEnd = { ...mousePos };
       if (!e.shiftKey) clearSelections();
     }
-  } else if (e.button === 1 || e.button === 2) {
-    isPanning = true;
-    startPanX = e.clientX - panX;
-    startPanY = e.clientY - panY;
   }
   draw();
 });
@@ -1586,8 +1645,8 @@ canvas.addEventListener('mousemove', e => {
   mousePos = screenToWorld(rawMousePos.x, rawMousePos.y);
 
   if (isPanning) {
-    panX = e.clientX - startPanX;
-    panY = e.clientY - startPanY;
+    panX = e.clientX - panStartX;
+    panY = e.clientY - panStartY;
     draw();
     return;
   }
@@ -1803,11 +1862,15 @@ function pasteComponents() {
 }
 
 window.addEventListener('keydown', e => {
-  if (document.getElementById('text-modal').style.display === 'flex') return;
+  if (document.getElementById('text-modal').style.display === 'flex' ||
+      document.getElementById('count-modal').style.display === 'flex') return;
 
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
 
-  if (e.code === 'Space') isSpacePressed = true;
+  if (e.code === 'Space') {
+    isSpacePressed = true;
+    e.preventDefault();
+  }
 
   const compKeys = {
     'Digit1': 'vcc',
@@ -1816,8 +1879,9 @@ window.addEventListener('keydown', e => {
     'Digit4': 'inv_transistor',
     'Digit5': 'crystal',
     'Digit6': 'pyrite',
-    'Digit7': 'led',
-    'Digit8': 'text'
+    'Digit7': 'ancient_alloy',
+    'Digit8': 'led',
+    'Digit9': 'text'
   };
   if (compKeys[e.code]) {
     e.preventDefault();
@@ -1955,6 +2019,65 @@ function importCircuit(event) {
     } catch (err) { alert(t('loadErr') + err.message); }
   };
   reader.readAsText(file);
+}
+
+// ===================================================================
+// 部品集計機能
+// ===================================================================
+function showComponentCount() {
+  const listEl = document.getElementById('count-modal-list');
+  listEl.innerHTML = '';
+
+  let targetComps = components;
+  if (selectedComponentIds.size > 0) {
+    targetComps = components.filter(c => selectedComponentIds.has(c.id));
+  }
+
+  if (targetComps.length === 0) {
+    listEl.innerHTML = '<div style="text-align:center; color:#aaa; padding: 10px;">No components</div>';
+    document.getElementById('count-modal').style.display = 'flex';
+    return;
+  }
+
+  const counts = {};
+  targetComps.forEach(c => {
+    let baseName = '';
+    switch(c.type) {
+      case 'vcc':
+      case 'text':
+      case 'ancient_alloy':
+        return;
+      case 'trigger_switch': baseName = t('compBtn'); break;
+      case 'transistor': baseName = t('compTr'); break;
+      case 'inv_transistor': baseName = t('compInvTr'); break;
+      case 'pyrite': baseName = t('compPyrite').replace(' (▶)', ''); break;
+      case 'led': baseName = t('compLed'); break;
+      case 'crystal': baseName = t('compCrystal'); break;
+      default: baseName = c.type;
+    }
+    counts[baseName] = (counts[baseName] || 0) + 1;
+  });
+
+  const sortedCounts = Object.entries(counts).sort((a, b) => a[0].localeCompare(b[0]));
+  let total = 0;
+  for (const [name, count] of sortedCounts) {
+    const div = document.createElement('div');
+    div.className = 'count-item';
+    div.innerHTML = `<span>${name}</span><span>${count}</span>`;
+    listEl.appendChild(div);
+    total += count;
+  }
+
+  const totalDiv = document.createElement('div');
+  totalDiv.className = 'count-item count-total';
+  totalDiv.innerHTML = `<span>${t('modalCountTotal')}</span><span>${total}</span>`;
+  listEl.appendChild(totalDiv);
+
+  document.getElementById('count-modal').style.display = 'flex';
+}
+
+function closeCountModal() {
+  document.getElementById('count-modal').style.display = 'none';
 }
 
 // ===================================================================
