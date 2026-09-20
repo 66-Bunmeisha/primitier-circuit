@@ -135,7 +135,7 @@
     }
     #text-modal-content {
       background: #2d2d2d; padding: 20px; border-radius: 8px;
-      border: 1px solid #555; display: flex; flex-direction: column; gap: 12px; width: 340px;
+      border: 1px solid #555; display: flex; flex-direction: column; gap: 12px; width: 440px;
     }
     #text-modal textarea {
       width: 100%; height: 90px; background: #1e1e1e; color: #fff;
@@ -265,11 +265,12 @@
 
     <div class="style-setting-row">
       <label data-i18n="bgColor">背景色:</label>
-      <input type="color" id="text-modal-color" value="#2b3a4a">
+      <input type="color" id="text-modal-color" value="#2b3a4a" oninput="document.getElementById('text-modal-color-code').value = this.value">
+      <input type="text" id="text-modal-color-code" value="#2b3a4a" style="width: 130px; background:#1e1e1e; color:#fff; border:1px solid #666; padding:4px; border-radius:4px;" oninput="document.getElementById('text-modal-color').value = this.value">
     </div>
 
     <div class="style-setting-row">
-      <label>背景画像:</label>
+      <label data-i18n="bgImageLabel">背景画像:</label>
       <div style="display: flex; flex-direction: column; gap: 4px; flex: 1;">
         <input type="text" id="text-modal-image-display" placeholder="URLを手入力 または下のボタンで選択" style="width: 100%; background:#1e1e1e; color:#fff; border:1px solid #666; padding:4px; border-radius:4px; box-sizing: border-box;">
         <input type="file" id="text-modal-image-file" accept="image/*" onchange="handleImageFileSelect(event)" style="font-size: 11px; color: #ccc;">
@@ -287,7 +288,10 @@
 <!-- 部品集計モーダル -->
 <div id="count-modal">
   <div id="count-modal-content">
-    <h3 style="margin-top: 0; color: #fff;" data-i18n="modalCountTitle">部品集計</h3>
+    <h3 style="margin-top: 0; color: #fff;">
+      <span data-i18n="modalCountTitle">部品集計</span>
+      <span id="count-modal-target" style="font-size: 14px; color: #aaa; margin-left: 10px;"></span>
+    </h3>
     <div id="count-modal-list" style="max-height: 400px; overflow-y: auto; margin-bottom: 15px;"></div>
     <div class="buttons" style="display: flex; justify-content: flex-end;">
       <button onclick="closeCountModal()" style="background-color: #007acc;" data-i18n="closeBtn">閉じる</button>
@@ -317,10 +321,12 @@ const I18N = {
     save: "保存 (JSON)", load: "読み込み", clear: "クリア", editingFile: "ファイル:",
     fitView: "全体フィット", btnCount: "部品集計", tipCount: "選択中(または全体)の部品数を集計", modalCountTitle: "部品集計",
     modalCountTotal: "合計", closeBtn: "閉じる", compText: "テキスト",
+    countTargetSelected: "(選択中)", countTargetAll: "(全件)",
     editText: "テキスト編集 (Enterで改行):", fontSize: "文字サイズ (px):", bgColor: "背景色:",
     cancel: "キャンセル", saveBtn: "保存", bringToFront: "最前面へ移動", sendToBack: "最背面へ移動",
     delete: "削除", deleteWire: "電線を削除",
     flip: "左右反転 (R)",
+    bgImageLabel: "背景画像:", bgImageSet: "[PCから画像を設定済み]", bgImageSelected: "[選択済み: ",
     compVcc: "電源 (VCC)", compBtn: "トリガーSW", compTr: "トランジスタ", compInvTr: "反転トランジスタ",
     compCrystal: "水晶", compPyrite: "黄鉄鉱 (▶)", compLed: "LED", compAlloy: "合金",
     promptFileName: "保存するファイル名を入力してください:",
@@ -348,10 +354,12 @@ const I18N = {
     save: "Save (JSON)", load: "Load", clear: "Clear", editingFile: "File:",
     fitView: "Fit View", btnCount: "Count", tipCount: "Count selected/all components",
     modalCountTitle: "Component Count", modalCountTotal: "Total", closeBtn: "Close", compText: "Text",
+    countTargetSelected: "(Selected)", countTargetAll: "(All)",
     editText: "Edit Text (Enter for newline):", fontSize: "Font Size (px):", bgColor: "Background Color:",
     cancel: "Cancel", saveBtn: "Save", bringToFront: "Bring to Front", sendToBack: "Send to Back",
     delete: "Delete", deleteWire: "Delete Wire",
     flip: "Flip Horizontally (R)",
+    bgImageLabel: "Background Image:", bgImageSet: "[Image set from PC]", bgImageSelected: "[Selected: ",
     compVcc: "VCC Power", compBtn: "Trigger SW", compTr: "Transistor", compInvTr: "NOT Transistor",
     compCrystal: "Crystal", compPyrite: "Pyrite (▶)", compLed: "LED", compAlloy: "Alloy",
     promptFileName: "Enter file name to save:",
@@ -380,9 +388,11 @@ const I18N = {
     fitView: "По размеру экрана", btnCount: "Подсчет",tipCount: "Подсчет выделенных/всех компонентов",
     modalCountTitle: "Подсчет компонентов", modalCountTotal: "Итого", closeBtn: "Закрыть", compText: "Текст",
     editText: "Редактировать текст (Enter для переноса):", fontSize: "Размер шрифта (px):", bgColor: "Цвет фона:",
+    countTargetSelected: "(Выбрано)", countTargetAll: "(Все)",
     cancel: "Отмена", saveBtn: "Сохранить", bringToFront: "На передний план", sendToBack: "На задний план",
     delete: "Удалить", deleteWire: "Удалить провод",
     flip: "Отразить по горизонтали (R)",
+    bgImageLabel: "Фоновое изображение:", bgImageSet: "[Изображение с ПК]", bgImageSelected: "[Выбрано: ",
     compVcc: "Питание (VCC)", compBtn: "Триггер(SW)", compTr: "Транзистор", compInvTr: "Инв. транзистор",
     compCrystal: "Кристалл", compPyrite: "Пирит (▶)", compLed: "Светодиод", compAlloy: "сплав",
     promptFileName: "Введите имя файла для сохранения:",
@@ -636,23 +646,27 @@ class Component {
       ctx.fillRect(this.x + this.width - 8, this.y + this.height - 8, 8, 8);
     }
 
-    this.pins.forEach(p => {
-      const pos = this.getPinPos(p);
-      ctx.beginPath();
-      ctx.arc(pos.x, pos.y, UI.PIN_R, 0, Math.PI * 2);
-      ctx.fillStyle = p.state ? UI.COLOR.PIN_ON : UI.COLOR.PIN_OFF;
-      ctx.fill();
-      ctx.strokeStyle = '#fff';
-      ctx.lineWidth = 1 / scale;
-      ctx.stroke();
+    const isSmallAlloy = this.type === 'ancient_alloy' && (this.width < 30 || this.height < 30);
 
-      if (!['trigger_switch', 'crystal', 'led', 'ancient_alloy'].includes(this.type)) {
-        ctx.fillStyle = '#aaa';
-        ctx.font = '9px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(p.id, pos.x, pos.y - 8);
-      }
-    });
+    if (!isSmallAlloy) {
+      this.pins.forEach(p => {
+        const pos = this.getPinPos(p);
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, UI.PIN_R, 0, Math.PI * 2);
+        ctx.fillStyle = p.state ? UI.COLOR.PIN_ON : UI.COLOR.PIN_OFF;
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1 / scale;
+        ctx.stroke();
+
+        if (!['trigger_switch', 'crystal', 'led', 'ancient_alloy'].includes(this.type)) {
+          ctx.fillStyle = '#aaa';
+          ctx.font = '9px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(p.id, pos.x, pos.y - 8);
+        }
+      });
+    }
   }
 
   serialize() {
@@ -662,7 +676,8 @@ class Component {
     };
   }
   deserialize(data) {
-    this.width = data.width; this.height = data.height;
+    if (data.width !== undefined) this.width = Number(data.width);
+    if (data.height !== undefined) this.height = Number(data.height);
     this.flipped = !!data.flipped;
     this.updatePinPositions();
   }
@@ -743,12 +758,14 @@ class AncientAlloy extends Component {
     ctx.fillRect(this.x, this.y, this.width, this.height);
     ctx.strokeRect(this.x, this.y, this.width, this.height);
 
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '10px sans-serif';
-    ctx.textAlign = 'center';
-    let text = this.getName();
-    if(currentLang === 'ja') text = "合金";
-    ctx.fillText(text, this.x + this.width / 2, this.y + this.height / 2 + 4);
+    if (this.width >= 30 && this.height >= 30) {
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'center';
+      let text = this.getName();
+      if(currentLang === 'ja') text = "合金";
+      ctx.fillText(text, this.x + this.width / 2, this.y + this.height / 2 + 4);
+    }
   }
 }
 
@@ -820,7 +837,7 @@ class Led extends Component {
     this.width = UI.COMP_H;
     this.height = UI.COMP_H;
     this.addPin('in', 'in', 0, snapToGrid(this.height / 2));
-    this.addPin('out', 'out', this.width, snapToGrid(this.height / 2));
+    this.addPin('out', 'in', this.width, snapToGrid(this.height / 2));
     this.state = false;
   }
 
@@ -1088,7 +1105,7 @@ function handleImageFileSelect(event) {
   const reader = new FileReader();
   reader.onload = e => {
     currentLoadedBase64 = e.target.result;
-    document.getElementById('text-modal-image-display').value = `[選択済み: ${file.name}]`;
+    document.getElementById('text-modal-image-display').value = `${t('bgImageSelected')}${file.name}]`;
   };
   reader.readAsDataURL(file);
 }
@@ -1097,10 +1114,12 @@ function openTextModal(comp) {
   editingTextComp = comp;
   document.getElementById('text-modal-input').value = comp.text;
   document.getElementById('text-modal-size').value = comp.fontSize;
-  document.getElementById('text-modal-color').value = comp.bgColor;
+
+  try { document.getElementById('text-modal-color').value = comp.bgColor; } catch(e){}
+  document.getElementById('text-modal-color-code').value = comp.bgColor;
 
   const isBase64 = comp.bgImage && comp.bgImage.startsWith('data:');
-  document.getElementById('text-modal-image-display').value = isBase64 ? "[PCから画像を設定済み]" : (comp.bgImage || '');
+  document.getElementById('text-modal-image-display').value = isBase64 ? t('bgImageSet') : (comp.bgImage || '');
 
   currentLoadedBase64 = '';
   document.getElementById('text-modal-image-file').value = '';
@@ -1118,7 +1137,7 @@ function closeTextModal(save) {
 
     if (currentLoadedBase64) {
       editingTextComp.setBgImage(currentLoadedBase64);
-    } else if (displayVal !== "[PCから画像を設定済み]") {
+    } else if (displayVal !== t('bgImageSet')) {
       editingTextComp.setBgImage(displayVal);
     }
 
@@ -1306,10 +1325,11 @@ function updateSimulation(dt) {
         if (srcPin.state && !destPin.state) {
           if (destComp.type === 'trigger_switch' && !destComp.switchState) return;
 
-          const NO_REVERSE_COMPS = ['transistor', 'inv_transistor', 'led', 'pyrite'];
+          const NO_REVERSE_IN_COMPS = ['transistor', 'inv_transistor', 'led'];
+          const NO_REVERSE_OUT_COMPS = ['transistor', 'inv_transistor', 'led', 'pyrite'];
 
-          if (NO_REVERSE_COMPS.includes(srcComp.type) && srcPin.type === 'in') return;
-          if (NO_REVERSE_COMPS.includes(destComp.type) && destPin.type === 'out') return;
+          if (NO_REVERSE_IN_COMPS.includes(srcComp.type) && srcPin.type === 'in') return;
+          if (NO_REVERSE_OUT_COMPS.includes(destComp.type) && destPin.type === 'out') return;
 
           destPin.state = true;
           changed = true;
@@ -1342,12 +1362,13 @@ function checkWireActive(w, fromComp, toComp) {
 
   if (p1.state && p2.state) return true;
 
-  const NO_REVERSE_COMPS = ['transistor', 'inv_transistor', 'led', 'pyrite'];
+  const NO_REVERSE_IN_COMPS = ['transistor', 'inv_transistor', 'led'];
+  const NO_REVERSE_OUT_COMPS = ['transistor', 'inv_transistor', 'led', 'pyrite'];
 
   const checkSource = (srcComp, srcPin, destComp, destPin) => {
     if (!srcPin || !srcPin.state) return false;
-    if (NO_REVERSE_COMPS.includes(srcComp.type) && srcPin.type === 'in') return false;
-    if (NO_REVERSE_COMPS.includes(destComp.type) && destPin.type === 'out') return false;
+    if (NO_REVERSE_IN_COMPS.includes(srcComp.type) && srcPin.type === 'in') return false;
+    if (NO_REVERSE_OUT_COMPS.includes(destComp.type) && destPin.type === 'out') return false;
 
     return true;
   };
@@ -1592,17 +1613,28 @@ canvas.addEventListener('mousedown', e => {
 
     const hitWaypoint = getWaypointAt(mousePos.x, mousePos.y);
     if (hitWaypoint) {
-      draggedWaypoint = hitWaypoint;
       const wpKey = `${wires.indexOf(hitWaypoint.wire)}_${hitWaypoint.index}`;
 
-      if (!e.shiftKey && !selectedWaypointKeys.has(wpKey)) {
-        clearSelections();
+      if (e.shiftKey) {
+        if (selectedWaypointKeys.has(wpKey)) {
+          selectedWaypointKeys.delete(wpKey);
+        } else {
+          selectedWaypointKeys.add(wpKey);
+          draggedWaypoint = hitWaypoint;
+        }
+      } else {
+        if (!selectedWaypointKeys.has(wpKey)) {
+          clearSelections();
+        }
+        selectedWaypointKeys.add(wpKey);
+        draggedWaypoint = hitWaypoint;
       }
-      selectedWaypointKeys.add(wpKey);
 
-      const pt = hitWaypoint.wire.points[hitWaypoint.index];
-      dragOffsetX = mousePos.x - pt.x;
-      dragOffsetY = mousePos.y - pt.y;
+      if (draggedWaypoint) {
+        const pt = draggedWaypoint.wire.points[draggedWaypoint.index];
+        dragOffsetX = mousePos.x - pt.x;
+        dragOffsetY = mousePos.y - pt.y;
+      }
 
       draw();
       return;
@@ -1610,24 +1642,39 @@ canvas.addEventListener('mousedown', e => {
 
     const hitPin = findPinAt(mousePos.x, mousePos.y);
     if (hitPin) {
-      connectingPin = hitPin;
-      draw();
-      return;
+      const isSmallAlloy = hitPin.comp.type === 'ancient_alloy' && (hitPin.comp.width < 30 || hitPin.comp.height < 30);
+
+      if (!isSmallAlloy) {
+        connectingPin = hitPin;
+        draw();
+        return;
+      }
     }
 
     const clickedComp = getComponentAt(mousePos.x, mousePos.y);
     if (clickedComp) {
-      draggedComponent = clickedComp;
-      dragOffsetX = mousePos.x - clickedComp.x;
-      dragOffsetY = mousePos.y - clickedComp.y;
-
       if (clickedComp.type === 'trigger_switch') {
         clickedComp.switchState = true;
       }
 
-      if (!selectedComponentIds.has(clickedComp.id) && !e.shiftKey) {
-        clearSelections();
+      if (e.shiftKey) {
+        if (selectedComponentIds.has(clickedComp.id)) {
+          selectedComponentIds.delete(clickedComp.id);
+        } else {
+          selectedComponentIds.add(clickedComp.id);
+          draggedComponent = clickedComp;
+        }
+      } else {
+        if (!selectedComponentIds.has(clickedComp.id)) {
+          clearSelections();
+        }
         selectedComponentIds.add(clickedComp.id);
+        draggedComponent = clickedComp;
+      }
+
+      if (draggedComponent) {
+        dragOffsetX = mousePos.x - clickedComp.x;
+        dragOffsetY = mousePos.y - clickedComp.y;
       }
     } else {
       isSelecting = true;
@@ -1652,8 +1699,9 @@ canvas.addEventListener('mousemove', e => {
   }
 
   if (resizingComponent) {
-    const newW = snapToGrid(Math.max(40, mousePos.x - resizingComponent.x));
-    const newH = snapToGrid(Math.max(40, mousePos.y - resizingComponent.y));
+    const minSize = resizingComponent.type === 'ancient_alloy' ? 20 : 40;
+    const newW = snapToGrid(Math.max(minSize, mousePos.x - resizingComponent.x));
+    const newH = snapToGrid(Math.max(minSize, mousePos.y - resizingComponent.y));
     resizingComponent.width = newW;
     resizingComponent.height = newH;
     resizingComponent.updatePinPositions();
@@ -2028,37 +2076,45 @@ function showComponentCount() {
   const listEl = document.getElementById('count-modal-list');
   listEl.innerHTML = '';
 
+  const targetLabel = document.getElementById('count-modal-target');
+
   let targetComps = components;
   if (selectedComponentIds.size > 0) {
     targetComps = components.filter(c => selectedComponentIds.has(c.id));
+    targetLabel.textContent = t('countTargetSelected');
+  } else {
+    targetLabel.textContent = t('countTargetAll');
   }
 
-  if (targetComps.length === 0) {
+  const validComps = targetComps.filter(c => !['text', 'vcc', 'ancient_alloy'].includes(c.type));
+
+  if (validComps.length === 0) {
     listEl.innerHTML = '<div style="text-align:center; color:#aaa; padding: 10px;">No components</div>';
     document.getElementById('count-modal').style.display = 'flex';
     return;
   }
 
   const counts = {};
-  targetComps.forEach(c => {
+  validComps.forEach(c => {
     let baseName = '';
+
     switch(c.type) {
-      case 'vcc':
-      case 'text':
-      case 'ancient_alloy':
-        return;
       case 'trigger_switch': baseName = t('compBtn'); break;
       case 'transistor': baseName = t('compTr'); break;
       case 'inv_transistor': baseName = t('compInvTr'); break;
-      case 'pyrite': baseName = t('compPyrite').replace(' (▶)', ''); break;
+      case 'pyrite':
+        baseName = t('compPyrite').replace(' (▶)', '').replace(' (◀)', '');
+        break;
       case 'led': baseName = t('compLed'); break;
       case 'crystal': baseName = t('compCrystal'); break;
       default: baseName = c.type;
     }
+
     counts[baseName] = (counts[baseName] || 0) + 1;
   });
 
   const sortedCounts = Object.entries(counts).sort((a, b) => a[0].localeCompare(b[0]));
+
   let total = 0;
   for (const [name, count] of sortedCounts) {
     const div = document.createElement('div');
