@@ -19,16 +19,18 @@
 
 ### 基本操作
 - **部品配置・移動:** 画面上部ボタンから追加、ドラッグで移動（10pxグリッド吸着）、範囲選択も可能
+- **複数選択:** `Shift` キーを押しながら部品や中継ポイントをクリックすることで、複数選択の追加・解除が可能
 - **部品の左右反転:** 部品を選択して `R` キーを押すか、右クリックメニューから左右反転（in/outピンの位置入れ替え）
-- **サイズ変更:** テキスト、黄鉄鉱、LEDは選択時に右下をドラッグしてサイズ変更が可能
+- **サイズ変更:** テキスト、黄鉄鉱、LED、古代の合金は選択時に右下をドラッグしてサイズ変更が可能
 - **配線接続:** ピン同士をドラッグして接続
-- **中継ポイント:** 配線上をダブルクリックで折れ曲がり点追加 / ドラッグ移動 / 右クリックで削除
-- **テキスト・水晶厚設定:** コンポーネントをダブルクリックで編集
+- **中継ポイント:** 配線上をダブルクリックで折れ曲がり点追加 / ドラッグ移動
+- **部品集計:** 「部品集計」ボタンで、選択中または回路全体の部品数を集計して一覧表示
+- **テキスト・水晶厚設定:** コンポーネントをダブルクリックで編集（テキストは文字色・背景色のコード指定や画像背景に対応）
 - **シミュレーション制御:** 画面上部のバーから、再生/一時停止、シミュレーション速度の変更（0.1x 〜 2.0x）が可能
 - **コマ送り（1チック）:** 「⏭ 1チック」ボタンで、時間を正確に0.1秒だけ進めて動作を確認
-- **ファイルの保存・読込:** 「保存 (JSON)」で現在の回路をPCに保存し、「読み込み」でいつでも続きから再開可能
+- **ファイルの保存・読込:** 「保存 (JSON)」で現在の回路をPCに保存し、「読み込み」でいつでも続きから再開可能（別アプリのデータは安全のため読み込みをブロック）
 - **操作の取り消し・やり直し:** 回路の編集操作をいつでも `Ctrl + Z` で元に戻し、`Ctrl + Y` でやり直し可能
-- **削除:** 部品・配線・中継ポイント上で右クリック（または選択してDelete / Backspace）
+- **削除・一括削除:** 部品・配線・中継ポイント上で右クリック（または選択してDelete / Backspace）。複数選択時は右クリックから中継ポイントや接続電線の一括削除が可能
 - **画面操作:** マウスホイールでズーム、中クリックドラッグ（または Space + 左ドラッグ）で画面移動
 
 ### ショートカットキー
@@ -58,16 +60,18 @@
 
 ### Basic Controls
 - **Place & Move Components:** Click toolbar buttons to add, drag to move (snaps to 10px grid). Area selection is supported.
+- **Multi-Selection:** Hold `Shift` and click components or waypoints to toggle multi-selection.
 - **Flip Component:** Select a component and press `R` key, or use the right-click menu to flip horizontally (swaps in/out pins).
-- **Resize Components:** Text, Pyrite, and LED components can be resized by dragging the bottom-right corner when selected.
+- **Resize Components:** Text, Pyrite, LED, and Ancient Alloy components can be resized by dragging the bottom-right corner when selected.
 - **Wire Connection:** Drag between pins to connect.
-- **Waypoints:** Double-click a wire to add a waypoint / drag to move / right-click to delete.
-- **Text & Crystal Thickness:** Double-click a component to edit settings.
+- **Waypoints:** Double-click a wire to add a waypoint / drag to move.
+- **Component Count:** Click the "Count" button to tally selected or all components in the circuit.
+- **Text & Crystal Thickness:** Double-click a component to edit settings (Text supports hex/rgba color codes for text and background, and image backgrounds).
 - **Simulation Control:** Play/Pause the simulation and change the execution speed (0.1x to 2.0x) via the toolbar.
 - **1-Tick Step:** Use the "⏭ 1-Tick" button to advance the simulation by exactly 0.1 seconds.
-- **Save & Load:** Save your current circuit to your PC as a JSON file, and load it anytime to resume.
+- **Save & Load:** Save your current circuit to your PC as a JSON file, and load it anytime to resume (invalid files from other apps are strictly blocked).
 - **Undo / Redo:** Easily undo changes with `Ctrl + Z` and redo with `Ctrl + Y`.
-- **Delete:** Right-click a component, wire, or waypoint (or press Delete / Backspace when selected).
+- **Delete & Bulk Delete:** Right-click a component, wire, or waypoint (or press Delete / Backspace). Right-click during multi-selection to bulk delete waypoints or connected wires.
 - **Canvas Control:** Mouse wheel to zoom, middle-click drag (or Space + Left-drag) to pan.
 
 ### Shortcuts
@@ -97,16 +101,18 @@
 
 ### Основное управление
 - **Размещение и перемещение:** Добавление через верхние кнопки, перетаскивание с привязкой к сетке 10px. Поддерживается выделение области.
+- **Мультивыделение:** Удерживайте `Shift` и кликайте по компонентам или точкам изгиба для добавления/удаления из выделения.
 - **Отражение компонента:** Выделите компонент и нажмите клавишу `R` или используйте контекстное меню для отражения по горизонтали (меняет местами входы и выходы).
-- **Изменение размера:** Для текста, пирита и светодиода можно менять размер, потянув за правый нижний угол выделенного элемента.
+- **Изменение размера:** Для текста, пирита, светодиода и древнего сплава можно менять размер, потянув за правый нижний угол выделенного элемента.
 - **Соединение проводов:** Перетащите линию от одного пина к другому.
-- **Точки изгиба (Waypoints):** Двойной клик по проводу для добавления / перетаскивание / правый клик для удаления.
-- **Текст и толщина кристалла:** Двойной клик по компоненту для редактирования.
+- **Точки изгиба (Waypoints):** Двойной клик по проводу для добавления / перетаскивание.
+- **Подсчет компонентов:** Кнопка "Подсчет" (Count) позволяет подсчитать выбранные или все компоненты в схеме.
+- **Текст и толщина кристалла:** Двойной клик по компоненту для редактирования (текст поддерживает ввод цветовых кодов для текста и фона, а также фоновые изображения).
 - **Управление симуляцией:** Запуск/Пауза и изменение скорости симуляции (от 0.1x до 2.0x) на панели инструментов.
 - **Шаг 1 такт:** Кнопка "⏭ 1 такт" продвигает симуляцию ровно на 0.1 секунды.
-- **Сохранение и загрузка:** Сохраняйте схему на ПК в формате JSON и загружайте для продолжения работы.
+- **Сохранение и загрузка:** Сохраняйте схему на ПК в формате JSON и загружайте для продолжения работы (загрузка несовместимых файлов из других приложений блокируется).
 - **Отмена и повтор действий:** Отмена изменений комбинацией `Ctrl + Z`, повтор — `Ctrl + Y`.
-- **Удаление:** Правый клик по компоненту, проводу или точке (либо клавиши Delete / Backspace для выделенного).
+- **Удаление и массовое удаление:** Правый клик по компоненту, проводу или точке (либо клавиши Delete / Backspace). Правый клик при мультивыделении позволяет массово удалить точки изгиба или подключенные провода.
 - **Навигация:** Колесо мыши для масштабирования, зажатие колесика (или Space + ЛКМ) для перемещения по холсту.
 
 ### Горячие клавиши
@@ -120,6 +126,6 @@
 - `Delete` / `Backspace`: Удалить выделенные элементы
 
 ### 更新履歴 (Change Log)
-- **v1.2.0** :(2026-09-19) 範囲選択、コピペ、電線の折り曲げ、ショートカットキー追加。オブジェクト構造強化。トリガー・黄鉄鉱・水晶・LEDのデザイン変更。シミュレーション速度調整機能、コマ送り（1チック）機能の追加。描画処理の高速化、テキストコンポーネントの画像読み込みロジックの最適化。古代の合金を追加。
+- **v1.2.0** :(2026-09-19) 範囲選択、コピペ、電線の折り曲げ、ショートカットキー追加。オブジェクト構造強化。トリガー・黄鉄鉱・水晶・LEDのデザイン変更。シミュレーション速度調整機能、コマ送り（1チック）機能の追加。描画処理の高速化、テキストコンポーネントの画像読み込みロジックの最適化。古代の合金を追加。Shiftキーによる複数選択機能、部品集計機能、右クリックによる中継ポイントや電線の一括削除機能、テキストの文字色・背景色のコード指定機能を追加。安全なセーブデータ読み込みチェック機構を実装。
 - **v1.1.0**:(2026-09-16) 多言語対応(JA/EN/RU)
 - **v1.0.0**:(2026-09-14) 初版
