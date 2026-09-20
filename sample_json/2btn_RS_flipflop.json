@@ -1,0 +1,219 @@
+{
+  "appName": "PrimitierTransistorCircuitSimulator",
+  "appVersion": "1.2.0",
+  "nextId": 32,
+  "components": [
+    {
+      "id": 2,
+      "type": "vcc",
+      "x": 310,
+      "y": 340,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 6,
+      "type": "inv_transistor",
+      "x": 520,
+      "y": 340,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 7,
+      "type": "inv_transistor",
+      "x": 520,
+      "y": 250,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 19,
+      "type": "text",
+      "x": 700,
+      "y": 100,
+      "width": 350,
+      "height": 110,
+      "flipped": false,
+      "text": "リセット・セット・フリップフロップスイッチ。\n\n回避策（水晶による一部回路の遅延）を行わない場合、\n高確率でチャタリングが発生します。\n\n",
+      "fontSize": 13,
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    },
+    {
+      "id": 22,
+      "type": "text",
+      "x": 790,
+      "y": 200,
+      "width": 350,
+      "height": 110,
+      "flipped": false,
+      "text": "Reset, Set, and Flip-Flop Switches.\n\nIf you do not implement a workaround\n (delaying certain circuits using a crystal oscillator),\nchattering is highly likely to occur.\n",
+      "fontSize": 13,
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    },
+    {
+      "id": 23,
+      "type": "text",
+      "x": 820,
+      "y": 310,
+      "width": 380,
+      "height": 120,
+      "flipped": false,
+      "text": "Переключатель сброса, установки и триггера.\n\nЕсли не применять меры по предотвращению\n (задержка в части цепи за счет кварцевого резонатора),\nс высокой вероятностью возникнет дребезг.\n",
+      "fontSize": 13,
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    },
+    {
+      "id": 26,
+      "type": "led",
+      "x": 710,
+      "y": 250,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 27,
+      "type": "led",
+      "x": 710,
+      "y": 340,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 29,
+      "type": "trigger_switch",
+      "x": 440,
+      "y": 190,
+      "width": 110,
+      "height": 40,
+      "flipped": false
+    },
+    {
+      "id": 30,
+      "type": "trigger_switch",
+      "x": 440,
+      "y": 420,
+      "width": 110,
+      "height": 40,
+      "flipped": false
+    },
+    {
+      "id": 31,
+      "type": "ancient_alloy",
+      "x": 460,
+      "y": 360,
+      "width": 20,
+      "height": 20,
+      "flipped": false
+    }
+  ],
+  "wires": [
+    {
+      "fromCompId": 6,
+      "fromPinId": "ctrl",
+      "toCompId": 7,
+      "toPinId": "out",
+      "points": []
+    },
+    {
+      "fromCompId": 6,
+      "fromPinId": "out",
+      "toCompId": 7,
+      "toPinId": "ctrl",
+      "points": []
+    },
+    {
+      "fromCompId": 27,
+      "fromPinId": "in",
+      "toCompId": 6,
+      "toPinId": "out",
+      "points": []
+    },
+    {
+      "fromCompId": 26,
+      "fromPinId": "in",
+      "toCompId": 7,
+      "toPinId": "out",
+      "points": []
+    },
+    {
+      "fromCompId": 29,
+      "fromPinId": "out",
+      "toCompId": 7,
+      "toPinId": "ctrl",
+      "points": [
+        {
+          "x": 580,
+          "y": 210
+        }
+      ]
+    },
+    {
+      "fromCompId": 29,
+      "fromPinId": "in",
+      "toCompId": 2,
+      "toPinId": "out",
+      "points": []
+    },
+    {
+      "fromCompId": 2,
+      "fromPinId": "out",
+      "toCompId": 30,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 30,
+      "fromPinId": "out",
+      "toCompId": 6,
+      "toPinId": "ctrl",
+      "points": [
+        {
+          "x": 580,
+          "y": 410
+        }
+      ]
+    },
+    {
+      "fromCompId": 31,
+      "fromPinId": "right",
+      "toCompId": 6,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 2,
+      "fromPinId": "out",
+      "toCompId": 31,
+      "toPinId": "left",
+      "points": []
+    },
+    {
+      "fromCompId": 31,
+      "fromPinId": "top",
+      "toCompId": 7,
+      "toPinId": "in",
+      "points": [
+        {
+          "x": 470,
+          "y": 280
+        }
+      ]
+    }
+  ],
+  "viewState": {
+    "panX": -143.91884079937927,
+    "panY": -99.11149430314777,
+    "scale": 1.1969602468458167,
+    "canvasWidth": 1538,
+    "canvasHeight": 846
+  }
+}

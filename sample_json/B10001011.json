@@ -1,0 +1,437 @@
+{
+  "appName": "PrimitierTransistorCircuitSimulator",
+  "appVersion": "1.2.0",
+  "nextId": 93,
+  "components": [
+    {
+      "id": 57,
+      "type": "ancient_alloy",
+      "x": 640,
+      "y": 200,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 2,
+      "type": "vcc",
+      "x": 300,
+      "y": 210,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 13,
+      "type": "inv_transistor",
+      "x": 440,
+      "y": 210,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 42,
+      "type": "transistor",
+      "x": 580,
+      "y": 210,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 55,
+      "type": "trigger_switch",
+      "x": 590,
+      "y": 130,
+      "width": 110,
+      "height": 40,
+      "flipped": false
+    },
+    {
+      "id": 75,
+      "type": "crystal",
+      "x": 730,
+      "y": 200,
+      "width": 110,
+      "height": 60,
+      "flipped": false,
+      "thickness": 1
+    },
+    {
+      "id": 76,
+      "type": "crystal",
+      "x": 730,
+      "y": 240,
+      "width": 110,
+      "height": 60,
+      "flipped": false,
+      "thickness": 1
+    },
+    {
+      "id": 77,
+      "type": "crystal",
+      "x": 730,
+      "y": 280,
+      "width": 110,
+      "height": 60,
+      "flipped": false,
+      "thickness": 1
+    },
+    {
+      "id": 78,
+      "type": "crystal",
+      "x": 730,
+      "y": 330,
+      "width": 110,
+      "height": 60,
+      "flipped": false,
+      "thickness": 1
+    },
+    {
+      "id": 79,
+      "type": "crystal",
+      "x": 730,
+      "y": 370,
+      "width": 110,
+      "height": 60,
+      "flipped": false,
+      "thickness": 1
+    },
+    {
+      "id": 80,
+      "type": "crystal",
+      "x": 730,
+      "y": 410,
+      "width": 110,
+      "height": 60,
+      "flipped": false,
+      "thickness": 1
+    },
+    {
+      "id": 81,
+      "type": "crystal",
+      "x": 730,
+      "y": 450,
+      "width": 110,
+      "height": 60,
+      "flipped": false,
+      "thickness": 1
+    },
+    {
+      "id": 82,
+      "type": "crystal",
+      "x": 730,
+      "y": 500,
+      "width": 110,
+      "height": 60,
+      "flipped": false,
+      "thickness": 1
+    },
+    {
+      "id": 83,
+      "type": "crystal",
+      "x": 870,
+      "y": 200,
+      "width": 110,
+      "height": 60,
+      "flipped": false,
+      "thickness": 1
+    },
+    {
+      "id": 84,
+      "type": "crystal",
+      "x": 870,
+      "y": 240,
+      "width": 110,
+      "height": 60,
+      "flipped": false,
+      "thickness": 1
+    },
+    {
+      "id": 85,
+      "type": "crystal",
+      "x": 870,
+      "y": 330,
+      "width": 110,
+      "height": 60,
+      "flipped": false,
+      "thickness": 1
+    },
+    {
+      "id": 86,
+      "type": "crystal",
+      "x": 870,
+      "y": 500,
+      "width": 110,
+      "height": 60,
+      "flipped": false,
+      "thickness": 1
+    },
+    {
+      "id": 87,
+      "type": "pyrite",
+      "x": 1000,
+      "y": 200,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 88,
+      "type": "pyrite",
+      "x": 1000,
+      "y": 240,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 89,
+      "type": "pyrite",
+      "x": 1000,
+      "y": 330,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 90,
+      "type": "pyrite",
+      "x": 1000,
+      "y": 500,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 91,
+      "type": "led",
+      "x": 1100,
+      "y": 200,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 92,
+      "type": "text",
+      "x": 70,
+      "y": 300,
+      "width": 450,
+      "height": 120,
+      "flipped": false,
+      "text": "決められた2進数信号(B1000011)を送信するサンプル\n\nSample Code for Transmitting a Specified Binary Signal (B1000011)\n\nПример передачи заданного двоичного сигнала (B1000011)",
+      "fontSize": 13,
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    }
+  ],
+  "wires": [
+    {
+      "fromCompId": 2,
+      "fromPinId": "out",
+      "toCompId": 13,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 13,
+      "fromPinId": "out",
+      "toCompId": 42,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 55,
+      "fromPinId": "in",
+      "toCompId": 13,
+      "toPinId": "out",
+      "points": []
+    },
+    {
+      "fromCompId": 42,
+      "fromPinId": "ctrl",
+      "toCompId": 57,
+      "toPinId": "top",
+      "points": []
+    },
+    {
+      "fromCompId": 42,
+      "fromPinId": "out",
+      "toCompId": 57,
+      "toPinId": "right",
+      "points": []
+    },
+    {
+      "fromCompId": 55,
+      "fromPinId": "out",
+      "toCompId": 57,
+      "toPinId": "right",
+      "points": []
+    },
+    {
+      "fromCompId": 75,
+      "fromPinId": "out",
+      "toCompId": 76,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 76,
+      "fromPinId": "out",
+      "toCompId": 77,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 77,
+      "fromPinId": "out",
+      "toCompId": 78,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 78,
+      "fromPinId": "out",
+      "toCompId": 79,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 79,
+      "fromPinId": "out",
+      "toCompId": 80,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 80,
+      "fromPinId": "out",
+      "toCompId": 81,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 81,
+      "fromPinId": "out",
+      "toCompId": 82,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 75,
+      "fromPinId": "out",
+      "toCompId": 83,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 76,
+      "fromPinId": "out",
+      "toCompId": 84,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 78,
+      "fromPinId": "out",
+      "toCompId": 85,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 82,
+      "fromPinId": "out",
+      "toCompId": 86,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 87,
+      "fromPinId": "out",
+      "toCompId": 91,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 87,
+      "fromPinId": "out",
+      "toCompId": 88,
+      "toPinId": "out",
+      "points": []
+    },
+    {
+      "fromCompId": 88,
+      "fromPinId": "out",
+      "toCompId": 89,
+      "toPinId": "out",
+      "points": []
+    },
+    {
+      "fromCompId": 89,
+      "fromPinId": "out",
+      "toCompId": 90,
+      "toPinId": "out",
+      "points": []
+    },
+    {
+      "fromCompId": 86,
+      "fromPinId": "out",
+      "toCompId": 90,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 85,
+      "fromPinId": "out",
+      "toCompId": 89,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 84,
+      "fromPinId": "out",
+      "toCompId": 88,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 83,
+      "fromPinId": "out",
+      "toCompId": 87,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 86,
+      "fromPinId": "out",
+      "toCompId": 13,
+      "toPinId": "ctrl",
+      "points": [
+        {
+          "x": 980,
+          "y": 600
+        },
+        {
+          "x": 500,
+          "y": 600
+        }
+      ]
+    },
+    {
+      "fromCompId": 57,
+      "fromPinId": "right",
+      "toCompId": 75,
+      "toPinId": "in",
+      "points": []
+    }
+  ],
+  "viewState": {
+    "panX": 29.33333333333337,
+    "panY": -122.5,
+    "scale": 1,
+    "canvasWidth": 1538,
+    "canvasHeight": 846
+  }
+}

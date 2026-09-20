@@ -1,0 +1,603 @@
+{
+  "appName": "PrimitierTransistorCircuitSimulator",
+  "appVersion": "1.2.0",
+  "nextId": 63,
+  "components": [
+    {
+      "id": 46,
+      "type": "text",
+      "x": 580,
+      "y": 400,
+      "width": 50,
+      "height": 60,
+      "flipped": false,
+      "text": "↑",
+      "fontSize": 30,
+      "bgColor": "#528245",
+      "bgImage": ""
+    },
+    {
+      "id": 45,
+      "type": "text",
+      "x": 340,
+      "y": 470,
+      "width": 420,
+      "height": 250,
+      "flipped": false,
+      "text": "この反転トランジスタは電気の\nループを止めるものだが、\n上のトランジスタも同じなので\n無くても動作する。\n\nThis inverting transistor is designed to\nbreak the electrical loop, but\nsince the transistor above serves the same purpose,\nthe circuit will still function without it.\n\nЭтот инвертирующий транзистор прерывает\nэлектрическую цепь, но,\nпоскольку верхний транзистор выполняет ту же функцию,\nустройство будет работать и без него.",
+      "fontSize": 13,
+      "bgColor": "#528245",
+      "bgImage": ""
+    },
+    {
+      "id": 23,
+      "type": "inv_transistor",
+      "x": 700,
+      "y": 330,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 24,
+      "type": "inv_transistor",
+      "x": 550,
+      "y": 330,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 25,
+      "type": "transistor",
+      "x": 550,
+      "y": 240,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 26,
+      "type": "transistor",
+      "x": 780,
+      "y": 420,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 28,
+      "type": "vcc",
+      "x": 270,
+      "y": 240,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 39,
+      "type": "text",
+      "x": 910,
+      "y": 130,
+      "width": 280,
+      "height": 120,
+      "flipped": false,
+      "text": "1ボタントグルスイッチ。\n\n1ボタンの操作のみで\nON/OFFが切り替えられるスイッチです。\n長押しすると点滅します。\n",
+      "fontSize": 13,
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    },
+    {
+      "id": 40,
+      "type": "text",
+      "x": 940,
+      "y": 240,
+      "width": 280,
+      "height": 120,
+      "flipped": false,
+      "text": "Single-button toggle switch.\n\nThis switch allows you to toggle between\nON and OFF with a single button press.\nPress and hold to make it flash.\n",
+      "fontSize": 13,
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    },
+    {
+      "id": 41,
+      "type": "text",
+      "x": 1040,
+      "y": 340,
+      "width": 440,
+      "height": 130,
+      "flipped": false,
+      "text": "Однокнопочный переключатель.\n\nЭто переключатель, с помощью которого\nможно включать и выключать устройство одним нажатием кнопки.\nПри длительном нажатии индикатор начинает мигать.",
+      "fontSize": 13,
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    },
+    {
+      "id": 43,
+      "type": "trigger_switch",
+      "x": 410,
+      "y": 250,
+      "width": 110,
+      "height": 40,
+      "flipped": false
+    },
+    {
+      "id": 44,
+      "type": "led",
+      "x": 930,
+      "y": 420,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 47,
+      "type": "inv_transistor",
+      "x": 700,
+      "y": 940,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 48,
+      "type": "transistor",
+      "x": 550,
+      "y": 850,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 49,
+      "type": "transistor",
+      "x": 780,
+      "y": 1030,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 50,
+      "type": "vcc",
+      "x": 270,
+      "y": 850,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 52,
+      "type": "trigger_switch",
+      "x": 400,
+      "y": 860,
+      "width": 110,
+      "height": 40,
+      "flipped": false
+    },
+    {
+      "id": 53,
+      "type": "led",
+      "x": 930,
+      "y": 1030,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 54,
+      "type": "text",
+      "x": 590,
+      "y": 730,
+      "width": 50,
+      "height": 60,
+      "flipped": false,
+      "text": "↓",
+      "fontSize": 30,
+      "bgColor": "#528245",
+      "bgImage": ""
+    },
+    {
+      "id": 55,
+      "type": "transistor",
+      "x": 540,
+      "y": 1300,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 56,
+      "type": "inv_transistor",
+      "x": 540,
+      "y": 1300,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 57,
+      "type": "transistor",
+      "x": 540,
+      "y": 1300,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 58,
+      "type": "vcc",
+      "x": 540,
+      "y": 1300,
+      "width": 110,
+      "height": 60,
+      "flipped": true
+    },
+    {
+      "id": 59,
+      "type": "text",
+      "x": 710,
+      "y": 1200,
+      "width": 610,
+      "height": 300,
+      "flipped": false,
+      "text": "このシミュレータは距離での漏電はないので、\n部品を１カ所に重ねる事が出来ます。\nこれを利用してこのボタンon/offスイッチのように\n他の設計図に張り付けて便利なテスト用部品\nとして使用することも出来ます。\n\nSince this simulator does not detect leakage current based on distance,\nyou can stack components in a single location.\nBy taking advantage of this, you can paste them into other schematics—\nsuch as this on/off button—\nand use them as convenient test components.\n\nПоскольку в этом симуляторе отсутствуют утечки тока на расстоянии,\nкомпоненты можно размещать в одном месте.\nВоспользовавшись этим, можно, как в случае с этой кнопкой-выключателем,\nвставлять их в другие чертежи и использовать в качестве удобных тестовых компонентов.",
+      "fontSize": 13,
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    },
+    {
+      "id": 60,
+      "type": "trigger_switch",
+      "x": 540,
+      "y": 1310,
+      "width": 110,
+      "height": 40,
+      "flipped": true
+    },
+    {
+      "id": 61,
+      "type": "ancient_alloy",
+      "x": 590,
+      "y": 1240,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 62,
+      "type": "text",
+      "x": 590,
+      "y": 1130,
+      "width": 50,
+      "height": 60,
+      "flipped": false,
+      "text": "↓",
+      "fontSize": 30,
+      "bgColor": "#528245",
+      "bgImage": ""
+    }
+  ],
+  "wires": [
+    {
+      "fromCompId": 24,
+      "fromPinId": "out",
+      "toCompId": 23,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 23,
+      "fromPinId": "out",
+      "toCompId": 26,
+      "toPinId": "ctrl",
+      "points": [
+        {
+          "x": 840,
+          "y": 360
+        }
+      ]
+    },
+    {
+      "fromCompId": 28,
+      "fromPinId": "out",
+      "toCompId": 26,
+      "toPinId": "in",
+      "points": [
+        {
+          "x": 380,
+          "y": 450
+        }
+      ]
+    },
+    {
+      "fromCompId": 25,
+      "fromPinId": "out",
+      "toCompId": 23,
+      "toPinId": "ctrl",
+      "points": [
+        {
+          "x": 760,
+          "y": 270
+        }
+      ]
+    },
+    {
+      "fromCompId": 26,
+      "fromPinId": "out",
+      "toCompId": 24,
+      "toPinId": "ctrl",
+      "points": [
+        {
+          "x": 890,
+          "y": 310
+        },
+        {
+          "x": 610,
+          "y": 310
+        }
+      ]
+    },
+    {
+      "fromCompId": 26,
+      "fromPinId": "out",
+      "toCompId": 23,
+      "toPinId": "in",
+      "points": [
+        {
+          "x": 890,
+          "y": 310
+        },
+        {
+          "x": 700,
+          "y": 310
+        }
+      ]
+    },
+    {
+      "fromCompId": 26,
+      "fromPinId": "out",
+      "toCompId": 25,
+      "toPinId": "ctrl",
+      "points": [
+        {
+          "x": 890,
+          "y": 220
+        },
+        {
+          "x": 610,
+          "y": 220
+        }
+      ]
+    },
+    {
+      "fromCompId": 26,
+      "fromPinId": "out",
+      "toCompId": 44,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 28,
+      "fromPinId": "out",
+      "toCompId": 43,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 43,
+      "fromPinId": "out",
+      "toCompId": 25,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 43,
+      "fromPinId": "out",
+      "toCompId": 24,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 47,
+      "fromPinId": "out",
+      "toCompId": 49,
+      "toPinId": "ctrl",
+      "points": [
+        {
+          "x": 840,
+          "y": 970
+        }
+      ]
+    },
+    {
+      "fromCompId": 50,
+      "fromPinId": "out",
+      "toCompId": 49,
+      "toPinId": "in",
+      "points": [
+        {
+          "x": 380,
+          "y": 1060
+        }
+      ]
+    },
+    {
+      "fromCompId": 48,
+      "fromPinId": "out",
+      "toCompId": 47,
+      "toPinId": "ctrl",
+      "points": [
+        {
+          "x": 760,
+          "y": 880
+        }
+      ]
+    },
+    {
+      "fromCompId": 49,
+      "fromPinId": "out",
+      "toCompId": 47,
+      "toPinId": "in",
+      "points": [
+        {
+          "x": 890,
+          "y": 920
+        },
+        {
+          "x": 700,
+          "y": 920
+        }
+      ]
+    },
+    {
+      "fromCompId": 49,
+      "fromPinId": "out",
+      "toCompId": 48,
+      "toPinId": "ctrl",
+      "points": [
+        {
+          "x": 890,
+          "y": 820
+        },
+        {
+          "x": 610,
+          "y": 820
+        }
+      ]
+    },
+    {
+      "fromCompId": 49,
+      "fromPinId": "out",
+      "toCompId": 53,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 50,
+      "fromPinId": "out",
+      "toCompId": 52,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 52,
+      "fromPinId": "out",
+      "toCompId": 48,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 52,
+      "fromPinId": "out",
+      "toCompId": 47,
+      "toPinId": "in",
+      "points": [
+        {
+          "x": 510,
+          "y": 970
+        }
+      ]
+    },
+    {
+      "fromCompId": 56,
+      "fromPinId": "out",
+      "toCompId": 55,
+      "toPinId": "ctrl",
+      "points": [
+        {
+          "x": 650,
+          "y": 1300
+        }
+      ]
+    },
+    {
+      "fromCompId": 58,
+      "fromPinId": "out",
+      "toCompId": 55,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 57,
+      "fromPinId": "out",
+      "toCompId": 56,
+      "toPinId": "ctrl",
+      "points": [
+        {
+          "x": 650,
+          "y": 1300
+        }
+      ]
+    },
+    {
+      "fromCompId": 55,
+      "fromPinId": "out",
+      "toCompId": 56,
+      "toPinId": "in",
+      "points": [
+        {
+          "x": 650,
+          "y": 1300
+        },
+        {
+          "x": 540,
+          "y": 1300
+        }
+      ]
+    },
+    {
+      "fromCompId": 55,
+      "fromPinId": "out",
+      "toCompId": 57,
+      "toPinId": "ctrl",
+      "points": [
+        {
+          "x": 650,
+          "y": 1300
+        }
+      ]
+    },
+    {
+      "fromCompId": 60,
+      "fromPinId": "out",
+      "toCompId": 57,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 60,
+      "fromPinId": "out",
+      "toCompId": 56,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 58,
+      "fromPinId": "out",
+      "toCompId": 60,
+      "toPinId": "out",
+      "points": []
+    },
+    {
+      "fromCompId": 55,
+      "fromPinId": "out",
+      "toCompId": 61,
+      "toPinId": "bottom",
+      "points": [
+        {
+          "x": 650,
+          "y": 1300
+        }
+      ]
+    }
+  ],
+  "viewState": {
+    "panX": -121.82476943346501,
+    "panY": -113.5,
+    "scale": 1,
+    "canvasWidth": 1528,
+    "canvasHeight": 839
+  }
+}

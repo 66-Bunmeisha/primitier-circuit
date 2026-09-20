@@ -1,0 +1,798 @@
+{
+  "appName": "PrimitierTransistorCircuitSimulator",
+  "appVersion": "1.2.0",
+  "nextId": 168,
+  "components": [
+    {
+      "id": 118,
+      "type": "text",
+      "x": -80,
+      "y": -630,
+      "width": 800,
+      "height": 620,
+      "flipped": false,
+      "text": "電源：\n・無限の電力を常に供給する。\nLED:\n・LEDは通電することで発行する。\n・縁体であり片方のピンに電流を流しても反対側に通電しない。\n・同じピンに複数の電線を接続しても他の電線に逆流しない。\nトリガーSW:\n・通常時はLEDと同じく絶縁体。\n・カーソルで左クリックするとON状態となり、その間だけ伝導体\n　となる。左右にも同じピンに接続されているほかの電線にも\n　通電する。\n\nPower Supply:\n・Provides an unlimited supply of power at all times.\nLED:\n・The LED emits light when current flows through it.\n・They are insulators; even if current flows through one pin, it does not pass to the opposite side.\n・Even if multiple wires are connected to the same pin, current does not flow backward to the other wires.\nTrigger Switch:\n・Normally, it acts as an insulator, just like an LED.\n・Left-clicking with the cursor turns it ON, and it becomes a conductor only while it is ON.\n　Current also flows to other wires connected to the same pin on both the left and right sides.\n　Current also flows to other wires connected to the same pin on both the left and right sides.\n\nИсточник питания:\n・Постоянно обеспечивает неограниченное количество энергии.\nСветодиод:\n・Светодиод светится при подаче тока.\n・Является диэлектриком: даже если ток проходит по одному выводу, он не проходит по противоположному.\n・Даже если к одному выводу подключено несколько проводов, ток не течет в обратном направлении по другим проводам.\nТриггерный переключатель:\n・В обычном состоянии, как и светодиод, является диэлектриком.\n・При щелчке левой кнопкой мыши курсора переключатель переходит в состояние «ВКЛ» и становится проводником\n　только на время этого состояния. Ток проходит также по другим проводам, подключенным к тому же выводу\n　с левой и правой сторон.",
+      "fontSize": 13,
+      "textColor": "#ffffff",
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    },
+    {
+      "id": 93,
+      "type": "vcc",
+      "x": 350,
+      "y": -610,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 94,
+      "type": "trigger_switch",
+      "x": 490,
+      "y": -600,
+      "width": 110,
+      "height": 40,
+      "flipped": false
+    },
+    {
+      "id": 95,
+      "type": "led",
+      "x": 630,
+      "y": -610,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 96,
+      "type": "vcc",
+      "x": 580,
+      "y": -510,
+      "width": 110,
+      "height": 60,
+      "flipped": true
+    },
+    {
+      "id": 97,
+      "type": "led",
+      "x": 580,
+      "y": -430,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 98,
+      "type": "trigger_switch",
+      "x": 440,
+      "y": -500,
+      "width": 110,
+      "height": 40,
+      "flipped": false
+    },
+    {
+      "id": 119,
+      "type": "led",
+      "x": 360,
+      "y": -430,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 120,
+      "type": "text",
+      "x": 690,
+      "y": -790,
+      "width": 880,
+      "height": 140,
+      "flipped": false,
+      "text": "＜各部品の基本機能の説明＞\n<Explanation of the Basic Functions of Each Component>\n<Описание основных функций отдельных компонентов>\n",
+      "fontSize": 30,
+      "textColor": "#ffffff",
+      "bgColor": "#867928",
+      "bgImage": ""
+    },
+    {
+      "id": 121,
+      "type": "text",
+      "x": -80,
+      "y": 0,
+      "width": 800,
+      "height": 540,
+      "flipped": false,
+      "text": "古代の合金：\n・接合点として使用できる伝導体。\n・どのピンに通電しても全てのピンに通電する。\n・同じピンに接続されているほかの電線にも通電する。\n・サイズと縦横比率を自由に変更できる。\n・小さくすると接続用のピンが非表示になる。\n\nAncient Alloy:\n・A conductor that can be used as a connection point.\n・Electricity flows through all pins when any single pin is energized.\n・Electricity also flows through other wires connected to the same pin.\n・You can freely change its size and aspect ratio.\n・If you make it smaller, the connection pins become invisible.\n\nДревний сплав:\n・Проводник, который можно использовать в качестве точки соединения.\n・Если подать напряжение на любой контакт, оно проходит по всем контактам.\n・Напряжение также проходит по другим проводам, подключенным к тому же контакту.\n・Размер и соотношение сторон можно изменять по желанию.\n・При уменьшении размера контакты для подключения становятся невидимыми.",
+      "fontSize": 13,
+      "textColor": "#ffffff",
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    },
+    {
+      "id": 128,
+      "type": "vcc",
+      "x": 390,
+      "y": 380,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 129,
+      "type": "ancient_alloy",
+      "x": 570,
+      "y": 400,
+      "width": 20,
+      "height": 20,
+      "flipped": false
+    },
+    {
+      "id": 130,
+      "type": "led",
+      "x": 640,
+      "y": 380,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 131,
+      "type": "led",
+      "x": 580,
+      "y": 300,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 132,
+      "type": "led",
+      "x": 580,
+      "y": 460,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 133,
+      "type": "led",
+      "x": 450,
+      "y": 460,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 112,
+      "type": "vcc",
+      "x": 390,
+      "y": 100,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 113,
+      "type": "ancient_alloy",
+      "x": 550,
+      "y": 100,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 114,
+      "type": "led",
+      "x": 640,
+      "y": 100,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 115,
+      "type": "led",
+      "x": 580,
+      "y": 20,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 116,
+      "type": "led",
+      "x": 580,
+      "y": 180,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 117,
+      "type": "led",
+      "x": 450,
+      "y": 180,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 135,
+      "type": "text",
+      "x": 740,
+      "y": -170,
+      "width": 800,
+      "height": 590,
+      "flipped": false,
+      "text": "水晶：\n・左右に通電するが通過するのに0.1秒経過する。\n・同じピンに接続されているほかの電線には0秒で通電する。\n・水晶の厚さが0.2cm以上あるとき\n　推奨の厚さ ÷ 0.1cm ×　0.1秒周期でLEDが点滅する。\n　※厚さ5cmの時、0.1秒間の通電を\"1\"通電なしを\"0\"とすると\n　　最初の0.2秒 0,1 次の0.5秒 0,0,0,0,1 の繰り返しとなる。\n\nQuartz:\n・Current flows in both directions, but it takes 0.1 seconds to pass through.\n・Current flows instantly through other wires connected to the same pin.\n・When the crystal is 0.2 cm or thicker:\n　The LED flashes at a cycle of (recommended thickness ÷ 0.1 cm) × 0.1 seconds.\n　*For a thickness of 5 cm, if one 0.1-second current pulse is counted as “1” and no current is counted as “0,”\n　　the pattern repeats as follows: first 0.2 seconds: 0,1; next 0.5 seconds: 0,0,0,0,1.\n\nКварц:\n・Ток проходит в обе стороны, но на прохождение уходит 0,1 секунды.\n・На другие провода, подключенные к тому же выводу, ток поступает за 0 секунд.\n・При толщине кварца 0,2 см и более\n　Светодиод мигает с периодом, равным рекомендуемой толщине, деленной на 0,1 см, умноженной на 0,1 секунды.\n　*При толщине 5 см, если 0,1 секунды прохождения тока считать «1», а отсутствие тока — «0»,\n　　то в течение первых 0,2 секунд последовательность будет 0,1, а в следующие 0,5 секунд — 0,0,0,0,1, и так далее.",
+      "fontSize": 13,
+      "textColor": "#ffffff",
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    },
+    {
+      "id": 136,
+      "type": "vcc",
+      "x": 900,
+      "y": 240,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 137,
+      "type": "trigger_switch",
+      "x": 1030,
+      "y": 250,
+      "width": 110,
+      "height": 40,
+      "flipped": false
+    },
+    {
+      "id": 138,
+      "type": "crystal",
+      "x": 1160,
+      "y": 240,
+      "width": 110,
+      "height": 60,
+      "flipped": false,
+      "thickness": 1
+    },
+    {
+      "id": 139,
+      "type": "led",
+      "x": 1290,
+      "y": 240,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 140,
+      "type": "vcc",
+      "x": 900,
+      "y": 340,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 141,
+      "type": "trigger_switch",
+      "x": 1030,
+      "y": 350,
+      "width": 110,
+      "height": 40,
+      "flipped": false
+    },
+    {
+      "id": 142,
+      "type": "crystal",
+      "x": 1160,
+      "y": 340,
+      "width": 110,
+      "height": 60,
+      "flipped": false,
+      "thickness": 5
+    },
+    {
+      "id": 143,
+      "type": "led",
+      "x": 1290,
+      "y": 340,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 144,
+      "type": "text",
+      "x": 740,
+      "y": -630,
+      "width": 800,
+      "height": 450,
+      "flipped": false,
+      "text": "黄鉄鉱：\n・inからoutのピンにのみ電気が流れる。\n・inと同じピンに接続されているほかの電線にも通電する。\n・outと同じピンに複数の電線を接続しても他の電線に逆流しない。\n\nPyrite:\n・Electricity flows only from the “in” pin to the “out” pin.\n・Electricity also flows through other wires connected to the same pin as “in.”\n・Even if multiple wires are connected to the same pin as “out,” the current does not flow backward into the other wires.\n\nПирит:\n・Ток протекает только от контакта «in» к контакту «out».\n・Ток также протекает по другим проводам, подключенным к тому же контакту, что и «in».\n・Даже если к контакту «out» подключить несколько проводов,\n  ток не будет течь в обратном направлении по другим проводам.\n",
+      "fontSize": 13,
+      "textColor": "#ffffff",
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    },
+    {
+      "id": 145,
+      "type": "vcc",
+      "x": 760,
+      "y": -340,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 146,
+      "type": "pyrite",
+      "x": 910,
+      "y": -340,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 147,
+      "type": "led",
+      "x": 1020,
+      "y": -340,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 148,
+      "type": "led",
+      "x": 810,
+      "y": -270,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 149,
+      "type": "vcc",
+      "x": 1360,
+      "y": -340,
+      "width": 110,
+      "height": 60,
+      "flipped": true
+    },
+    {
+      "id": 150,
+      "type": "pyrite",
+      "x": 1260,
+      "y": -340,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 151,
+      "type": "led",
+      "x": 1170,
+      "y": -340,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 152,
+      "type": "led",
+      "x": 1360,
+      "y": -270,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 153,
+      "type": "text",
+      "x": 1550,
+      "y": -630,
+      "width": 860,
+      "height": 940,
+      "flipped": false,
+      "text": "トランジスタ：\n・ctrlに通電している場合、inからoutのピンにのみ電気が流れる。\n・ctrlに通電して、inからoutに電気が流れるようになるまで0.1秒かかる。\n・ctrlの通電が停止した場合、0.1秒でinからoutのピンへの通電も停止する。\n・inと同じピンに接続されているほかの電線にも通電する。\n・outと同じピンに複数の電線を接続しても他の電線に逆流しない。\n\n反転トランジスタ：\n・ctrlに通電していない場合、inからoutのピンにのみ電気が流れる。\n・ctrlに通電して、inからoutに電気が流れなくなるまで0.1秒かかる。\n・ctrlの通電が停止した場合、0.1秒でinからoutのピンへの通電も開始する。\n・inと同じピンに接続されているほかの電線にも通電する。\n・outと同じピンに複数の電線を接続しても他の電線に逆流しない。\n\nTransistor:\n・When power is applied to the ctrl pin, current flows only from the in pin to the out pin.\n・It takes 0.1 seconds for current to begin flowing from the in pin to the out pin after power is applied to the ctrl pin.\n・When power to ctrl is turned off, the current flowing from the in pin to the out pin also stops within 0.1 seconds.\n・Current also flows through other wires connected to the same pin as in.\n・Even if multiple wires are connected to the same pin as out, current does not flow backward into the other wires.\n\nInverting Transistor:\n・When ctrl is not powered, current flows only from the in pin to the out pin.\n・It takes 0.1 seconds for current to stop flowing from the “in” to the “out” pin after power is applied to “ctrl.”\n・If power to “ctrl” is turned off, current begins flowing from the “in” to the “out” pin within 0.1 seconds.\n・Current also flows through other wires connected to the same pin as “in.”\n・Even if multiple wires are connected to the same pin as “out,” current does not flow backward into the other wires.\n\nТранзистор:\n・Если на вывод ctrl подано напряжение, ток протекает только от вывода in к выводу out.\n・После подачи напряжения на вывод ctrl требуется 0,1 секунды, чтобы ток начал протекать от вывода in к выводу out.\n・При отключении питания на выводе ctrl через 0,1 секунды прекращается подача тока от вывода in к выводу out.\n・Ток также проходит по другим проводам, подключённым к тому же выводу, что и in.\n・Даже если к выводу out подключено несколько проводов, обратный ток в другие провода не протекает.\n\nИнвертирующий транзистор:\n・Если на вывод ctrl не подаётся питание, ток протекает только от вывода in к выводу out.\n・После подачи напряжения на ctrl требуется 0,1 секунды, чтобы ток перестал протекать от in к out.\n・Если подача напряжения на ctrl прекращается, через 0,1 секунды начинается подача напряжения от in к out.\n・Напряжение подается также на другие провода, подключенные к тому же выводу, что и in.\n・Даже если к выводу out подключено несколько проводов, обратный ток в другие провода не протекает.",
+      "fontSize": 13,
+      "textColor": "#ffffff",
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    },
+    {
+      "id": 154,
+      "type": "vcc",
+      "x": 1970,
+      "y": 150,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 156,
+      "type": "vcc",
+      "x": 1580,
+      "y": 150,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 157,
+      "type": "transistor",
+      "x": 1760,
+      "y": 150,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 158,
+      "type": "led",
+      "x": 2280,
+      "y": 150,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 159,
+      "type": "trigger_switch",
+      "x": 2100,
+      "y": 100,
+      "width": 110,
+      "height": 40,
+      "flipped": false
+    },
+    {
+      "id": 160,
+      "type": "inv_transistor",
+      "x": 2150,
+      "y": 150,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 161,
+      "type": "led",
+      "x": 2060,
+      "y": 220,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 162,
+      "type": "trigger_switch",
+      "x": 1710,
+      "y": 90,
+      "width": 110,
+      "height": 40,
+      "flipped": false
+    },
+    {
+      "id": 163,
+      "type": "led",
+      "x": 1890,
+      "y": 150,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 164,
+      "type": "led",
+      "x": 1680,
+      "y": 220,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 166,
+      "type": "led",
+      "x": 2280,
+      "y": 80,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 167,
+      "type": "led",
+      "x": 1890,
+      "y": 80,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    }
+  ],
+  "wires": [
+    {
+      "fromCompId": 96,
+      "fromPinId": "out",
+      "toCompId": 98,
+      "toPinId": "out",
+      "points": []
+    },
+    {
+      "fromCompId": 98,
+      "fromPinId": "out",
+      "toCompId": 97,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 95,
+      "fromPinId": "in",
+      "toCompId": 94,
+      "toPinId": "out",
+      "points": []
+    },
+    {
+      "fromCompId": 93,
+      "fromPinId": "out",
+      "toCompId": 94,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 117,
+      "fromPinId": "out",
+      "toCompId": 113,
+      "toPinId": "left",
+      "points": []
+    },
+    {
+      "fromCompId": 112,
+      "fromPinId": "out",
+      "toCompId": 113,
+      "toPinId": "left",
+      "points": []
+    },
+    {
+      "fromCompId": 115,
+      "fromPinId": "in",
+      "toCompId": 113,
+      "toPinId": "top",
+      "points": []
+    },
+    {
+      "fromCompId": 116,
+      "fromPinId": "in",
+      "toCompId": 113,
+      "toPinId": "bottom",
+      "points": []
+    },
+    {
+      "fromCompId": 114,
+      "fromPinId": "in",
+      "toCompId": 113,
+      "toPinId": "right",
+      "points": []
+    },
+    {
+      "fromCompId": 119,
+      "fromPinId": "out",
+      "toCompId": 98,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 133,
+      "fromPinId": "out",
+      "toCompId": 129,
+      "toPinId": "left",
+      "points": []
+    },
+    {
+      "fromCompId": 128,
+      "fromPinId": "out",
+      "toCompId": 129,
+      "toPinId": "left",
+      "points": []
+    },
+    {
+      "fromCompId": 131,
+      "fromPinId": "in",
+      "toCompId": 129,
+      "toPinId": "top",
+      "points": []
+    },
+    {
+      "fromCompId": 132,
+      "fromPinId": "in",
+      "toCompId": 129,
+      "toPinId": "bottom",
+      "points": []
+    },
+    {
+      "fromCompId": 130,
+      "fromPinId": "in",
+      "toCompId": 129,
+      "toPinId": "right",
+      "points": []
+    },
+    {
+      "fromCompId": 136,
+      "fromPinId": "out",
+      "toCompId": 137,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 137,
+      "fromPinId": "out",
+      "toCompId": 138,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 138,
+      "fromPinId": "out",
+      "toCompId": 139,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 140,
+      "fromPinId": "out",
+      "toCompId": 141,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 141,
+      "fromPinId": "out",
+      "toCompId": 142,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 142,
+      "fromPinId": "out",
+      "toCompId": 143,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 145,
+      "fromPinId": "out",
+      "toCompId": 146,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 146,
+      "fromPinId": "in",
+      "toCompId": 148,
+      "toPinId": "out",
+      "points": []
+    },
+    {
+      "fromCompId": 146,
+      "fromPinId": "out",
+      "toCompId": 147,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 150,
+      "fromPinId": "out",
+      "toCompId": 149,
+      "toPinId": "out",
+      "points": []
+    },
+    {
+      "fromCompId": 150,
+      "fromPinId": "out",
+      "toCompId": 152,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 151,
+      "fromPinId": "out",
+      "toCompId": 150,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 156,
+      "fromPinId": "out",
+      "toCompId": 157,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 154,
+      "fromPinId": "out",
+      "toCompId": 160,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 159,
+      "fromPinId": "in",
+      "toCompId": 154,
+      "toPinId": "out",
+      "points": []
+    },
+    {
+      "fromCompId": 159,
+      "fromPinId": "out",
+      "toCompId": 160,
+      "toPinId": "ctrl",
+      "points": []
+    },
+    {
+      "fromCompId": 160,
+      "fromPinId": "out",
+      "toCompId": 158,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 161,
+      "fromPinId": "out",
+      "toCompId": 160,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 156,
+      "fromPinId": "out",
+      "toCompId": 162,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 162,
+      "fromPinId": "out",
+      "toCompId": 157,
+      "toPinId": "ctrl",
+      "points": []
+    },
+    {
+      "fromCompId": 157,
+      "fromPinId": "out",
+      "toCompId": 163,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 164,
+      "fromPinId": "out",
+      "toCompId": 157,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 166,
+      "fromPinId": "in",
+      "toCompId": 160,
+      "toPinId": "ctrl",
+      "points": []
+    },
+    {
+      "fromCompId": 167,
+      "fromPinId": "in",
+      "toCompId": 157,
+      "toPinId": "ctrl",
+      "points": []
+    }
+  ],
+  "viewState": {
+    "panX": 114.03007518796983,
+    "panY": 494.9924812030075,
+    "scale": 0.5759398496240602,
+    "canvasWidth": 1570,
+    "canvasHeight": 846
+  }
+}

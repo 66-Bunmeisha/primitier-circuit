@@ -1344,26 +1344,23 @@ function fitCircuitToScreen(onlyIfOversized = false) {
   const currentNeededH = circuitH * scale;
   const isOversized = (currentNeededW > availW) || (currentNeededH > availH);
 
-  if (onlyIfOversized && !isOversized) {
-    panX = margin - minX * scale;
-    panY = margin - minY * scale;
-    return;
+  if (!onlyIfOversized || isOversized) {
+    let newScale = Math.min(availW / circuitW, availH / circuitH);
+    const minAllowedScale = 0.2;
+    const maxAllowedScale = 1.5;
+
+    if (newScale < minAllowedScale) {
+      scale = minAllowedScale;
+    } else {
+      scale = Math.min(newScale, maxAllowedScale);
+    }
   }
 
-  let newScale = Math.min(availW / circuitW, availH / circuitH);
+  const circuitCenterX = minX + circuitW / 2;
+  const circuitCenterY = minY + circuitH / 2;
 
-  const minAllowedScale = 0.2;
-  const maxAllowedScale = 1.5;
-
-  if (newScale < minAllowedScale) {
-    scale = minAllowedScale;
-    panX = margin - minX * scale;
-    panY = margin - minY * scale;
-  } else {
-    scale = Math.min(newScale, maxAllowedScale);
-    panX = margin - minX * scale;
-    panY = margin - minY * scale;
-  }
+  panX = (canvas.width / 2) - (circuitCenterX * scale);
+  panY = (canvas.height / 2) - (circuitCenterY * scale);
 
   document.getElementById('zoom-text').textContent = `${Math.round(scale * 100)}%`;
 }
