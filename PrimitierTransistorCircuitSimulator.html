@@ -264,6 +264,12 @@
     </div>
 
     <div class="style-setting-row">
+      <label data-i18n="textColor">文字色:</label>
+      <input type="color" id="text-modal-text-color" value="#ffffff" oninput="document.getElementById('text-modal-text-color-code').value = this.value">
+      <input type="text" id="text-modal-text-color-code" value="#ffffff" style="width: 130px; background:#1e1e1e; color:#fff; border:1px solid #666; padding:4px; border-radius:4px;" oninput="document.getElementById('text-modal-text-color').value = this.value">
+    </div>
+
+    <div class="style-setting-row">
       <label data-i18n="bgColor">背景色:</label>
       <input type="color" id="text-modal-color" value="#2b3a4a" oninput="document.getElementById('text-modal-color-code').value = this.value">
       <input type="text" id="text-modal-color-code" value="#2b3a4a" style="width: 130px; background:#1e1e1e; color:#fff; border:1px solid #666; padding:4px; border-radius:4px;" oninput="document.getElementById('text-modal-color').value = this.value">
@@ -272,7 +278,7 @@
     <div class="style-setting-row">
       <label data-i18n="bgImageLabel">背景画像:</label>
       <div style="display: flex; flex-direction: column; gap: 4px; flex: 1;">
-        <input type="text" id="text-modal-image-display" placeholder="URLを手入力 または下のボタンで選択" style="width: 100%; background:#1e1e1e; color:#fff; border:1px solid #666; padding:4px; border-radius:4px; box-sizing: border-box;">
+        <input type="text" id="text-modal-image-display" placeholder="Enter URL or select below" style="width: 100%; background:#1e1e1e; color:#fff; border:1px solid #666; padding:4px; border-radius:4px; box-sizing: border-box;">
         <input type="file" id="text-modal-image-file" accept="image/*" onchange="handleImageFileSelect(event)" style="font-size: 11px; color: #ccc;">
       </div>
     </div>
@@ -305,6 +311,8 @@
   <div onclick="moveSelectedZOrder('front')" data-i18n="bringToFront">最前面へ移動</div>
   <div onclick="moveSelectedZOrder('back')" data-i18n="sendToBack">最背面へ移動</div>
   <div id="menu-delete-wire" onclick="deleteSelectedWire()" class="danger" style="border-top: 1px solid #444; margin-top: 2px; padding-top: 6px;" data-i18n="deleteWire">電線を削除</div>
+  <div id="menu-delete-sel-waypoints" onclick="deleteSelectedWaypointsBulk()" class="danger" style="border-top: 1px solid #444; margin-top: 2px; padding-top: 6px;" data-i18n="deleteSelWaypoints">選択中の接点を一括削除</div>
+  <div id="menu-delete-sel-wires" onclick="deleteSelectedWiresBulk()" class="danger" data-i18n="deleteSelWires">選択中の電線を一括削除</div>
   <div id="menu-delete" onclick="deleteSelectedTarget()" class="danger" data-i18n="delete">削除</div>
 </div>
 
@@ -322,9 +330,10 @@ const I18N = {
     fitView: "全体フィット", btnCount: "部品集計", tipCount: "選択中(または全体)の部品数を集計", modalCountTitle: "部品集計",
     modalCountTotal: "合計", closeBtn: "閉じる", compText: "テキスト",
     countTargetSelected: "(選択中)", countTargetAll: "(全件)",
-    editText: "テキスト編集 (Enterで改行):", fontSize: "文字サイズ (px):", bgColor: "背景色:",
+    editText: "テキスト編集 (Enterで改行):", fontSize: "文字サイズ (px):", bgColor: "背景色:", textColor: "文字色:",
     cancel: "キャンセル", saveBtn: "保存", bringToFront: "最前面へ移動", sendToBack: "最背面へ移動",
     delete: "削除", deleteWire: "電線を削除",
+    deleteSelWaypoints: "選択中の接点を一括削除", deleteSelWires: "選択中の電線を一括削除",
     flip: "左右反転 (R)",
     bgImageLabel: "背景画像:", bgImageSet: "[PCから画像を設定済み]", bgImageSelected: "[選択済み: ",
     compVcc: "電源 (VCC)", compBtn: "トリガーSW", compTr: "トランジスタ", compInvTr: "反転トランジスタ",
@@ -355,9 +364,10 @@ const I18N = {
     fitView: "Fit View", btnCount: "Count", tipCount: "Count selected/all components",
     modalCountTitle: "Component Count", modalCountTotal: "Total", closeBtn: "Close", compText: "Text",
     countTargetSelected: "(Selected)", countTargetAll: "(All)",
-    editText: "Edit Text (Enter for newline):", fontSize: "Font Size (px):", bgColor: "Background Color:",
+    editText: "Edit Text (Enter for newline):", fontSize: "Font Size (px):", bgColor: "Background Color:", textColor: "Text Color:",
     cancel: "Cancel", saveBtn: "Save", bringToFront: "Bring to Front", sendToBack: "Send to Back",
     delete: "Delete", deleteWire: "Delete Wire",
+    deleteSelWaypoints: "Delete Selected Waypoints", deleteSelWires: "Delete Selected Wires",
     flip: "Flip Horizontally (R)",
     bgImageLabel: "Background Image:", bgImageSet: "[Image set from PC]", bgImageSelected: "[Selected: ",
     compVcc: "VCC Power", compBtn: "Trigger SW", compTr: "Transistor", compInvTr: "NOT Transistor",
@@ -387,10 +397,12 @@ const I18N = {
     save: "Сохранить (JSON)", load: "Загрузить", clear: "Очистить", editingFile: "Файл:",
     fitView: "По размеру экрана", btnCount: "Подсчет",tipCount: "Подсчет выделенных/всех компонентов",
     modalCountTitle: "Подсчет компонентов", modalCountTotal: "Итого", closeBtn: "Закрыть", compText: "Текст",
-    editText: "Редактировать текст (Enter для переноса):", fontSize: "Размер шрифта (px):", bgColor: "Цвет фона:",
+    editText: "Редактировать текст (Enter для переноса):", fontSize: "Размер шрифта (px):",
+    bgColor: "Цвет фона:", textColor: "Цвет текста:",
     countTargetSelected: "(Выбрано)", countTargetAll: "(Все)",
     cancel: "Отмена", saveBtn: "Сохранить", bringToFront: "На передний план", sendToBack: "На задний план",
     delete: "Удалить", deleteWire: "Удалить провод",
+    deleteSelWaypoints: "Удалить выбранные точки", deleteSelWires: "Удалить выбранные провода",
     flip: "Отразить по горизонтали (R)",
     bgImageLabel: "Фоновое изображение:", bgImageSet: "[Изображение с ПК]", bgImageSelected: "[Выбрано: ",
     compVcc: "Питание (VCC)", compBtn: "Триггер(SW)", compTr: "Транзистор", compInvTr: "Инв. транзистор",
@@ -569,6 +581,60 @@ function deleteSelectedWire() {
     }
   }
   hideContextMenu();
+}
+
+function deleteSelectedWaypointsBulk() {
+  if (selectedWaypointKeys.size === 0) { hideContextMenu(); return; }
+
+  const wiresToUpdate = new Map();
+  selectedWaypointKeys.forEach(key => {
+    const parts = key.split('_');
+    const wIdx = parseInt(parts[0], 10);
+    const pIdx = parseInt(parts[1], 10);
+    const wire = wires[wIdx];
+    if (wire) {
+      if (!wiresToUpdate.has(wire)) wiresToUpdate.set(wire, new Set());
+      wiresToUpdate.get(wire).add(pIdx);
+    }
+  });
+
+  wiresToUpdate.forEach((indicesSet, wire) => {
+    wire.points = wire.points.filter((_, idx) => !indicesSet.has(idx));
+  });
+
+  clearSelections();
+  hideContextMenu();
+  saveState();
+  draw();
+}
+
+function deleteSelectedWiresBulk() {
+  if (selectedWaypointKeys.size === 0 && selectedComponentIds.size === 0) {
+    hideContextMenu();
+    return;
+  }
+
+  const wiresToDelete = new Set();
+
+  selectedWaypointKeys.forEach(key => {
+    const wIdx = parseInt(key.split('_')[0], 10);
+    if (wires[wIdx]) wiresToDelete.add(wires[wIdx]);
+  });
+
+  selectedComponentIds.forEach(compId => {
+    wires.forEach(w => {
+      if (w.fromCompId === compId || w.toCompId === compId) {
+        wiresToDelete.add(w);
+      }
+    });
+  });
+
+  wires = wires.filter(w => !wiresToDelete.has(w));
+
+  clearSelections();
+  hideContextMenu();
+  saveState();
+  draw();
 }
 
 // ===================================================================
@@ -995,6 +1061,7 @@ class TextComp extends Component {
     this.text = t('defaultText');
     this.fontSize = 13;
     this.bgColor = UI.COLOR.TEXT_DEF_BG;
+    this.textColor = '#ffffff';
     this.bgImage = '';
     this.imgObj = null;
     this.imgError = false;
@@ -1054,7 +1121,7 @@ setBgImage(src) {
     ctx.strokeRect(this.x, this.y, this.width, this.height);
     ctx.setLineDash([]);
 
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = this.textColor;
     ctx.font = `${this.fontSize}px sans-serif`;
     ctx.textAlign = 'left';
     const lines = this.text.split('\n'), lh = this.fontSize * 1.3;
@@ -1079,6 +1146,7 @@ setBgImage(src) {
     const d = super.serialize();
     d.text = this.text;
     d.fontSize = this.fontSize;
+    d.textColor = this.textColor;
     d.bgColor = this.bgColor;
     d.bgImage = this.bgImage;
     return d;
@@ -1115,6 +1183,9 @@ function openTextModal(comp) {
   document.getElementById('text-modal-input').value = comp.text;
   document.getElementById('text-modal-size').value = comp.fontSize;
 
+  try { document.getElementById('text-modal-text-color').value = comp.textColor || '#ffffff'; } catch(e){}
+  document.getElementById('text-modal-text-color-code').value = comp.textColor || '#ffffff';
+
   try { document.getElementById('text-modal-color').value = comp.bgColor; } catch(e){}
   document.getElementById('text-modal-color-code').value = comp.bgColor;
 
@@ -1131,6 +1202,7 @@ function closeTextModal(save) {
   if (save && editingTextComp) {
     editingTextComp.text = document.getElementById('text-modal-input').value;
     editingTextComp.fontSize = parseInt(document.getElementById('text-modal-size').value, 10);
+    editingTextComp.textColor = document.getElementById('text-modal-text-color-code').value;
     editingTextComp.bgColor = document.getElementById('text-modal-color').value;
 
     const displayVal = document.getElementById('text-modal-image-display').value.trim();
@@ -1538,11 +1610,39 @@ canvas.addEventListener('contextmenu', e => {
     const menuDelete = document.getElementById('menu-delete');
     const menuFlip = document.getElementById('menu-flip');
 
-    if (menuDeleteWire) {
-      if (rightClickTarget.type === 'wire' || rightClickTarget.type === 'waypoint') {
-        menuDeleteWire.style.display = 'block';
+    const menuDeleteSelWaypoints = document.getElementById('menu-delete-sel-waypoints');
+    const menuDeleteSelWires = document.getElementById('menu-delete-sel-wires');
+
+    let hasConnectedWires = false;
+    if (selectedComponentIds.size > 0) {
+      for (let i = 0; i < wires.length; i++) {
+        if (selectedComponentIds.has(wires[i].fromCompId) || selectedComponentIds.has(wires[i].toCompId)) {
+          hasConnectedWires = true;
+          break;
+        }
+      }
+    }
+
+    if (menuDeleteSelWaypoints && menuDeleteSelWires) {
+      if (selectedWaypointKeys.size > 0) {
+        menuDeleteSelWaypoints.style.display = 'block';
+        menuDeleteSelWires.style.display = 'block';
+        if (menuDeleteWire) menuDeleteWire.style.display = 'none';
+      } else if (selectedComponentIds.size > 0 && hasConnectedWires) {
+        menuDeleteSelWaypoints.style.display = 'none';
+        menuDeleteSelWires.style.display = 'block';
+        if (menuDeleteWire) menuDeleteWire.style.display = 'none';
       } else {
-        menuDeleteWire.style.display = 'none';
+        menuDeleteSelWaypoints.style.display = 'none';
+        menuDeleteSelWires.style.display = 'none';
+
+        if (menuDeleteWire) {
+          if (rightClickTarget.type === 'wire' || rightClickTarget.type === 'waypoint') {
+            menuDeleteWire.style.display = 'block';
+          } else {
+            menuDeleteWire.style.display = 'none';
+          }
+        }
       }
     }
 
