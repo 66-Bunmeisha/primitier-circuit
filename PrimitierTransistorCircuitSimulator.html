@@ -342,6 +342,7 @@ const I18N = {
     promptCrystal: "水晶の厚さを入力してください（cm / 下限1cm）:",
     alertCrystalErr: "1cm以上の数字を入力してくださいのじゃ！",
     loadErr: "読み込み失敗なのじゃ: ",
+    invalidAppErr: "このシミュレータの保存データではありませんのじゃ！",
     defaultText: "説明テキスト\n(右下ドラッグでサイズ変更)",
     play: "▶ 再生", pause: "⏸ 一時停止", step: "⏭ 1チック",
     tipVcc: "電源(VCC)を追加 (ショートカット: 1)",
@@ -376,6 +377,7 @@ const I18N = {
     promptCrystal: "Enter crystal thickness (cm / min 1cm):",
     alertCrystalErr: "Please enter a number >= 1cm!",
     loadErr: "Failed to load: ",
+    invalidAppErr: "Not a valid save data for this app!",
     defaultText: "Description Text\n(Drag bottom-right to resize)",
     play: "▶ Play", pause: "⏸ Pause", step: "⏭ 1-Tick",
     tipVcc: "Add VCC Power (Shortcut: 1)",
@@ -411,6 +413,7 @@ const I18N = {
     promptCrystal: "Введите толщину кристалла (см / мин. 1 см):",
     alertCrystalErr: "Пожалуйста, введите число >= 1 см!",
     loadErr: "Ошибка загрузки: ",
+    invalidAppErr: "Неверные данные сохранения для этого приложения!", // ★ 追加
     defaultText: "Текст описания\n(Потяните за правый нижний угол)",
     play: "▶ Пуск", pause: "⏸ Пауза", step: "⏭ 1 такт",
     tipVcc: "Добавить VCC (Ярлык: 1)",
@@ -2108,6 +2111,8 @@ function exportCircuit() {
   currentFileName = name.trim().replace(/\.json$/i, '') || 'circuit'; updateFileNameDisplay();
 
   const data = {
+    appName: "PrimitierTransistorCircuitSimulator",
+    appVersion: "1.2.0",
     nextId,
     components: components.map(c => c.serialize()),
     wires,
@@ -2134,6 +2139,10 @@ function importCircuit(event) {
   reader.onload = e => {
     try {
       const data = JSON.parse(e.target.result);
+      if (data.appName !== "PrimitierTransistorCircuitSimulator") {
+        throw new Error(t('invalidAppErr'));
+      }
+
       nextId = data.nextId || 1;
       wires = (data.wires || []).map(w => ({ ...w, points: w.points || [] }));
       components = (data.components || []).map(cd => {
