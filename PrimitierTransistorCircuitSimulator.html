@@ -518,13 +518,18 @@ const TICK_TIME = 100;           // 1チックあたりの基本時間 (100ms = 
 let selectedComponentIds = new Set();
 let selectedWaypointKeys = new Set();
 let selectedWaypointOffsets = [];
+let selectedWireIndices = new Set();
 
 let rightClickTarget = null;
 let editingTextComp = null;
 
 function screenToWorld(sx, sy) { return { x: (sx - panX) / scale, y: (sy - panY) / scale }; }
 function getWaypointKey(wire, pointIndex) { return `${wires.indexOf(wire)}_${pointIndex}`; }
-function clearSelections() { selectedComponentIds.clear(); selectedWaypointKeys.clear(); }
+function clearSelections() {
+  selectedComponentIds.clear();
+  selectedWaypointKeys.clear();
+  selectedWireIndices.clear();
+}
 function hideContextMenu() { document.getElementById('context-menu').style.display = 'none'; rightClickTarget = null; }
 
 function moveSelectedZOrder(direction) {
@@ -612,12 +617,16 @@ function deleteSelectedWaypointsBulk() {
 }
 
 function deleteSelectedWiresBulk() {
-  if (selectedWaypointKeys.size === 0 && selectedComponentIds.size === 0) {
+// selectedWireIndices もチェックするように追加したのじゃ
+  if (selectedWaypointKeys.size === 0 && selectedComponentIds.size === 0 && selectedWireIndices.size === 0) {
     hideContextMenu();
     return;
   }
-
   const wiresToDelete = new Set();
+
+  selectedWireIndices.forEach(idx => {
+    if (wires[idx]) wiresToDelete.add(wires[idx]);
+  });
 
   selectedWaypointKeys.forEach(key => {
     const wIdx = parseInt(key.split('_')[0], 10);
@@ -714,9 +723,10 @@ class Component {
       ctx.fillStyle = UI.COLOR.BORDER_SEL;
       ctx.fillRect(this.x + this.width - 8, this.y + this.height - 8, 8, 8);
     }
+  }
 
+  drawPins(ctx, scale) {
     const isSmallAlloy = this.type === 'ancient_alloy' && (this.width < 30 || this.height < 30);
-
     if (!isSmallAlloy) {
       this.pins.forEach(p => {
         const pos = this.getPinPos(p);
@@ -1458,18 +1468,34 @@ function draw() {
 
   components.forEach(c => c.draw(ctx, selectedComponentIds.has(c.id), scale));
 
-  wires.forEach(w => {
+  wires.forEach((w, wIdx) => {
     const path = getWirePath(w);
     if (path.length < 2) return;
     const fromComp = components.find(c => c.id === w.fromCompId);
     const toComp = components.find(c => c.id === w.toCompId);
     const isWireActive = checkWireActive(w, fromComp, toComp);
+    const isSelected = selectedWireIndices.has(wIdx);
 
     ctx.beginPath();
     ctx.moveTo(path[0].x, path[0].y);
     for (let i = 1; i < path.length; i++) ctx.lineTo(path[i].x, path[i].y);
+    ctx.strokeStyle = '#252526';
+    ctx.lineWidth = (UI.WIRE_W + 2) / scale;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(path[0].x, path[0].y);
+    for (let i = 1; i < path.length; i++) ctx.lineTo(path[i].x, path[i].y);
+
+    if (isSelected) {
+        ctx.strokeStyle = UI.COLOR.BORDER_SEL;
+        ctx.lineWidth = (UI.WIRE_W + 4) / scale;
+        ctx.stroke();
+    }
+
     ctx.strokeStyle = isWireActive ? UI.COLOR.WIRE_ON : UI.COLOR.WIRE_OFF;
-    ctx.lineWidth = UI.WIRE_W / scale; ctx.stroke();
+    ctx.lineWidth = UI.WIRE_W / scale;
+    ctx.stroke();
   });
 
   wires.forEach((w, wIdx) => {
@@ -1485,6 +1511,8 @@ function draw() {
       });
     }
   });
+
+  components.forEach(c => c.drawPins(ctx, scale));
 
   if (connectingPin) {
     const p1 = connectingPin.comp.getPinPos(connectingPin.pin);
@@ -1749,6 +1777,18 @@ canvas.addEventListener('mousedown', e => {
         draw();
         return;
       }
+    }
+
+    const hitWireSeg = getWireSegmentAt(mousePos.x, mousePos.y);
+    if (hitWireSeg) {
+      if (!e.shiftKey) clearSelections();
+      selectedWireIndices.add(hitWireSeg.wireIndex);
+      if (hitWireSeg.wire.points) {
+        hitWireSeg.wire.points.forEach((_, pIdx) => {
+          selectedWaypointKeys.add(`${hitWireSeg.wireIndex}_${pIdx}`);
+        });
+      }
+      return;
     }
 
     const clickedComp = getComponentAt(mousePos.x, mousePos.y);
@@ -2057,9 +2097,33 @@ window.addEventListener('keydown', e => {
     toggleSelectedFlip();
   }
   if (e.key === 'Delete' || e.key === 'Backspace') {
-    if (selectedComponentIds.size > 0 || selectedWaypointKeys.size > 0) {
+    if (selectedComponentIds.size > 0 || selectedWaypointKeys.size > 0 || selectedWireIndices.size > 0) {
+
+      if (selectedWireIndices.size > 0) {
+        wires = wires.filter((_, idx) => !selectedWireIndices.has(idx));
+        selectedWaypointKeys.clear();
+      }
+
+      if (selectedWaypointKeys.size > 0) {
+        const wiresToUpdate = new Map();
+        selectedWaypointKeys.forEach(key => {
+          const parts = key.split('_');
+          const wIdx = parseInt(parts[0], 10);
+          const pIdx = parseInt(parts[1], 10);
+          const wire = wires[wIdx];
+          if (wire) {
+            if (!wiresToUpdate.has(wire)) wiresToUpdate.set(wire, new Set());
+            wiresToUpdate.get(wire).add(pIdx);
+          }
+        });
+        wiresToUpdate.forEach((indicesSet, wire) => {
+          wire.points = wire.points.filter((_, idx) => !indicesSet.has(idx));
+        });
+      }
+
       components = components.filter(c => !selectedComponentIds.has(c.id));
       wires = wires.filter(w => !selectedComponentIds.has(w.fromCompId) && !selectedComponentIds.has(w.toCompId));
+
       clearSelections();
       saveState();
     }
