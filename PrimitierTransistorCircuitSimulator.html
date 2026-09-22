@@ -1445,18 +1445,16 @@ function checkWireActive(w, fromComp, toComp) {
   if (p1.state && p2.state) return true;
 
   const NO_REVERSE_IN_COMPS = ['transistor', 'inv_transistor', 'led'];
-  const NO_REVERSE_OUT_COMPS = ['transistor', 'inv_transistor', 'led', 'pyrite'];
 
-  const checkSource = (srcComp, srcPin, destComp, destPin) => {
+  const checkSource = (srcComp, srcPin) => {
     if (!srcPin || !srcPin.state) return false;
+
     if (NO_REVERSE_IN_COMPS.includes(srcComp.type) && srcPin.type === 'in') return false;
-    if (NO_REVERSE_OUT_COMPS.includes(destComp.type) && destPin.type === 'out') return false;
 
     return true;
   };
 
-  return checkSource(fromComp, p1, toComp, p2) ||
-         checkSource(toComp, p2, fromComp, p1);
+  return checkSource(fromComp, p1) || checkSource(toComp, p2);
 }
 
 // ===================================================================
