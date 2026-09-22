@@ -1,17 +1,8 @@
 {
   "appName": "PrimitierTransistorCircuitSimulator",
   "appVersion": "1.2.0",
-  "nextId": 16,
+  "nextId": 24,
   "components": [
-    {
-      "id": 15,
-      "type": "ancient_alloy",
-      "x": 770,
-      "y": 210,
-      "width": 80,
-      "height": 60,
-      "flipped": false
-    },
     {
       "id": 1,
       "type": "vcc",
@@ -42,46 +33,49 @@
     {
       "id": 8,
       "type": "text",
-      "x": 800,
-      "y": -20,
+      "x": 980,
+      "y": 200,
       "width": 320,
       "height": 70,
       "flipped": false,
       "text": "自己保持型（非対称型）フリップフロップ\n\nチャタリングの無い安全なON/OFFスイッチです。\n",
       "fontSize": 13,
+      "textColor": "#ffffff",
       "bgColor": "#2b3a4a",
       "bgImage": ""
     },
     {
       "id": 9,
       "type": "text",
-      "x": 850,
-      "y": 60,
+      "x": 1030,
+      "y": 280,
       "width": 280,
       "height": 70,
       "flipped": false,
       "text": "Self-holding (Asymmetric) Flip-Flop\n\nA safe ON/OFF switch with no chattering.\n",
       "fontSize": 13,
+      "textColor": "#ffffff",
       "bgColor": "#2b3a4a",
       "bgImage": ""
     },
     {
       "id": 10,
       "type": "text",
-      "x": 870,
-      "y": 140,
+      "x": 1050,
+      "y": 360,
       "width": 410,
       "height": 70,
       "flipped": false,
       "text": "Флип-флоп с самоудерживанием (асимметричный)\n\nЭто надежный выключатель типа «ВКЛ/ВЫКЛ» без дребезга.\n",
       "fontSize": 13,
+      "textColor": "#ffffff",
       "bgColor": "#2b3a4a",
       "bgImage": ""
     },
     {
       "id": 11,
       "type": "led",
-      "x": 870,
+      "x": 880,
       "y": 220,
       "width": 60,
       "height": 60,
@@ -104,6 +98,60 @@
       "width": 110,
       "height": 40,
       "flipped": false
+    },
+    {
+      "id": 16,
+      "type": "vcc",
+      "x": 400,
+      "y": 490,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 19,
+      "type": "transistor",
+      "x": 700,
+      "y": 490,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 20,
+      "type": "inv_transistor",
+      "x": 830,
+      "y": 490,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 21,
+      "type": "led",
+      "x": 970,
+      "y": 490,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 22,
+      "type": "trigger_switch",
+      "x": 540,
+      "y": 380,
+      "width": 110,
+      "height": 40,
+      "flipped": false
+    },
+    {
+      "id": 23,
+      "type": "trigger_switch",
+      "x": 540,
+      "y": 440,
+      "width": 110,
+      "height": 40,
+      "flipped": false
     }
   ],
   "wires": [
@@ -118,13 +166,6 @@
       "fromCompId": 3,
       "fromPinId": "out",
       "toCompId": 2,
-      "toPinId": "in",
-      "points": []
-    },
-    {
-      "fromCompId": 2,
-      "fromPinId": "out",
-      "toCompId": 11,
       "toPinId": "in",
       "points": []
     },
@@ -150,8 +191,90 @@
       "points": []
     },
     {
-      "fromCompId": 15,
-      "fromPinId": "top",
+      "fromCompId": 16,
+      "fromPinId": "out",
+      "toCompId": 19,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 19,
+      "fromPinId": "out",
+      "toCompId": 20,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 16,
+      "fromPinId": "out",
+      "toCompId": 23,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 16,
+      "fromPinId": "out",
+      "toCompId": 22,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 23,
+      "fromPinId": "out",
+      "toCompId": 20,
+      "toPinId": "ctrl",
+      "points": [
+        {
+          "x": 890,
+          "y": 460
+        }
+      ]
+    },
+    {
+      "fromCompId": 20,
+      "fromPinId": "out",
+      "toCompId": 21,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 22,
+      "fromPinId": "out",
+      "toCompId": 19,
+      "toPinId": "ctrl",
+      "points": []
+    },
+    {
+      "fromCompId": 20,
+      "fromPinId": "out",
+      "toCompId": 19,
+      "toPinId": "ctrl",
+      "points": [
+        {
+          "x": 940,
+          "y": 430
+        },
+        {
+          "x": 760,
+          "y": 430
+        }
+      ]
+    },
+    {
+      "fromCompId": 2,
+      "fromPinId": "out",
+      "toCompId": 2,
+      "toPinId": "ctrl",
+      "points": [
+        {
+          "x": 840,
+          "y": 220
+        }
+      ]
+    },
+    {
+      "fromCompId": 13,
+      "fromPinId": "out",
       "toCompId": 2,
       "toPinId": "ctrl",
       "points": []
@@ -159,23 +282,16 @@
     {
       "fromCompId": 2,
       "fromPinId": "out",
-      "toCompId": 15,
-      "toPinId": "right",
-      "points": []
-    },
-    {
-      "fromCompId": 13,
-      "fromPinId": "out",
-      "toCompId": 15,
-      "toPinId": "right",
+      "toCompId": 11,
+      "toPinId": "in",
       "points": []
     }
   ],
   "viewState": {
-    "panX": -78.66666666666663,
-    "panY": 82.5,
-    "scale": 1,
-    "canvasWidth": 1538,
-    "canvasHeight": 846
+    "panX": -89.66666666666663,
+    "panY": -37.5,
+    "scale": 0.9090909090909091,
+    "canvasWidth": 1570,
+    "canvasHeight": 839
   }
 }
