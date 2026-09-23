@@ -1262,7 +1262,9 @@ function addComponent(type, atCursor = false) {
     targetY = snapToGrid(center.y - UI.COMP_H / 2);
   }
 
+  clearSelections();
   components.push(createComponentObj(type, nextId++, targetX, targetY));
+  draw();
   saveState();
 }
 
@@ -1987,6 +1989,8 @@ canvas.addEventListener('dblclick', e => {
   if (hitSeg) {
     if (!hitSeg.wire.points) hitSeg.wire.points = [];
     hitSeg.wire.points.splice(hitSeg.segmentIndex, 0, { x: snapToGrid(mousePos.x), y: snapToGrid(mousePos.y) });
+    clearSelections();
+    draw();
     saveState();
     return;
   }
