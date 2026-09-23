@@ -2163,6 +2163,17 @@ function stepSim() {
 }
 
 // ===================================================================
+// 画面が非表示のとき処理停止＆復帰処理
+// ===================================================================
+function handleVisibilityChange() {
+  if (document.hidden) {
+  } else {
+    lastTime = performance.now();
+  }
+}
+document.addEventListener('visibilitychange', handleVisibilityChange);
+
+// ===================================================================
 // 保存 / 読み込み
 // ===================================================================
 function exportCircuit() {
@@ -2361,8 +2372,10 @@ saveState();
 
 let lastTime = performance.now();
 function loop(currentTime) {
-  const realDt = currentTime - lastTime;
+  let realDt = currentTime - lastTime;
   lastTime = currentTime;
+
+  if (realDt > 1000) realDt = 1000;
 
   if (!isPaused) {
     simAccumulator += realDt * simSpeed;
