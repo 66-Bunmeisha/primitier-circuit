@@ -1444,8 +1444,6 @@ function checkWireActive(w, fromComp, toComp) {
   const p2 = toComp ? toComp.getPin(w.toPinId) : null;
   if (!p1 || !p2) return false;
 
-  if (p1.state && p2.state) return true;
-
   const NO_REVERSE_IN_COMPS = ['transistor', 'inv_transistor', 'led'];
 
   const checkSource = (srcComp, srcPin) => {
@@ -1564,7 +1562,8 @@ function getWireSegmentAt(x, y) {
       if (l2 === 0) continue;
       let t = Math.max(0, Math.min(1, ((x - p1.x)*(p2.x - p1.x) + (y - p1.y)*(p2.y - p1.y)) / l2));
       const projX = p1.x + t * (p2.x - p1.x), projY = p1.y + t * (p2.y - p1.y);
-      if (Math.hypot(x - projX, y - projY) < Math.max(8, UI.WIRE_W + 4) / scale) return { wireIndex: i, wire: w, segmentIndex: j };
+
+      if (Math.hypot(x - projX, y - projY) < 5 / scale) return { wireIndex: i, wire: w, segmentIndex: j };
     }
   }
   return null;
