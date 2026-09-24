@@ -1,6 +1,6 @@
 {
   "appName": "PrimitierTransistorCircuitSimulator",
-  "appVersion": "1.2.0",
+  "appVersion": "1.2.1",
   "nextId": 168,
   "components": [
     {
@@ -11,7 +11,7 @@
       "width": 800,
       "height": 620,
       "flipped": false,
-      "text": "電源：\n・無限の電力を常に供給する。\nLED:\n・LEDは通電することで発行する。\n・縁体であり片方のピンに電流を流しても反対側に通電しない。\n・同じピンに複数の電線を接続しても他の電線に逆流しない。\nトリガーSW:\n・通常時はLEDと同じく絶縁体。\n・カーソルで左クリックするとON状態となり、その間だけ伝導体\n　となる。左右にも同じピンに接続されているほかの電線にも\n　通電する。\n\nPower Supply:\n・Provides an unlimited supply of power at all times.\nLED:\n・The LED emits light when current flows through it.\n・They are insulators; even if current flows through one pin, it does not pass to the opposite side.\n・Even if multiple wires are connected to the same pin, current does not flow backward to the other wires.\nTrigger Switch:\n・Normally, it acts as an insulator, just like an LED.\n・Left-clicking with the cursor turns it ON, and it becomes a conductor only while it is ON.\n　Current also flows to other wires connected to the same pin on both the left and right sides.\n　Current also flows to other wires connected to the same pin on both the left and right sides.\n\nИсточник питания:\n・Постоянно обеспечивает неограниченное количество энергии.\nСветодиод:\n・Светодиод светится при подаче тока.\n・Является диэлектриком: даже если ток проходит по одному выводу, он не проходит по противоположному.\n・Даже если к одному выводу подключено несколько проводов, ток не течет в обратном направлении по другим проводам.\nТриггерный переключатель:\n・В обычном состоянии, как и светодиод, является диэлектриком.\n・При щелчке левой кнопкой мыши курсора переключатель переходит в состояние «ВКЛ» и становится проводником\n　только на время этого состояния. Ток проходит также по другим проводам, подключенным к тому же выводу\n　с левой и правой сторон.",
+      "text": "電源：\n・無限の電力を常に供給する。\nLED:\n・LEDは通電することで発光する。\n・絶縁体であり片方のピンに電流を流しても反対側に通電しない。\n・同じピンに複数の電線を接続しても他の電線に逆流しない。\nトリガーSW:\n・通常時はLEDと同じく絶縁体。\n・カーソルで左クリックするとON状態となり、その間だけ伝導体\n　となる。左右にも同じピンに接続されているほかの電線にも\n　通電する。\n\nPower Supply:\n・Provides an unlimited supply of power at all times.\nLED:\n・The LED emits light when an electric current is applied.\n・They are insulators; even if current flows through one pin, it does not pass to the opposite side.\n・Even if multiple wires are connected to the same pin, current does not flow backward to the other wires.\nTrigger Switch:\n・Normally, it acts as an insulator, just like an LED.\n・Left-clicking with the cursor turns it ON, and it becomes a conductor only while it is ON.\n　Current also flows to other wires connected to the same pin on both the left and right sides.\n　Current also flows to other wires connected to the same pin on both the left and right sides.\n\nИсточник питания:\n・Постоянно обеспечивает неограниченное количество энергии.\nСветодиод:\n・Светодиод светится при подаче тока.\n・Является диэлектриком: даже если ток проходит по одному выводу, он не проходит по противоположному.\n・Даже если к одному выводу подключено несколько проводов, ток не течет в обратном направлении по другим проводам.\nТриггерный переключатель:\n・В обычном состоянии, как и светодиод, является диэлектриком.\n・При щелчке левой кнопкой мыши курсора переключатель переходит в состояние «ВКЛ» и становится проводником\n　только на время этого состояния. Ток проходит также по другим проводам, подключенным к тому же выводу\n　с левой и правой сторон.",
       "fontSize": 13,
       "textColor": "#ffffff",
       "bgColor": "#2b3a4a",
@@ -224,7 +224,7 @@
       "width": 800,
       "height": 590,
       "flipped": false,
-      "text": "水晶：\n・左右に通電するが通過するのに0.1秒経過する。\n・同じピンに接続されているほかの電線には0秒で通電する。\n・水晶の厚さが0.2cm以上あるとき\n　推奨の厚さ ÷ 0.1cm ×　0.1秒周期でLEDが点滅する。\n　※厚さ5cmの時、0.1秒間の通電を\"1\"通電なしを\"0\"とすると\n　　最初の0.2秒 0,1 次の0.5秒 0,0,0,0,1 の繰り返しとなる。\n\nQuartz:\n・Current flows in both directions, but it takes 0.1 seconds to pass through.\n・Current flows instantly through other wires connected to the same pin.\n・When the crystal is 0.2 cm or thicker:\n　The LED flashes at a cycle of (recommended thickness ÷ 0.1 cm) × 0.1 seconds.\n　*For a thickness of 5 cm, if one 0.1-second current pulse is counted as “1” and no current is counted as “0,”\n　　the pattern repeats as follows: first 0.2 seconds: 0,1; next 0.5 seconds: 0,0,0,0,1.\n\nКварц:\n・Ток проходит в обе стороны, но на прохождение уходит 0,1 секунды.\n・На другие провода, подключенные к тому же выводу, ток поступает за 0 секунд.\n・При толщине кварца 0,2 см и более\n　Светодиод мигает с периодом, равным рекомендуемой толщине, деленной на 0,1 см, умноженной на 0,1 секунды.\n　*При толщине 5 см, если 0,1 секунды прохождения тока считать «1», а отсутствие тока — «0»,\n　　то в течение первых 0,2 секунд последовательность будет 0,1, а в следующие 0,5 секунд — 0,0,0,0,1, и так далее.",
+      "text": "水晶：\n・左右に通電するが通過するのに0.1秒経過する。\n・同じピンに接続されているほかの電線には0秒で通電する。\n・水晶の厚さが0.2cm以上あるとき\n　水晶の厚さ ÷ 0.1cm ×　0.1秒周期でLEDが点滅する。\n　※厚さ5cmの時、0.1秒間の通電を\"1\"通電なしを\"0\"とすると\n　　最初の0.2秒 0,1 次の0.5秒 0,0,0,0,1 の繰り返しとなる。\n\nQuartz:\n・Current flows in both directions, but it takes 0.1 seconds to pass through.\n・Current flows instantly through other wires connected to the same pin.\n・When the crystal is 0.2 cm or thicker:\n　The LED flashes at a period of 0.1 seconds multiplied by the thickness of the crystal divided by 0.1 cm.\n　*For a thickness of 5 cm, if one 0.1-second current pulse is counted as “1” and no current is counted as “0,”\n　　the pattern repeats as follows: first 0.2 seconds: 0,1; next 0.5 seconds: 0,0,0,0,1.\n\nКварц:\n・Ток проходит в обе стороны, но на прохождение уходит 0,1 секунды.\n・На другие провода, подключенные к тому же выводу, ток поступает за 0 секунд.\n・При толщине кварца 0,2 см и более\n　Светодиод мигает с периодичностью, равной толщине кристалла, деленной на 0,1 см, и 0,1 секунды.\n　*При толщине 5 см, если 0,1 секунды прохождения тока считать «1», а отсутствие тока — «0»,\n　　то в течение первых 0,2 секунд последовательность будет 0,1, а в следующие 0,5 секунд — 0,0,0,0,1, и так далее.",
       "fontSize": 13,
       "textColor": "#ffffff",
       "bgColor": "#2b3a4a",
@@ -789,10 +789,10 @@
     }
   ],
   "viewState": {
-    "panX": 114.03007518796983,
-    "panY": 494.9924812030075,
-    "scale": 0.5759398496240602,
-    "canvasWidth": 1570,
-    "canvasHeight": 846
+    "panX": 125.16165413533827,
+    "panY": 490.83458646616543,
+    "scale": 0.5706766917293233,
+    "canvasWidth": 1580,
+    "canvasHeight": 839
   }
 }
