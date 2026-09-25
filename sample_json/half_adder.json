@@ -363,7 +363,7 @@
       "width": 180,
       "height": 120,
       "flipped": false,
-      "text": "XOR gate",
+      "text": "NAND gate",
       "fontSize": 13,
       "textColor": "#ffffff",
       "bgColor": "#2b3a4a",
@@ -898,6 +898,6 @@
     "panY": 121.61290322580646,
     "scale": 0.8161290322580645,
     "canvasWidth": 1528,
-    "canvasHeight": 839
+    "canvasHeight": 846
   }
 }
