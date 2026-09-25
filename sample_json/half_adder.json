@@ -1,8 +1,22 @@
 {
   "appName": "PrimitierTransistorCircuitSimulator",
-  "appVersion": "1.2.0",
-  "nextId": 131,
+  "appVersion": "v1.2.2",
+  "nextId": 169,
   "components": [
+    {
+      "id": 131,
+      "type": "text",
+      "x": 730,
+      "y": 430,
+      "width": 310,
+      "height": 400,
+      "flipped": false,
+      "text": "半加算回路（改良型）\nHalf-Additive Circuit\nПолусуммирующая схема\n",
+      "fontSize": 13,
+      "textColor": "#ffffff",
+      "bgColor": "#632727",
+      "bgImage": ""
+    },
     {
       "id": 81,
       "type": "text",
@@ -13,6 +27,7 @@
       "flipped": false,
       "text": "半加算回路\nHalf-Additive Circuit\nПолусуммирующая схема\n",
       "fontSize": 13,
+      "textColor": "#ffffff",
       "bgColor": "#632727",
       "bgImage": ""
     },
@@ -53,6 +68,7 @@
       "flipped": false,
       "text": "AND gate",
       "fontSize": 13,
+      "textColor": "#ffffff",
       "bgColor": "#2b3a4a",
       "bgImage": ""
     },
@@ -102,6 +118,7 @@
       "flipped": false,
       "text": "XOR gate",
       "fontSize": 13,
+      "textColor": "#ffffff",
       "bgColor": "#2b3a4a",
       "bgImage": ""
     },
@@ -169,6 +186,7 @@
       "flipped": false,
       "text": "input A",
       "fontSize": 13,
+      "textColor": "#ffffff",
       "bgColor": "#2b3a4a",
       "bgImage": ""
     },
@@ -200,6 +218,7 @@
       "flipped": false,
       "text": "input B",
       "fontSize": 13,
+      "textColor": "#ffffff",
       "bgColor": "#2b3a4a",
       "bgImage": ""
     },
@@ -231,6 +250,7 @@
       "flipped": false,
       "text": "bit1(carry)",
       "fontSize": 13,
+      "textColor": "#ffffff",
       "bgColor": "#2b3a4a",
       "bgImage": ""
     },
@@ -262,6 +282,7 @@
       "flipped": false,
       "text": "bit0(sum)",
       "fontSize": 13,
+      "textColor": "#ffffff",
       "bgColor": "#2b3a4a",
       "bgImage": ""
     },
@@ -284,6 +305,7 @@
       "flipped": false,
       "text": "※信号の流れを目で追いやすいように、多めに確認用のLEDや接点を追加しています。\n\n*We have added extra LEDs and contacts to make it easier to visually track the signal flow.\n\n* Чтобы было проще следить за работой сигналов, мы добавили больше светодиодов и контактов для контроля.",
       "fontSize": 13,
+      "textColor": "#ffffff",
       "bgColor": "#2b3a4a",
       "bgImage": ""
     },
@@ -297,6 +319,222 @@
       "flipped": false,
       "text": "           input\n1 0 1 0 | A\n1 1 0 0 | B\n           output\n0 1 1 0 | bit0\n1 0 0 0 | bit1",
       "fontSize": 13,
+      "textColor": "#ffffff",
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    },
+    {
+      "id": 132,
+      "type": "vcc",
+      "x": 460,
+      "y": 620,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 135,
+      "type": "text",
+      "x": 830,
+      "y": 510,
+      "width": 180,
+      "height": 130,
+      "flipped": false,
+      "text": "AND gate",
+      "fontSize": 13,
+      "textColor": "#ffffff",
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    },
+    {
+      "id": 136,
+      "type": "transistor",
+      "x": 860,
+      "y": 560,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 140,
+      "type": "text",
+      "x": 830,
+      "y": 670,
+      "width": 180,
+      "height": 120,
+      "flipped": false,
+      "text": "XOR gate",
+      "fontSize": 13,
+      "textColor": "#ffffff",
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    },
+    {
+      "id": 143,
+      "type": "ancient_alloy",
+      "x": 1000,
+      "y": 720,
+      "width": 20,
+      "height": 20,
+      "flipped": false
+    },
+    {
+      "id": 145,
+      "type": "inv_transistor",
+      "x": 860,
+      "y": 700,
+      "width": 110,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 146,
+      "type": "ancient_alloy",
+      "x": 630,
+      "y": 550,
+      "width": 100,
+      "height": 80,
+      "flipped": false
+    },
+    {
+      "id": 147,
+      "type": "text",
+      "x": 630,
+      "y": 520,
+      "width": 100,
+      "height": 40,
+      "flipped": false,
+      "text": "input A",
+      "fontSize": 13,
+      "textColor": "#ffffff",
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    },
+    {
+      "id": 148,
+      "type": "led",
+      "x": 650,
+      "y": 560,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 149,
+      "type": "ancient_alloy",
+      "x": 630,
+      "y": 690,
+      "width": 100,
+      "height": 80,
+      "flipped": false
+    },
+    {
+      "id": 150,
+      "type": "text",
+      "x": 630,
+      "y": 660,
+      "width": 100,
+      "height": 40,
+      "flipped": false,
+      "text": "input B",
+      "fontSize": 13,
+      "textColor": "#ffffff",
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    },
+    {
+      "id": 151,
+      "type": "led",
+      "x": 650,
+      "y": 700,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 152,
+      "type": "ancient_alloy",
+      "x": 1040,
+      "y": 550,
+      "width": 100,
+      "height": 80,
+      "flipped": false
+    },
+    {
+      "id": 153,
+      "type": "text",
+      "x": 1040,
+      "y": 520,
+      "width": 100,
+      "height": 40,
+      "flipped": false,
+      "text": "bit1(carry)",
+      "fontSize": 13,
+      "textColor": "#ffffff",
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    },
+    {
+      "id": 154,
+      "type": "led",
+      "x": 1060,
+      "y": 560,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 155,
+      "type": "ancient_alloy",
+      "x": 1040,
+      "y": 690,
+      "width": 100,
+      "height": 80,
+      "flipped": false
+    },
+    {
+      "id": 156,
+      "type": "text",
+      "x": 1040,
+      "y": 660,
+      "width": 100,
+      "height": 40,
+      "flipped": false,
+      "text": "bit0(sum)",
+      "fontSize": 13,
+      "textColor": "#ffffff",
+      "bgColor": "#2b3a4a",
+      "bgImage": ""
+    },
+    {
+      "id": 157,
+      "type": "led",
+      "x": 1060,
+      "y": 700,
+      "width": 60,
+      "height": 60,
+      "flipped": false
+    },
+    {
+      "id": 138,
+      "type": "ancient_alloy",
+      "x": 1000,
+      "y": 580,
+      "width": 20,
+      "height": 20,
+      "flipped": false
+    },
+    {
+      "id": 168,
+      "type": "text",
+      "x": 440,
+      "y": 440,
+      "width": 140,
+      "height": 130,
+      "flipped": false,
+      "text": "           input\n1 0 1 0 | A\n1 1 0 0 | B\n           output\n0 1 1 0 | bit0\n1 0 0 0 | bit1",
+      "fontSize": 13,
+      "textColor": "#ffffff",
       "bgColor": "#2b3a4a",
       "bgImage": ""
     }
@@ -515,13 +753,151 @@
       "toCompId": 119,
       "toPinId": "right",
       "points": []
+    },
+    {
+      "fromCompId": 148,
+      "fromPinId": "in",
+      "toCompId": 146,
+      "toPinId": "left",
+      "points": []
+    },
+    {
+      "fromCompId": 151,
+      "fromPinId": "in",
+      "toCompId": 149,
+      "toPinId": "left",
+      "points": []
+    },
+    {
+      "fromCompId": 154,
+      "fromPinId": "in",
+      "toCompId": 152,
+      "toPinId": "left",
+      "points": []
+    },
+    {
+      "fromCompId": 157,
+      "fromPinId": "in",
+      "toCompId": 155,
+      "toPinId": "left",
+      "points": []
+    },
+    {
+      "fromCompId": 148,
+      "fromPinId": "out",
+      "toCompId": 146,
+      "toPinId": "right",
+      "points": []
+    },
+    {
+      "fromCompId": 151,
+      "fromPinId": "out",
+      "toCompId": 149,
+      "toPinId": "right",
+      "points": []
+    },
+    {
+      "fromCompId": 157,
+      "fromPinId": "out",
+      "toCompId": 155,
+      "toPinId": "right",
+      "points": []
+    },
+    {
+      "fromCompId": 154,
+      "fromPinId": "out",
+      "toCompId": 152,
+      "toPinId": "right",
+      "points": []
+    },
+    {
+      "fromCompId": 136,
+      "fromPinId": "out",
+      "toCompId": 138,
+      "toPinId": "left",
+      "points": []
+    },
+    {
+      "fromCompId": 136,
+      "fromPinId": "out",
+      "toCompId": 145,
+      "toPinId": "ctrl",
+      "points": []
+    },
+    {
+      "fromCompId": 145,
+      "fromPinId": "out",
+      "toCompId": 143,
+      "toPinId": "left",
+      "points": []
+    },
+    {
+      "fromCompId": 149,
+      "fromPinId": "right",
+      "toCompId": 145,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 146,
+      "fromPinId": "right",
+      "toCompId": 145,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 152,
+      "fromPinId": "left",
+      "toCompId": 138,
+      "toPinId": "right",
+      "points": []
+    },
+    {
+      "fromCompId": 155,
+      "fromPinId": "left",
+      "toCompId": 143,
+      "toPinId": "right",
+      "points": []
+    },
+    {
+      "fromCompId": 146,
+      "fromPinId": "right",
+      "toCompId": 136,
+      "toPinId": "in",
+      "points": []
+    },
+    {
+      "fromCompId": 149,
+      "fromPinId": "right",
+      "toCompId": 136,
+      "toPinId": "ctrl",
+      "points": [
+        {
+          "x": 830,
+          "y": 560
+        }
+      ]
+    },
+    {
+      "fromCompId": 132,
+      "fromPinId": "out",
+      "toCompId": 146,
+      "toPinId": "left",
+      "points": []
+    },
+    {
+      "fromCompId": 132,
+      "fromPinId": "out",
+      "toCompId": 149,
+      "toPinId": "left",
+      "points": []
     }
   ],
   "viewState": {
-    "panX": -182,
-    "panY": 149,
-    "scale": 1,
-    "canvasWidth": 1538,
-    "canvasHeight": 846
+    "panX": 66.20967741935476,
+    "panY": 121.61290322580646,
+    "scale": 0.8161290322580645,
+    "canvasWidth": 1528,
+    "canvasHeight": 839
   }
 }
