@@ -18,6 +18,20 @@
       "bgImage": ""
     },
     {
+      "id": 140,
+      "type": "text",
+      "x": 750,
+      "y": 490,
+      "width": 270,
+      "height": 300,
+      "flipped": false,
+      "text": "XOR gate",
+      "fontSize": 13,
+      "textColor": "#ffffff",
+      "bgColor": "#474e2d",
+      "bgImage": ""
+    },
+    {
       "id": 81,
       "type": "text",
       "x": 730,
@@ -354,20 +368,6 @@
       "width": 110,
       "height": 60,
       "flipped": false
-    },
-    {
-      "id": 140,
-      "type": "text",
-      "x": 830,
-      "y": 670,
-      "width": 180,
-      "height": 120,
-      "flipped": false,
-      "text": "AND gate(not ctrl)",
-      "fontSize": 13,
-      "textColor": "#ffffff",
-      "bgColor": "#2b3a4a",
-      "bgImage": ""
     },
     {
       "id": 143,

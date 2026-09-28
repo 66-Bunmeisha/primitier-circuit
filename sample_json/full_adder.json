@@ -1,8 +1,78 @@
 {
   "appName": "PrimitierTransistorCircuitSimulator",
   "appVersion": "v1.2.2",
-  "nextId": 282,
+  "nextId": 284,
   "components": [
+    {
+      "id": 237,
+      "type": "text",
+      "x": 1260,
+      "y": 1090,
+      "width": 1220,
+      "height": 520,
+      "flipped": false,
+      "text": "全加算回路（改良版）\nFull Adder Circuit(Improved Version)\nСхема полного суммирования(мод.)\n",
+      "fontSize": 13,
+      "textColor": "#ffffff",
+      "bgColor": "#632727",
+      "bgImage": ""
+    },
+    {
+      "id": 270,
+      "type": "text",
+      "x": 1950,
+      "y": 1150,
+      "width": 310,
+      "height": 400,
+      "flipped": false,
+      "text": "半加算回路（改良版）\nHalf-Additive Circuit(Improved Version)\nПолусуммирующая схема(мод.)",
+      "fontSize": 13,
+      "textColor": "#ffffff",
+      "bgColor": "#632727",
+      "bgImage": ""
+    },
+    {
+      "id": 261,
+      "type": "text",
+      "x": 1390,
+      "y": 1160,
+      "width": 310,
+      "height": 400,
+      "flipped": false,
+      "text": "半加算回路（改良版）\nHalf-Additive Circuit(Improved Version)\nПолусуммирующая схема(мод.)\n",
+      "fontSize": 13,
+      "textColor": "#ffffff",
+      "bgColor": "#632727",
+      "bgImage": ""
+    },
+    {
+      "id": 282,
+      "type": "text",
+      "x": 1410,
+      "y": 1220,
+      "width": 270,
+      "height": 300,
+      "flipped": false,
+      "text": "XOR gate",
+      "fontSize": 13,
+      "textColor": "#ffffff",
+      "bgColor": "#474e2d",
+      "bgImage": ""
+    },
+    {
+      "id": 283,
+      "type": "text",
+      "x": 1970,
+      "y": 1210,
+      "width": 270,
+      "height": 300,
+      "flipped": false,
+      "text": "XOR gate",
+      "fontSize": 13,
+      "textColor": "#ffffff",
+      "bgColor": "#474e2d",
+      "bgImage": ""
+    },
     {
       "id": 226,
       "type": "text",
@@ -606,20 +676,6 @@
       "bgImage": ""
     },
     {
-      "id": 237,
-      "type": "text",
-      "x": 1260,
-      "y": 1090,
-      "width": 1220,
-      "height": 520,
-      "flipped": false,
-      "text": "全加算回路（改良版）\nFull Adder Circuit(Improved Version)\nСхема полного суммирования(мод.)\n",
-      "fontSize": 13,
-      "textColor": "#ffffff",
-      "bgColor": "#632727",
-      "bgImage": ""
-    },
-    {
       "id": 238,
       "type": "ancient_alloy",
       "x": 2480,
@@ -789,20 +845,6 @@
       "bgImage": ""
     },
     {
-      "id": 261,
-      "type": "text",
-      "x": 1390,
-      "y": 1160,
-      "width": 310,
-      "height": 400,
-      "flipped": false,
-      "text": "半加算回路（改良版）\nHalf-Additive Circuit(Improved Version)\nПолусуммирующая схема(мод.)\n",
-      "fontSize": 13,
-      "textColor": "#ffffff",
-      "bgColor": "#632727",
-      "bgImage": ""
-    },
-    {
       "id": 262,
       "type": "text",
       "x": 1490,
@@ -824,20 +866,6 @@
       "width": 110,
       "height": 60,
       "flipped": false
-    },
-    {
-      "id": 264,
-      "type": "text",
-      "x": 1490,
-      "y": 1400,
-      "width": 180,
-      "height": 120,
-      "flipped": false,
-      "text": "AND gate(not ctrl)",
-      "fontSize": 13,
-      "textColor": "#ffffff",
-      "bgColor": "#2b3a4a",
-      "bgImage": ""
     },
     {
       "id": 265,
@@ -885,20 +913,6 @@
       "flipped": false
     },
     {
-      "id": 270,
-      "type": "text",
-      "x": 1950,
-      "y": 1150,
-      "width": 310,
-      "height": 400,
-      "flipped": false,
-      "text": "半加算回路（改良版）\nHalf-Additive Circuit(Improved Version)\nПолусуммирующая схема(мод.)",
-      "fontSize": 13,
-      "textColor": "#ffffff",
-      "bgColor": "#632727",
-      "bgImage": ""
-    },
-    {
       "id": 271,
       "type": "text",
       "x": 2050,
@@ -920,20 +934,6 @@
       "width": 110,
       "height": 60,
       "flipped": false
-    },
-    {
-      "id": 273,
-      "type": "text",
-      "x": 2050,
-      "y": 1390,
-      "width": 180,
-      "height": 120,
-      "flipped": false,
-      "text": "AND gate(not ctrl)",
-      "fontSize": 13,
-      "textColor": "#ffffff",
-      "bgColor": "#2b3a4a",
-      "bgImage": ""
     },
     {
       "id": 274,
@@ -1529,7 +1529,7 @@
       "toPinId": "ctrl",
       "points": [
         {
-          "x": 1620,
+          "x": 1630,
           "y": 1420
         }
       ]
