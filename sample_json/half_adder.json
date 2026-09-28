@@ -363,7 +363,7 @@
       "width": 180,
       "height": 120,
       "flipped": false,
-      "text": "NAND gate",
+      "text": "AND gate(not ctrl)",
       "fontSize": 13,
       "textColor": "#ffffff",
       "bgColor": "#2b3a4a",
@@ -822,7 +822,12 @@
       "fromPinId": "out",
       "toCompId": 145,
       "toPinId": "ctrl",
-      "points": []
+      "points": [
+        {
+          "x": 970,
+          "y": 680
+        }
+      ]
     },
     {
       "fromCompId": 145,
@@ -898,6 +903,6 @@
     "panY": 121.61290322580646,
     "scale": 0.8161290322580645,
     "canvasWidth": 1528,
-    "canvasHeight": 846
+    "canvasHeight": 839
   }
 }

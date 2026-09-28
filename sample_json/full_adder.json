@@ -833,7 +833,7 @@
       "width": 180,
       "height": 120,
       "flipped": false,
-      "text": "NAND gate",
+      "text": "AND gate(not ctrl)",
       "fontSize": 13,
       "textColor": "#ffffff",
       "bgColor": "#2b3a4a",
@@ -929,7 +929,7 @@
       "width": 180,
       "height": 120,
       "flipped": false,
-      "text": "NAND gate",
+      "text": "AND gate(not ctrl)",
       "fontSize": 13,
       "textColor": "#ffffff",
       "bgColor": "#2b3a4a",
@@ -1527,7 +1527,12 @@
       "fromPinId": "out",
       "toCompId": 266,
       "toPinId": "ctrl",
-      "points": []
+      "points": [
+        {
+          "x": 1620,
+          "y": 1420
+        }
+      ]
     },
     {
       "fromCompId": 266,
@@ -1581,7 +1586,12 @@
       "fromPinId": "out",
       "toCompId": 275,
       "toPinId": "ctrl",
-      "points": []
+      "points": [
+        {
+          "x": 2190,
+          "y": 1410
+        }
+      ]
     },
     {
       "fromCompId": 275,
