@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   ==================================================
-  Primitier Transistor Circuit Simulator v1.2.2 (i18n)
+  Primitier Transistor Circuit Simulator v1.2.3 (i18n)
   Created by fusou66
   Development Assist: Google Gemini
   ==================================================
@@ -123,7 +123,7 @@
       vertical-align: middle;
       padding-bottom: 2px;
     }
-    #canvas-container { width: 100vw; height: calc(100vh - 64px); position: relative; }
+    #canvas-container { width: 100vw; height: calc(100vh - 74px); position: relative; }
     canvas { display: block; background-color: #252526; }
     .info-text { color: #aaa; font-size: 12px; margin-left: 6px; }
     .file-info { color: #00ffcc; font-family: monospace; }
@@ -218,7 +218,7 @@
     <option value="ru">Русский</option>
   </select>
 
-  <span class="info-text" style="color: #666; font-weight: bold; margin-left: 4px;">v1.2.2</span>
+  <span class="info-text" style="color: #666; font-weight: bold; margin-left: 4px;">v1.2.3</span>
   <button onclick="showComponentCount()" data-i18n-title="tipCount" data-i18n="btnCount" style="margin-left: 12px;">部品集計</button>
   <button onclick="clearCircuit()" class="btn-danger" style="margin-left:auto;" data-i18n="clear">クリア</button>
 </div>
@@ -489,8 +489,8 @@ function snapToGrid(val) { return Math.round(val / UI.GRID_SIZE) * UI.GRID_SIZE;
 
 const canvas = document.getElementById('simCanvas');
 const ctx = canvas.getContext('2d');
-window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight - 64; });
-canvas.width = window.innerWidth; canvas.height = window.innerHeight - 64;
+window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight - 74; });
+canvas.width = window.innerWidth; canvas.height = window.innerHeight - 74;
 
 let components = [];
 let wires = [];
@@ -1169,6 +1169,7 @@ setBgImage(src) {
     super.deserialize(data);
     this.text = data.text || '';
     this.fontSize = data.fontSize || 13;
+    this.textColor = data.textColor || '#ffffff';
     this.bgColor = data.bgColor || UI.COLOR.TEXT_DEF_BG;
     this.setBgImage(data.bgImage || '');
   }
@@ -1380,6 +1381,7 @@ function fitCircuitToScreen(onlyIfOversized = false) {
 // ===================================================================
 // シミュレーション更新
 // ===================================================================
+let simConvergenceWarned = false;
 function updateSimulation(dt) {
 
   components.forEach(c => c.resetPins());
@@ -1420,6 +1422,14 @@ function updateSimulation(dt) {
         }
       });
     });
+  }
+  if (changed && loopCount >= 100) {
+    if (!simConvergenceWarned) {
+      console.warn('[sim] 信号が100回の反復で収束しませんでした。伝播が途中で打ち切られています。');
+      simConvergenceWarned = true;
+    }
+  } else {
+    simConvergenceWarned = false;
   }
   components.forEach(c => c.updateTimer(dt));
 }
@@ -1531,15 +1541,6 @@ function draw() {
 // ===================================================================
 // 判定ヘルパー（その他）
 // ===================================================================
-function getPinAt(x, y) {
-  for (const c of components) {
-    for (const p of c.pins) {
-      const pos = c.getPinPos(p);
-      if (Math.hypot(pos.x - x, pos.y - y) < 10 / scale) return { comp: c, pin: p };
-    }
-  }
-  return null;
-}
 function getComponentAt(x, y) { return components.slice().reverse().find(c => x >= c.x && x <= c.x + c.width && y >= c.y && y <= c.y + c.height); }
 
 function getWaypointAt(x, y) {
@@ -1573,7 +1574,7 @@ function getWireSegmentAt(x, y) {
 // マウス＆キー操作
 // ===================================================================
 canvas.addEventListener('wheel', e => {
-  e.preventDefault(); const mx = e.clientX, my = e.clientY - 64;
+  e.preventDefault(); const wheelRect = canvas.getBoundingClientRect(); const mx = e.clientX - wheelRect.left, my = e.clientY - wheelRect.top;
   let nScale = Math.max(0.2, Math.min(5.0, e.deltaY < 0 ? scale * 1.1 : scale / 1.1));
   panX = mx - (mx - panX) * (nScale / scale); panY = my - (my - panY) * (nScale / scale); scale = nScale;
   document.getElementById('zoom-text').textContent = `${Math.round(scale * 100)}%`;
@@ -1583,7 +1584,7 @@ canvas.addEventListener('wheel', e => {
 // ピンの当たり判定関数
 // ===================================================================
 function findPinAt(x, y) {
-  const hitRadius = 10;
+  const hitRadius = 10 / scale;
   for (let i = components.length - 1; i >= 0; i--) {
     const comp = components[i];
     for (const pin of comp.pins) {
@@ -2185,7 +2186,7 @@ function exportCircuit() {
 
   const data = {
     appName: "PrimitierTransistorCircuitSimulator",
-    appVersion: "v1.2.2",
+    appVersion: "v1.2.3",
     nextId,
     components: components.map(c => c.serialize()),
     wires,
